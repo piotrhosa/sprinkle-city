@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_create_character_upper"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/text_create_character"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_create_character" />
+
+    <EditText
+        android:id="@+id/edit_character_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/edit_character_name_hint"
+        android:inputType="text" />
+
+    <LinearLayout
+        android:id="@+id/layout_characters"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dip" >
+
+        <ImageButton
+            android:id="@+id/image_character_human"
+            android:layout_width="150dip"
+            android:layout_height="150dip"
+            android:background="@drawable/character_human"
+            android:contentDescription="@string/image_character_human" />
+
+        <ImageButton
+            android:id="@+id/image_character_animal"
+            android:layout_width="150dip"
+            android:layout_height="150dip"
+            android:background="@drawable/character_animal"
+            android:contentDescription="@string/image_character_animal" />
+    </LinearLayout>
+
+</LinearLayout>
