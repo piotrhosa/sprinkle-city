@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -15,6 +16,7 @@ public class CreateCharacterUpperFragment extends Fragment {
 
 	View viewUpper;
 	View viewLower;
+	EditText characterNameText;
 	ImageButton humanButton;
 	ImageButton animalButton;
 
@@ -23,6 +25,7 @@ public class CreateCharacterUpperFragment extends Fragment {
 
 		viewUpper = inflater.inflate(R.layout.fragment_create_character_upper, container, false);
 
+		//characterNameText = (EditText) viewUpper.findViewById(R.id.text_create_character);
 		humanButton = (ImageButton) viewUpper.findViewById(R.id.image_character_human);
 		animalButton = (ImageButton) viewUpper.findViewById(R.id.image_character_animal);
 

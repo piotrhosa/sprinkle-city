@@ -21,4 +21,6 @@
 	<string name="image_job_farmer">Farmer</string>
 	<string name="text_rating_signle_star">15/15</string>
 	
+	<color name="main_background">#4BDCC1</color>
+	
 </resources>
