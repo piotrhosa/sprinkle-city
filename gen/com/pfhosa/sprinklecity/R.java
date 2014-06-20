@@ -33,18 +33,22 @@ public final class R {
         public static final int job_postman=0x7f020006;
     }
     public static final class id {
-        public static final int action_settings=0x7f090018;
+        public static final int action_settings=0x7f09001c;
         public static final int button_create_character=0x7f090001;
         public static final int button_create_character_next=0x7f090017;
         public static final int edit_character_name=0x7f090006;
         public static final int fragment_container_create_character=0x7f090000;
         public static final int fragment_create_character_bottom_left=0x7f090002;
+        public static final int fragment_create_character_bottom_right=0x7f090018;
+        public static final int fragment_create_character_upper=0x7f090019;
+        public static final int image_character_animal=0x7f09001b;
         public static final int image_character_human=0x7f090003;
         public static final int image_character_human_1=0x7f090004;
         public static final int image_character_human_2=0x7f090005;
         public static final int image_job_baker=0x7f090008;
         public static final int image_job_farmer=0x7f09000a;
         public static final int image_job_postman=0x7f090009;
+        public static final int layout_characters=0x7f09001a;
         public static final int layout_crating_social=0x7f09000b;
         public static final int layout_job=0x7f090007;
         public static final int layout_rating_animal_friendly=0x7f09000e;
@@ -63,6 +67,9 @@ public final class R {
         public static final int activity_create_character=0x7f030000;
         public static final int activity_home_screen=0x7f030001;
         public static final int fragment_create_character_bottom=0x7f030002;
+        public static final int fragment_create_character_bottom_left=0x7f030003;
+        public static final int fragment_create_character_bottom_right=0x7f030004;
+        public static final int fragment_create_character_upper=0x7f030005;
     }
     public static final class menu {
         public static final int home_screen=0x7f080000;

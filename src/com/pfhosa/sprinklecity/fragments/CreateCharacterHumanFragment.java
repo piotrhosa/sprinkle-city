@@ -42,6 +42,7 @@ public class CreateCharacterHumanFragment extends Fragment {
 			add(R.id.image_character_human_2);			
 		}
 	};
+	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
