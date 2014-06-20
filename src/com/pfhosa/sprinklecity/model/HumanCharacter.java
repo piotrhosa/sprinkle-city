@@ -1,14 +1,16 @@
 package com.pfhosa.sprinklecity.model;
 
 public class HumanCharacter {
+	int avatar;
 	String name;
 	String job;
-	short social;
-	short animal;
-	short business;
+	int social;
+	int animal;
+	int business;
 	
-	public HumanCharacter(String name, String job, short social, short animal, short business) {
+	public HumanCharacter(int avatar, String name, String job, int social, int animal, int business) {
 		super();
+		this.avatar = avatar;
 		this.name = name;
 		this.job = job;
 		this.social = social;
@@ -16,6 +18,9 @@ public class HumanCharacter {
 		this.business = business;		
 	}
 	
+	public int getAvatar() {
+		return avatar;
+	}
 	public String getName() {
 		return name;
 	}
@@ -24,15 +29,15 @@ public class HumanCharacter {
 		return job;
 	}
 	
-	public short getSocialTrait() {
+	public int getSocialTrait() {
 		return social;
 	}
 	
-	public short getAnimalTrait() {
+	public int getAnimalTrait() {
 		return animal;
 	}
 	
-	public short getBusinessTrait() {
+	public int getBusinessTrait() {
 		return business;
 	}
 }

@@ -20,6 +20,7 @@
 	<string name="image_job_postman">Postman</string>
 	<string name="image_job_farmer">Farmer</string>
 	<string name="text_rating_signle_star">15/15</string>
+	<string name="button_create_character_next">Take me to the animal character</string>
 	
 	<color name="main_background">#4BDCC1</color>
 	
