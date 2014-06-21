@@ -20,7 +20,7 @@
                 android:id="@+id/image_character_human"
                 android:layout_width="150dip"
                 android:layout_height="150dip"
-                android:background="@drawable/character_human"
+                android:background="@drawable/character_human_0"
                 android:contentDescription="@string/image_character_human" />
 
             <ImageButton
@@ -50,7 +50,7 @@
             android:id="@+id/image_character_human"
             android:layout_width="150dip"
             android:layout_height="150dip"
-            android:background="@drawable/character_human"
+            android:background="@drawable/character_human_0"
             android:contentDescription="@string/image_character_human" />
 
         <ImageButton

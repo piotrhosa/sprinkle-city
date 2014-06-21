@@ -71,9 +71,20 @@ public class Database extends SQLiteOpenHelper {
 			retString = cursor.getString(0);
 		}
 		
-		return retString;
+		return retString;		
+	}
+	
+	public boolean uniqueHumanCharacter(String name) {
 		
+		SQLiteDatabase db = this.getReadableDatabase();
+		String[] d = {};
 		
+		Cursor cursor = db.rawQuery("SELECT " + HUMAN_NAME +  " FROM " + TABLE_HUMAN_CHARACTER + " WHERE " + HUMAN_NAME + " = '" + name + "'", d);
+		
+		if(cursor.moveToFirst())
+			return false;
+		else
+			return true;
 	}
 	
 	// Human Character Create Entry

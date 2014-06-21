@@ -44,7 +44,7 @@ public class CreateCharacterUpperFragment extends Fragment {
 
 				Toast.makeText(getActivity(), "dupa", Toast.LENGTH_SHORT).show();
 
-				CreateCharacterHumanFragment humanFragment = new CreateCharacterHumanFragment();
+				CreateCharacterHumanDetailsFragment humanFragment = new CreateCharacterHumanDetailsFragment();
 
 				getFragmentManager().beginTransaction()
 				.add(R.id.fragment_container_create_character, humanFragment).commit();
@@ -59,7 +59,7 @@ public class CreateCharacterUpperFragment extends Fragment {
 			public void onClick(View v){
 				//if (v.findViewById(R.id.fragment_container_create_character) != null) {
 
-				CreateCharacterHumanFragment animalFragment = new CreateCharacterHumanFragment();
+				CreateCharacterHumanDetailsFragment animalFragment = new CreateCharacterHumanDetailsFragment();
 
 				getFragmentManager().beginTransaction()
 				.add(R.id.fragment_container_create_character, animalFragment).commit();
