@@ -5,11 +5,15 @@ import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 
 import com.pfhosa.sprinklecity.R;
+import com.pfhosa.sprinklecity.fragments.CreateCharacterAnimalAvatarFragment;
 import com.pfhosa.sprinklecity.fragments.CreateCharacterHumanAvatarFragment;
-import com.pfhosa.sprinklecity.fragments.CreateCharacterHumanAvatarFragment.OnAvatarSelectedListener;
+import com.pfhosa.sprinklecity.fragments.CreateCharacterHumanAvatarFragment.OnHumanAvatarSelectedListener;
 import com.pfhosa.sprinklecity.fragments.CreateCharacterHumanDetailsFragment;
+import com.pfhosa.sprinklecity.fragments.CreateCharacterHumanDetailsFragment.OnHumanCharacterCreated;
 
-public class CreateCharacterActivity extends FragmentActivity implements OnAvatarSelectedListener {
+public class CreateCharacterActivity 
+			extends FragmentActivity 
+			implements OnHumanAvatarSelectedListener, OnHumanCharacterCreated {
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,18 +48,35 @@ public class CreateCharacterActivity extends FragmentActivity implements OnAvata
 	}
 
 	@Override
-	public void onAvatarSelected(int avatar) {
-		
+	public void onHumanAvatarSelected(int avatar) {
+
 		Bundle avatarBundle = new Bundle();
 		avatarBundle.putInt("avatar", avatar);
-		
-		CreateCharacterHumanDetailsFragment humanFragment = new CreateCharacterHumanDetailsFragment();
 
-		humanFragment.setArguments(avatarBundle);
-		
+		CreateCharacterHumanDetailsFragment humanDetailsFragment = new CreateCharacterHumanDetailsFragment();
+
+		humanDetailsFragment.setArguments(avatarBundle);
+
 		getSupportFragmentManager().beginTransaction()
-		.replace(R.id.fragment_container_create_character, humanFragment)
-		.addToBackStack(null).commit();
+		.setCustomAnimations(R.anim.anim_slide_in, R.anim.anim_slie_out)
+		.replace(R.id.fragment_container_create_character, humanDetailsFragment)
+		.addToBackStack(null)
+		.commit();
+
+	}
+
+	@Override
+	public void onHumanCharacterCreated() {
+
+		CreateCharacterAnimalAvatarFragment animalAvatarFragment = new CreateCharacterAnimalAvatarFragment();
+
+		animalAvatarFragment.setArguments(null);
+
+		getSupportFragmentManager().beginTransaction()
+		.setCustomAnimations(R.anim.anim_slide_in, R.anim.anim_slie_out)
+		.replace(R.id.fragment_container_create_character, animalAvatarFragment)
+		.addToBackStack(null)
+		.commit();
 
 	}
 

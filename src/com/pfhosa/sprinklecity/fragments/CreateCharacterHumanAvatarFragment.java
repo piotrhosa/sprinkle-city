@@ -15,14 +15,14 @@ import com.pfhosa.sprinklecity.R;
 public class CreateCharacterHumanAvatarFragment extends Fragment {
 
 	HorizontalScrollView horizontalScrollView;
-	OnAvatarSelectedListener mListener;
+	OnHumanAvatarSelectedListener mListener;
 
 	int avatar;
 
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
-		mListener = (OnAvatarSelectedListener) activity;
+		mListener = (OnHumanAvatarSelectedListener) activity;
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class CreateCharacterHumanAvatarFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				setAvatar(0);
-				mListener.onAvatarSelected(getAvatar());
+				mListener.onHumanAvatarSelected(getAvatar());
 			}
 		});
 
@@ -53,7 +53,7 @@ public class CreateCharacterHumanAvatarFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				setAvatar(1);
-				mListener.onAvatarSelected(getAvatar());
+				mListener.onHumanAvatarSelected(getAvatar());
 			}
 		});
 
@@ -62,7 +62,7 @@ public class CreateCharacterHumanAvatarFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				setAvatar(2);
-				mListener.onAvatarSelected(getAvatar());
+				mListener.onHumanAvatarSelected(getAvatar());
 			}
 		});
 	}	
@@ -76,9 +76,11 @@ public class CreateCharacterHumanAvatarFragment extends Fragment {
 	public int getAvatar() {
 		return avatar;
 	}
+	
+	// Interface to pass avatar to Activity
 
-	public interface OnAvatarSelectedListener {
-		public void onAvatarSelected(int avatar);
+	public interface OnHumanAvatarSelectedListener {
+		public void onHumanAvatarSelected(int avatar);
 	}
 
 }

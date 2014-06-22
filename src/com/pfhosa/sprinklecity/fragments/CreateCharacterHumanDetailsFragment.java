@@ -285,4 +285,8 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	public int getOverallStars() {
 		return getSocialTrait() + getAnimalTrait() + getBusinessTrait();
 	}
+	
+	public interface OnHumanCharacterCreated {
+		public void onHumanCharacterCreated();
+	}
 }
