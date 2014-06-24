@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_create_character_animal_details"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal|center_vertical"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dip" >
+
+        <EditText
+            android:id="@+id/edit_animal_character_name"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/edit_character_name_hint"
+            android:inputType="text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_rating_sleep"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/text_rating_sleep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_rating_sleep" />
+
+        <RatingBar
+            android:id="@+id/rating_sleep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:rating="0.0"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            android:stepSize="1.0" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_rating_fitness"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/text_rating_fitness"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_rating_fitness" />
+
+        <RatingBar
+            android:id="@+id/rating_fitness"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:rating="0.0"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            android:stepSize="1.0" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_rating_left_stars"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/text_rating_signle_star_animal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_rating_signle_star" />
+
+        <RatingBar
+            android:id="@+id/rating_single_star_animal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="1"
+            android:rating="1.0"
+            android:scaleX="0.7"
+            android:scaleY="0.7"
+            android:stepSize="1.0" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dip" >
+
+        <Button
+            android:id="@+id/button_create_animal_character_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_create_character_next" />
+    </LinearLayout>
+
+</LinearLayout>

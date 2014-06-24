@@ -29,47 +29,69 @@ public final class R {
     }
     public static final class drawable {
         public static final int character_animal=0x7f020000;
-        public static final int character_human=0x7f020001;
-        public static final int character_human_0=0x7f020002;
-        public static final int character_human_1=0x7f020003;
-        public static final int character_human_2=0x7f020004;
-        public static final int ic_launcher=0x7f020005;
-        public static final int job_baker=0x7f020006;
-        public static final int job_farmer=0x7f020007;
-        public static final int job_postman=0x7f020008;
+        public static final int character_animal_0=0x7f020001;
+        public static final int character_animal_1=0x7f020002;
+        public static final int character_animal_2=0x7f020003;
+        public static final int character_animal_3=0x7f020004;
+        public static final int character_human=0x7f020005;
+        public static final int character_human_0=0x7f020006;
+        public static final int character_human_1=0x7f020007;
+        public static final int character_human_2=0x7f020008;
+        public static final int ic_launcher=0x7f020009;
+        public static final int job_baker=0x7f02000a;
+        public static final int job_farmer=0x7f02000b;
+        public static final int job_postman=0x7f02000c;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a0018;
+        public static final int action_settings=0x7f0a0028;
+        public static final int button_create_animal_character_next=0x7f0a0027;
         public static final int button_create_character=0x7f0a0001;
-        public static final int button_create_character_next=0x7f0a0017;
-        public static final int edit_character_name=0x7f0a0006;
+        public static final int button_create_character_next=0x7f0a001c;
+        public static final int edit_animal_character_name=0x7f0a001e;
+        public static final int edit_character_name=0x7f0a000b;
         public static final int fragment_container_create_character=0x7f0a0000;
-        public static final int fragment_create_character_bottom_left=0x7f0a0002;
-        public static final int image_character_human_0=0x7f0a0003;
-        public static final int image_character_human_1=0x7f0a0004;
-        public static final int image_character_human_2=0x7f0a0005;
-        public static final int image_job_baker=0x7f0a0008;
-        public static final int image_job_farmer=0x7f0a000a;
-        public static final int image_job_postman=0x7f0a0009;
-        public static final int layout_crating_social=0x7f0a000b;
-        public static final int layout_job=0x7f0a0007;
-        public static final int layout_rating_animal_friendly=0x7f0a000e;
-        public static final int layout_rating_business=0x7f0a0011;
-        public static final int layout_rating_left_stars=0x7f0a0014;
-        public static final int rating_animal_friendly=0x7f0a0010;
-        public static final int rating_business=0x7f0a0013;
-        public static final int rating_single_star=0x7f0a0016;
-        public static final int rating_social=0x7f0a000d;
-        public static final int text_rating_animal_friendly=0x7f0a000f;
-        public static final int text_rating_business=0x7f0a0012;
-        public static final int text_rating_signle_star=0x7f0a0015;
-        public static final int text_rating_social=0x7f0a000c;
+        public static final int fragment_create_character_animal_avatar=0x7f0a0002;
+        public static final int fragment_create_character_animal_details=0x7f0a001d;
+        public static final int fragment_create_character_bottom_left=0x7f0a0007;
+        public static final int image_character_animal_0=0x7f0a0003;
+        public static final int image_character_animal_1=0x7f0a0004;
+        public static final int image_character_animal_2=0x7f0a0005;
+        public static final int image_character_animal_3=0x7f0a0006;
+        public static final int image_character_human_0=0x7f0a0008;
+        public static final int image_character_human_1=0x7f0a0009;
+        public static final int image_character_human_2=0x7f0a000a;
+        public static final int image_job_baker=0x7f0a000d;
+        public static final int image_job_farmer=0x7f0a000f;
+        public static final int image_job_postman=0x7f0a000e;
+        public static final int layout_job=0x7f0a000c;
+        public static final int layout_rating_animal_friendly=0x7f0a0013;
+        public static final int layout_rating_business=0x7f0a0016;
+        public static final int layout_rating_fitness=0x7f0a0022;
+        public static final int layout_rating_left_stars=0x7f0a0019;
+        public static final int layout_rating_sleep=0x7f0a001f;
+        public static final int layout_rating_social=0x7f0a0010;
+        public static final int rating_animal_friendly=0x7f0a0015;
+        public static final int rating_business=0x7f0a0018;
+        public static final int rating_fitness=0x7f0a0024;
+        public static final int rating_single_star=0x7f0a001b;
+        public static final int rating_single_star_animal=0x7f0a0026;
+        public static final int rating_sleep=0x7f0a0021;
+        public static final int rating_social=0x7f0a0012;
+        public static final int text_rating_animal_friendly=0x7f0a0014;
+        public static final int text_rating_business=0x7f0a0017;
+        public static final int text_rating_fitness=0x7f0a0023;
+        public static final int text_rating_signle_star=0x7f0a001a;
+        public static final int text_rating_signle_star_animal=0x7f0a0025;
+        public static final int text_rating_sleep=0x7f0a0020;
+        public static final int text_rating_social=0x7f0a0011;
     }
     public static final class layout {
         public static final int activity_create_character=0x7f030000;
         public static final int activity_home_screen=0x7f030001;
-        public static final int fragment_create_character_human_avatar=0x7f030002;
-        public static final int fragment_create_character_human_details=0x7f030003;
+        public static final int fragment_create_character_animal_avatar=0x7f030002;
+        public static final int fragment_create_character_human_avatar=0x7f030003;
+        public static final int fragment_create_character_human_details=0x7f030004;
+        public static final int fragmnet_create_character_animal_details=0x7f030005;
     }
     public static final class menu {
         public static final int home_screen=0x7f090000;
@@ -92,18 +114,30 @@ public final class R {
         public static final int text_create_character=0x7f060006;
         public static final int text_rating_animal_friendly=0x7f06000b;
         public static final int text_rating_business=0x7f06000c;
+        public static final int text_rating_fitness=0x7f060014;
         public static final int text_rating_signle_star=0x7f060010;
+        public static final int text_rating_sleep=0x7f060013;
         public static final int text_rating_social=0x7f06000a;
     }
     public static final class style {
         /** 
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+
+
+
+
+
     
 
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
+
+
+
+
+
         
 
         Base application theme for API 11+. This theme completely replaces
@@ -119,7 +153,12 @@ public final class R {
          */
         public static final int AppBaseTheme=0x7f080000;
         /**  Application theme. 
- All customizations that are NOT specific to a particular API-level can go here. 
+
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+
+        
          */
         public static final int AppTheme=0x7f080001;
     }

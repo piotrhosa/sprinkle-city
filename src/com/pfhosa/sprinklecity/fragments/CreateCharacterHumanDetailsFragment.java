@@ -1,5 +1,6 @@
 package com.pfhosa.sprinklecity.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -12,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.RatingBar;
 import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.TextView;
@@ -26,12 +26,18 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 
 	LinearLayout linearLayout;
 	TextView overallTextView;
-	ListAdapter listAdapter;
+	OnHumanCharacterCreatedListener progressListener;
 	Database db;
 
 	String job, name;
 	int avatar, socialTrait, animalTrait, businessTrait; 
 	int overallStarsLimit = 10, maxRating;
+	
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		
+		progressListener = (OnHumanCharacterCreatedListener) activity;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -206,6 +212,8 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 						&& getJob() != "" 
 						&& getOverallStars() == overallStarsLimit)
 					createNewHumanCharacter();
+				
+				progressListener.onHumanCharacterCreated(getCharacterName());
 			}
 
 		});
@@ -223,10 +231,10 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	}
 	
 	public void createNewHumanCharacter() {
-		HumanCharacter newHuman = new HumanCharacter(
-				getAvatar(),
+		HumanCharacter newHuman = new HumanCharacter(				
 				getCharacterName(),
 				getJob(),
+				getAvatar(),
 				getSocialTrait(),
 				getAnimalTrait(),
 				getBusinessTrait());
@@ -286,7 +294,8 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		return getSocialTrait() + getAnimalTrait() + getBusinessTrait();
 	}
 	
-	public interface OnHumanCharacterCreated {
-		public void onHumanCharacterCreated();
+	// Interface that initializes replace in Transaction in CreateCharacterActivity
+	public interface OnHumanCharacterCreatedListener {
+		public void onHumanCharacterCreated(String characterName);
 	}
 }

@@ -1,5 +1,6 @@
 package com.pfhosa.sprinklecity.database;
 
+import com.pfhosa.sprinklecity.model.AnimalCharacter;
 import com.pfhosa.sprinklecity.model.HumanCharacter;
 import android.content.ContentValues;
 import android.content.Context;
@@ -17,6 +18,7 @@ public class Database extends SQLiteOpenHelper {
 
 	// Table Names
 	private static final String TABLE_HUMAN_CHARACTER = "table_human_character";
+	private static final String TABLE_ANIMAL_CHARACTER = "table_animal_character";
 
 	// Common column names
 	private static final String KEY_ID = "id";
@@ -30,6 +32,11 @@ public class Database extends SQLiteOpenHelper {
 	private static final String HUMAN_ANIMAL = "human_animal";
 	private static final String HUMAN_BUSINESS = "human_business";
 
+	private static final String ANIMAL_NAME = "animal_name";
+	private static final String ANIMAL_AVATAR = "animal_avatar";
+	private static final String ANIMAL_SLEEP = "animal_sleep";
+	private static final String ANIMAL_FITNESS = "animal_fitness";
+
 	private static final String CREATE_TABLE_HUMAN_CHARACTER = "CREATE TABLE " + TABLE_HUMAN_CHARACTER +
 			" ( " + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
 			HUMAN_AVATAR + " INTEGER, " +
@@ -38,6 +45,14 @@ public class Database extends SQLiteOpenHelper {
 			HUMAN_SOCIAL + " INTEGER, " + 
 			HUMAN_ANIMAL + " INTEGER, " + 
 			HUMAN_BUSINESS + " INTEGER " + ")";
+
+	private static final String CREATE_TABLE_ANIMAL_CHARACTER = "CREATE TABLE " + TABLE_ANIMAL_CHARACTER + 
+			" ( " + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
+			ANIMAL_NAME + " STRING, " +
+			HUMAN_NAME + " STRING, " + 
+			ANIMAL_AVATAR + " INTEGER, " + 
+			ANIMAL_SLEEP + " INTEGER, " + 
+			ANIMAL_FITNESS + " INTEGER " + ")";
 
 
 	public Database(Context context) {
@@ -48,53 +63,28 @@ public class Database extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) { 
 		// All tables initialized
 		db.execSQL(CREATE_TABLE_HUMAN_CHARACTER);
-
+		db.execSQL(CREATE_TABLE_ANIMAL_CHARACTER);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// Drop tables	
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_HUMAN_CHARACTER);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANIMAL_CHARACTER);
 
 		onCreate(db);
-
 	}
 
-	public String getHumanCharacter() {
-		
-		SQLiteDatabase db = this.getReadableDatabase();
-		String[] d = {};
-		String retString = "";
-		Cursor cursor = db.rawQuery("SELECT " + HUMAN_NAME +  " FROM " + TABLE_HUMAN_CHARACTER, d);
-		
-		if(cursor.moveToLast()) {
-			retString = cursor.getString(0);
-		}
-		
-		return retString;		
-	}
-	
-	public boolean uniqueHumanCharacter(String name) {
-		
-		SQLiteDatabase db = this.getReadableDatabase();
-		String[] d = {};
-		
-		Cursor cursor = db.rawQuery("SELECT " + HUMAN_NAME +  " FROM " + TABLE_HUMAN_CHARACTER + " WHERE " + HUMAN_NAME + " = '" + name + "'", d);
-		
-		if(cursor.moveToFirst())
-			return false;
-		else
-			return true;
-	}
-	
-	// Human Character Create Entry
+
+
+	// Populate tables
 
 	public void newHumanCharacter(HumanCharacter newHuman) {
-		
+
 		SQLiteDatabase db = this.getWritableDatabase();
 
 		ContentValues values = new ContentValues();
-		
+
 		values.put(HUMAN_AVATAR, newHuman.getAvatar());
 		values.put(HUMAN_NAME, newHuman.getName());
 		values.put(HUMAN_JOB, newHuman.getJob());
@@ -102,7 +92,62 @@ public class Database extends SQLiteOpenHelper {
 		values.put(HUMAN_ANIMAL, newHuman.getAnimalTrait());
 		values.put(HUMAN_BUSINESS, newHuman.getBusinessTrait());
 
-		// insert row
+		// Insert row
 		db.insert(TABLE_HUMAN_CHARACTER, null, values);
+	}
+
+	public void newAnimalCharacter(AnimalCharacter newAnimal) {
+
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		ContentValues values = new ContentValues();
+
+		values.put(ANIMAL_NAME, newAnimal.getName());
+		values.put(HUMAN_NAME, newAnimal.getOwner());
+		values.put(ANIMAL_AVATAR, newAnimal.getAvatar());
+		values.put(ANIMAL_SLEEP, newAnimal.getSleep());
+		values.put(ANIMAL_FITNESS, newAnimal.getFitness());
+
+		// Insert row
+		db.insert(TABLE_ANIMAL_CHARACTER, null, values);
+	}
+	
+	public String getHumanCharacter() {
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		String[] d = {};
+		String retString = "";
+		Cursor cursor = db.rawQuery("SELECT " + HUMAN_NAME +  " FROM " + TABLE_HUMAN_CHARACTER, d);
+
+		if(cursor.moveToLast()) {
+			retString = cursor.getString(0);
+		}
+
+		return retString;		
+	}
+
+	public boolean uniqueHumanCharacter(String name) {
+
+		SQLiteDatabase db = this.getReadableDatabase();
+		String[] d = {};
+
+		Cursor cursor = db.rawQuery("SELECT " + HUMAN_NAME +  " FROM " + TABLE_HUMAN_CHARACTER + " WHERE " + HUMAN_NAME + " = '" + name + "'", d);
+
+		if(cursor.moveToFirst())
+			return false;
+		else
+			return true;
+	}
+	
+	public boolean uniqueAnimalCharacter(String name) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		String[] d = {};
+
+		Cursor cursor = db.rawQuery("SELECT " + ANIMAL_NAME +  " FROM " + TABLE_ANIMAL_CHARACTER + " WHERE " + ANIMAL_NAME + " = '" + name + "'", d);
+
+		if(cursor.moveToFirst())
+			return false;
+		else
+			return true;
 	}
 }

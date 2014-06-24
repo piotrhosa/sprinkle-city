@@ -18,7 +18,7 @@ public class CreateCharacterHumanAvatarFragment extends Fragment {
 	OnHumanAvatarSelectedListener mListener;
 
 	int avatar;
-
+	
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 

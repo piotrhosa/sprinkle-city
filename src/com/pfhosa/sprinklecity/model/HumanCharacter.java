@@ -1,18 +1,18 @@
 package com.pfhosa.sprinklecity.model;
 
 public class HumanCharacter {
-	int avatar;
+
 	String name;
 	String job;
+	int avatar;
 	int social;
 	int animal;
 	int business;
 	
-	public HumanCharacter(int avatar, String name, String job, int social, int animal, int business) {
-		super();
-		this.avatar = avatar;
+	public HumanCharacter(String name, String job, int avatar, int social, int animal, int business) {
 		this.name = name;
 		this.job = job;
+		this.avatar = avatar;
 		this.social = social;
 		this.animal = animal;
 		this.business = business;		

@@ -71,7 +71,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/layout_crating_social"
+        android:id="@+id/layout_rating_social"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal|center_vertical"
