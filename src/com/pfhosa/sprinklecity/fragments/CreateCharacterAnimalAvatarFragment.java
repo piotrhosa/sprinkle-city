@@ -48,8 +48,7 @@ public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				setAvatar(0);
-				advanceListener.onAnimalAvatarSelected(characterName, getAvatar());
+				advanceListener.onAnimalAvatarSelected(characterName, 0);
 			}
 		});
 
@@ -57,8 +56,7 @@ public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				setAvatar(1);
-				advanceListener.onAnimalAvatarSelected(characterName, getAvatar());
+				advanceListener.onAnimalAvatarSelected(characterName, 1);
 			}
 		});
 
@@ -66,8 +64,7 @@ public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				setAvatar(2);
-				advanceListener.onAnimalAvatarSelected(characterName, getAvatar());
+				advanceListener.onAnimalAvatarSelected(characterName, 2);
 			}
 		});
 
@@ -75,21 +72,10 @@ public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				setAvatar(3);
-				advanceListener.onAnimalAvatarSelected(characterName, getAvatar());
+				advanceListener.onAnimalAvatarSelected(characterName, 3);
 			}
 		});
 	}	
-
-	// Accessors
-
-	public void setAvatar(int avatar) {
-		this.avatar = avatar;
-	}
-
-	public int getAvatar() {
-		return avatar;
-	}
 	
 	public interface OnAnimalAvatarSelectedListener {
 		public void onAnimalAvatarSelected(String characterName, int avatar);

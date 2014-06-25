@@ -26,7 +26,7 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 
 	LinearLayout linearLayout;
 	TextView overallTextView;
-	OnHumanCharacterCreatedListener progressListener;
+	OnHumanCharacterCreatedListener advanceListener;
 	Database db;
 
 	String job, name;
@@ -36,7 +36,7 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		
-		progressListener = (OnHumanCharacterCreatedListener) activity;
+		advanceListener = (OnHumanCharacterCreatedListener) activity;
 	}
 
 	@Override
@@ -213,7 +213,7 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 						&& getOverallStars() == overallStarsLimit)
 					createNewHumanCharacter();
 				
-				progressListener.onHumanCharacterCreated(getCharacterName());
+				advanceListener.onHumanCharacterCreated(getCharacterName());
 			}
 
 		});

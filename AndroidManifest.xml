@@ -26,6 +26,10 @@
             android:name="com.pfhosa.sprinklecity.ui.CreateCharacterActivity"
             android:label="@string/activity_create_character_name" >
         </activity>
+        <activity
+            android:name="com.pfhosa.sprinklecity.ui.LoginActivity"
+            android:label="@string/activity_login_name" >
+        </activity>
     </application>
 
 </manifest>

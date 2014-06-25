@@ -25,7 +25,7 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 
 	LinearLayout linearLayout;
 	TextView overallTextView;
-	OnAnimalCharacterCreatedListener progressListener;
+	OnAnimalCharacterCreatedListener advanceListener;
 	Database db;
 
 	String characterName, name, owner;
@@ -35,7 +35,7 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
-		progressListener = (OnAnimalCharacterCreatedListener) activity;
+		advanceListener = (OnAnimalCharacterCreatedListener) activity;
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -147,7 +147,7 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 						&& getName() != "" 
 						&& getOverallStars() == overallStarsLimit) {
 					createNewAnimalCharacter();
-					progressListener.onAnimalCharacterCreated();
+					advanceListener.onAnimalCharacterCreated();
 				}
 			}
 

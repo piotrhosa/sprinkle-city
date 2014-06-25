@@ -1,16 +1,15 @@
 package com.pfhosa.sprinklecity.ui;
 
 
-import com.pfhosa.sprinklecity.R;
-
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+
+import com.pfhosa.sprinklecity.R;
 
 public class HomeActivity extends Activity {
 
@@ -19,20 +18,31 @@ public class HomeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home_screen);
 		
-		addCreateCharacterButtonListener();
+		activateButtonMenu();
 
 	}
 
-	public void addCreateCharacterButtonListener() {
+	public void activateButtonMenu() {
 		Button buttonCreateCharacter = (Button)findViewById(R.id.button_create_character);
+		Button buttonLogin = (Button)findViewById(R.id.button_login);
 
 		buttonCreateCharacter.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				Log.d("been at button", "yes");
 				Intent intentCreateCharacter = new Intent(getBaseContext(), CreateCharacterActivity.class);
 				startActivity(intentCreateCharacter);
+
+			}
+
+		});
+		
+		buttonLogin.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intentLogin = new Intent(getBaseContext(), LoginActivity.class);
+				startActivity(intentLogin);
 
 			}
 

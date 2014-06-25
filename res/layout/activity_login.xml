@@ -11,22 +11,36 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".HomeScreen" >
 
-    <Button
-        android:id="@+id/button_create_character"
+    <TextView
+        android:id="@+id/text_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/button_create_character" />
+        android:text="@string/text_login" />
+
+    <EditText
+        android:id="@+id/edit_character_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/edit_character_name_hint"
+        android:inputType="text" />
+
+    <EditText
+        android:id="@+id/edit_password"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/edit_password_hint"
+        android:inputType="textPassword" />
+
+    <Button
+        android:id="@+id/button_login_final"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_login_final" />
 
     <TextView
-        android:id="@+id/text_or_home"
-        android:layout_width="wrap_content"
+        android:id="@+id/text_login_return"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/text_or_home" />
-
-    <Button
-        android:id="@+id/button_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_login" />
+        android:text="@string/text_login_return" />
 
 </LinearLayout>
