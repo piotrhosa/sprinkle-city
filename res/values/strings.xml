@@ -16,6 +16,7 @@
 	<string name="edit_password_hint">Pass</string>
 	<string name="button_login_final">Sign me in</string>
 	<string name="text_login_return">Connection feedback</string>
+	<string name="text_login_details">Details</string>
 	
 	<string name="activity_create_character_name">Create your character</string>
 	<string name="text_create_character"></string>
@@ -33,5 +34,8 @@
 	<string name="button_create_character_avatar_next">Next!</string>
 	<string name="text_rating_sleep">Sleepyness</string>
 	<string name="text_rating_fitness">Fitness</string>
+	
+	<string name="activity_game_map">Game main</string>
+	<string name="text_virtual_map_distance">distance: 0</string>
 	
 </resources>

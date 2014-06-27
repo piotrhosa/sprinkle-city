@@ -1,4 +1,4 @@
-package com.pfhosa.sprinklecity.fragments;
+	package com.pfhosa.sprinklecity.fragments;
 
 import com.pfhosa.sprinklecity.R;
 

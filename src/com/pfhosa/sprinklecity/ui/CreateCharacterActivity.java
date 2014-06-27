@@ -38,15 +38,6 @@ public class CreateCharacterActivity
 
 	}
 	
-	/**
-	public void loadNewFragment() {
-
-		CreateCharacterHumanDetailsFragment bottomFragment = new CreateCharacterHumanDetailsFragment();
-
-		getSupportFragmentManager().beginTransaction()
-		.add(R.id.fragment_container_create_character, bottomFragment).commit();
-	}*/
-
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.home_screen, menu);
