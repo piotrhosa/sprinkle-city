@@ -9,8 +9,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.CustomHttpClient;
@@ -60,6 +63,23 @@ public class LoginActivity extends Activity {
 		});
 	}
 
+	public void openMapFragment() {
+		Intent intent = new Intent(this, GameMapActivity.class);
+		startActivity(intent);
+	}
+
+	public void makeToastWrongData() {
+		Log.e("toast", "toast");		
+		LoginActivity.this.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				Toast.makeText(LoginActivity.this, "Your username or password is wrong.", Toast.LENGTH_SHORT).show();
+
+			}
+		});
+	}
+
 	public class connectAsyncTask extends AsyncTask<Void, Void, Void>
 	{
 		@SuppressWarnings("unused")
@@ -67,9 +87,7 @@ public class LoginActivity extends Activity {
 			// declare parameters that are passed to PHP script i.e. the name "birthyear" and its value submitted by user   
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 
-			String returnString = "";
-			String username;
-			boolean error;
+			Looper.prepare();
 
 			// define the parameter
 			postParameters.add(new BasicNameValuePair("Username", nameLoginString));
@@ -78,7 +96,6 @@ public class LoginActivity extends Activity {
 
 			// call executeHttpPost method passing necessary parameters 
 			try {
-				//response = CustomHttpClient.executeHttpPost("http://www2.macs.hw.ac.uk/~sg244/DBConnect/connect.php", postParameters);
 				response = CustomHttpClient.executeHttpPost("http://www2.macs.hw.ac.uk/~ph109/DBConnect/connect.php", postParameters);
 
 				// store the result returned by PHP script that runs MySQL query
@@ -86,45 +103,35 @@ public class LoginActivity extends Activity {
 
 				//parse json data
 				try{
-					returnString = "";
-					JSONArray jArray = new JSONArray(result);
-					
-					//String s = jArray.get(0).toString();
-					//JSONObject json_data = new JSONObject(s);
-					
+					JSONArray jArray = new JSONArray(result);		
 
-					for(int i=0;i<jArray.length();i++){
+					for(int i = 0; i < jArray.length(); ++i){
 						JSONObject json_data = jArray.getJSONObject(i);
 
 						//Get an output to the screen
-						returnString = json_data.getString("Username") + " -> "+ json_data.getString("Password");
-						username = json_data.getString("Username");
+						//username = json_data.getString("Username");
 
+						openMapFragment();
 					}
 
-				} catch(JSONException e){
+					openMapFragment();
+					
+				} 
+				catch(JSONException e){
 					Log.e("log_tag", "Error parsing data "+ e.toString());
-					error = true;      
-				}
+					makeToastWrongData();
+				}   
 
-				try{
-					//loginReturn.setText(returnString);		          
-
-				} catch(Exception e){
-					Log.e("log_tag","Error in Display!" + e.toString());; 
-				}     
-
-			} catch (Exception e) {
+			} 
+			catch (Exception e) {
 				Log.e("log_tag","Error in http connection!!" + e.toString());
-				error = true;	
 
 			}  
 			return null;
 		}
+		
 		protected void onPostExecute(Void result) {
-
-
-
+			
 		}
 	}
 

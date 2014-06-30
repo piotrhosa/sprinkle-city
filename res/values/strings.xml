@@ -13,7 +13,7 @@
 	
 	<string name="activity_login_name">Sign in</string>
 	<string name="text_login">Start the game!</string>
-	<string name="edit_password_hint">Pass</string>
+	<string name="edit_password_hint">Password</string>
 	<string name="button_login_final">Sign me in</string>
 	<string name="text_login_return">Connection feedback</string>
 	<string name="text_login_details">Details</string>

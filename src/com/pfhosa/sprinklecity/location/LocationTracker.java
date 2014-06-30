@@ -12,7 +12,7 @@ import android.util.Log;
 
 public class LocationTracker extends Service implements LocationListener {
 
-	private static final long LOCATION_UPDATE_PERIOD = 60000; //ms
+	private static final long LOCATION_UPDATE_PERIOD = 5000; //ms
 	private static final long LOCATION_UPDATE_DISTANCE = 2; //m
 
 	boolean isLocationEnabled, isNetworkEnabled, canLocalize;
@@ -57,7 +57,6 @@ public class LocationTracker extends Service implements LocationListener {
 				// if GPS Enabled get lat/long using GPS Services
 				if (isLocationEnabled) {
 					if (currentLocation == null) {
-						Log.e("loc_updates_requested", "yes");
 						locationManager.requestLocationUpdates(
 								LocationManager.GPS_PROVIDER,
 								LOCATION_UPDATE_PERIOD,
@@ -84,7 +83,7 @@ public class LocationTracker extends Service implements LocationListener {
 	}
 
 	public Location getUpdatedLocation() {
-		
+
 		if (locationManager != null) 
 			currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);		
 
@@ -93,12 +92,17 @@ public class LocationTracker extends Service implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-		previousLocation = currentLocation;
+		//previousLocation = currentLocation;
 		currentLocation = getUpdatedLocation();
 		
-		//float distance = previousLocation.distanceTo(currentLocation);
-		
-		//onLocationUpdatedListener.onLocationUpdated(distance);
+		Log.e("location", "changed");
+
+		float distance = previousLocation.distanceTo(currentLocation);
+
+		Intent locationUpdate = new Intent("locationUpdater");
+		locationUpdate.putExtra("distance", currentLocation);
+		sendBroadcast(locationUpdate);
+
 	}
 
 	@Override
@@ -124,5 +128,5 @@ public class LocationTracker extends Service implements LocationListener {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }
