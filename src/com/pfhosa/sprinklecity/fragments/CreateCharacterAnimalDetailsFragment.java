@@ -146,8 +146,16 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 				if(db.uniqueAnimalCharacter(getName()) 
 						&& getName() != "" 
 						&& getOverallStars() == overallStarsLimit) {
-					createNewAnimalCharacter();
-					advanceListener.onAnimalCharacterCreated();
+
+					AnimalCharacter newAnimal = new AnimalCharacter(
+							getName(),
+							getAvatar(),
+							getSleep(),
+							getFitness()
+							);			
+					
+					db.newAnimalCharacter(newAnimal);
+					advanceListener.onAnimalCharacterCreated(newAnimal);
 				}
 			}
 
@@ -163,19 +171,6 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 
 		overallTextView.setText(overallStars);	
 
-	}
-	
-	public void createNewAnimalCharacter() {
-		AnimalCharacter newAnimal = new AnimalCharacter(
-				getName(),
-				getOwner(),
-				getAvatar(),
-				getSleep(),
-				getFitness()
-				);			
-
-
-		db.newAnimalCharacter(newAnimal);
 	}
 	
 	// Acessors
@@ -225,6 +220,6 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 	}
 
 	public interface OnAnimalCharacterCreatedListener {
-		public void onAnimalCharacterCreated();
+		public void onAnimalCharacterCreated(AnimalCharacter animalCharacter);
 	}
 }

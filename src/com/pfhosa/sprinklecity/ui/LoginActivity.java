@@ -57,7 +57,7 @@ public class LoginActivity extends Activity {
 
 				loginDetails.setText(nameLoginString + " " + passwordLoginString);
 
-				new connectAsyncTask().execute();
+				new ConnectAsyncTask().execute();
 			}
 
 		});
@@ -68,8 +68,7 @@ public class LoginActivity extends Activity {
 		startActivity(intent);
 	}
 
-	public void makeToastWrongData() {
-		Log.e("toast", "toast");		
+	public void makeToastWrongData() {	
 		LoginActivity.this.runOnUiThread(new Runnable() {
 
 			@Override
@@ -80,8 +79,7 @@ public class LoginActivity extends Activity {
 		});
 	}
 
-	public class connectAsyncTask extends AsyncTask<Void, Void, Void>
-	{
+	public class ConnectAsyncTask extends AsyncTask<Void, Void, Void> {
 		@SuppressWarnings("unused")
 		protected Void doInBackground(Void... params) {
 			// declare parameters that are passed to PHP script i.e. the name "birthyear" and its value submitted by user   
@@ -115,7 +113,7 @@ public class LoginActivity extends Activity {
 					}
 
 					openMapFragment();
-					
+
 				} 
 				catch(JSONException e){
 					Log.e("log_tag", "Error parsing data "+ e.toString());
@@ -129,9 +127,9 @@ public class LoginActivity extends Activity {
 			}  
 			return null;
 		}
-		
+
 		protected void onPostExecute(Void result) {
-			
+
 		}
 	}
 

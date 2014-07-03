@@ -17,8 +17,8 @@
             android:id="@+id/edit_animal_character_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/edit_character_name_hint"
-            android:inputType="text" />
+            android:inputType="textCapWords"
+            android:hint="@string/edit_character_name_hint" />
     </LinearLayout>
 
     <LinearLayout

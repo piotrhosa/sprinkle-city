@@ -1,10 +1,22 @@
 package com.pfhosa.sprinklecity.fragments;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -19,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pfhosa.sprinklecity.R;
+import com.pfhosa.sprinklecity.database.CustomHttpClient;
 import com.pfhosa.sprinklecity.database.Database;
 import com.pfhosa.sprinklecity.model.HumanCharacter;
 
@@ -31,11 +44,16 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 
 	String job, name;
 	int avatar, socialTrait, animalTrait, businessTrait; 
-	int overallStarsLimit = 10, maxRating;
+	int overallStarsLimit = 10, maxRating;	
 	
+	HumanCharacter newHuman;
+
+	@SuppressWarnings("unused")
+	private WeakReference<CheckUsernameAvailabilityAsyncTask> usernameAvailabilityWeakReference;
+
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		
+
 		advanceListener = (OnHumanCharacterCreatedListener) activity;
 	}
 
@@ -46,9 +64,9 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 			avatar = getArguments().getInt("avatar", avatar);
 
 		linearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_create_character_human_details, container, false);		
-		
+
 		db = new Database(getActivity());
-		
+
 		activateCharacterName();
 		activateBakerButtonListener();
 		activatePostmanButtonListener();
@@ -200,23 +218,103 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		Button nextButton = (Button) linearLayout.findViewById(R.id.button_create_character_next);
 
 		nextButton.setOnClickListener(new OnClickListener() {
-			
+
 
 			@Override
 			public void onClick(View v) {
-				
+
 				if(getOverallStars() < overallStarsLimit)
 					Toast.makeText(getActivity(), "There are still stars left!", Toast.LENGTH_SHORT).show();
-			
+
 				if(db.uniqueHumanCharacter(getCharacterName()) 
 						&& getJob() != "" 
-						&& getOverallStars() == overallStarsLimit)
-					createNewHumanCharacter();
-				
-				advanceListener.onHumanCharacterCreated(getCharacterName());
+						&& getOverallStars() == overallStarsLimit) {
+
+					newHuman = new HumanCharacter(				
+							getCharacterName(),
+							getAvatar(),
+							getJob(),
+							getSocialTrait(),
+							getAnimalTrait(),
+							getBusinessTrait());
+
+					db.newHumanCharacter(newHuman);	
+					
+					startNewUserAsyncTask();
+
+				}
 			}
 
 		});
+	}
+	
+	public void startNewUserAsyncTask() {
+		CheckUsernameAvailabilityAsyncTask checkUsernameAT = new CheckUsernameAvailabilityAsyncTask();
+		usernameAvailabilityWeakReference = new WeakReference<CheckUsernameAvailabilityAsyncTask>(checkUsernameAT);
+		checkUsernameAT.execute();		
+	}
+	
+	public void usernameIsAvailable() {
+		advanceListener.onHumanCharacterCreated(newHuman);
+	}
+
+	public void usernameIsNOTAvailable() {
+		getActivity().runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				Toast.makeText(getActivity(), "This username is taken. Please change it.", Toast.LENGTH_SHORT).show();
+
+			}
+		});
+	}
+	
+	public class CheckUsernameAvailabilityAsyncTask extends AsyncTask<Void, Void, Void> {
+		@SuppressWarnings("unused")
+		protected Void doInBackground(Void... params) {
+			// declare parameters that are passed to PHP script i.e. the name "birthyear" and its value submitted by user   
+			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+
+			Looper.prepare();
+
+			// define the parameter
+			postParameters.add(new BasicNameValuePair("Username", newHuman.getName()));
+			String response = null;
+
+			// call executeHttpPost method passing necessary parameters 
+			try {
+				response = CustomHttpClient.executeHttpPost("http://www2.macs.hw.ac.uk/~ph109/DBConnect/checkUsernameAvailability.php", postParameters);
+
+				// store the result returned by PHP script that runs MySQL query
+				String result = response.toString();  
+
+				//parse json data
+				try{
+					JSONArray jArray = new JSONArray(result);		
+
+					for(int i = 0; i < jArray.length(); ++i){
+						JSONObject json_data = jArray.getJSONObject(i);
+					}
+					usernameIsNOTAvailable();
+					Log.d("Username toast called", "yes");
+
+				} 
+				catch(JSONException e){
+					Log.e("log_tag", "Error parsing data "+ e.toString());
+					usernameIsAvailable();
+				}   
+
+			} 
+			catch (Exception e) {
+				Log.e("log_tag","Error in http connection!!" + e.toString());
+
+			}  
+			return null;
+		}
+
+		protected void onPostExecute(Void result) {
+			this.cancel(true);
+		}
 	}
 
 	// Other methods
@@ -229,23 +327,9 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		overallTextView.setText(overallStars);	
 
 	}
-	
-	public void createNewHumanCharacter() {
-		HumanCharacter newHuman = new HumanCharacter(				
-				getCharacterName(),
-				getJob(),
-				getAvatar(),
-				getSocialTrait(),
-				getAnimalTrait(),
-				getBusinessTrait());
-		
-		db.newHumanCharacter(newHuman);	
-
-		Toast.makeText(getActivity(), db.getHumanCharacter(), Toast.LENGTH_SHORT).show();
-	}
-	
 
 	// Accessors
+
 	public void setCharacterName(String name) {
 		this.name = name;
 	}
@@ -269,7 +353,7 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	public int getAvatar() {
 		return avatar;
 	}
-	
+
 	public String getCharacterName() {
 		return name;
 	}
@@ -293,9 +377,9 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	public int getOverallStars() {
 		return getSocialTrait() + getAnimalTrait() + getBusinessTrait();
 	}
-	
+
 	// Interface that initializes replace in Transaction in CreateCharacterActivity
 	public interface OnHumanCharacterCreatedListener {
-		public void onHumanCharacterCreated(String characterName);
+		public void onHumanCharacterCreated(HumanCharacter humanCharacter);
 	}
 }

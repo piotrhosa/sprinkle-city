@@ -14,12 +14,16 @@ import com.pfhosa.sprinklecity.fragments.CreateCharacterHumanAvatarFragment;
 import com.pfhosa.sprinklecity.fragments.CreateCharacterHumanAvatarFragment.OnHumanAvatarSelectedListener;
 import com.pfhosa.sprinklecity.fragments.CreateCharacterHumanDetailsFragment;
 import com.pfhosa.sprinklecity.fragments.CreateCharacterHumanDetailsFragment.OnHumanCharacterCreatedListener;
+import com.pfhosa.sprinklecity.fragments.CreateCharacterPasswordFragment;
+import com.pfhosa.sprinklecity.model.AnimalCharacter;
+import com.pfhosa.sprinklecity.model.HumanCharacter;
 
-public class CreateCharacterActivity 
-			extends FragmentActivity 
-			implements OnHumanAvatarSelectedListener, OnHumanCharacterCreatedListener,
-			OnAnimalAvatarSelectedListener, OnAnimalCharacterCreatedListener {
-
+public class CreateCharacterActivity extends FragmentActivity implements 
+OnHumanAvatarSelectedListener, OnHumanCharacterCreatedListener,
+OnAnimalAvatarSelectedListener, OnAnimalCharacterCreatedListener {
+	
+	HumanCharacter humanCharacter;
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_character);
@@ -37,7 +41,7 @@ public class CreateCharacterActivity
 		}
 
 	}
-	
+
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.home_screen, menu);
@@ -46,7 +50,7 @@ public class CreateCharacterActivity
 
 	public void onHumanAvatarSelected(int avatar) {
 		CreateCharacterHumanDetailsFragment humanDetailsFragment = new CreateCharacterHumanDetailsFragment();
-		
+
 		Bundle avatarBundle = new Bundle();
 		avatarBundle.putInt("avatar", avatar);
 		humanDetailsFragment.setArguments(avatarBundle);
@@ -58,13 +62,18 @@ public class CreateCharacterActivity
 		.commit();
 
 	}
-	
+
 	@Override
-	public void onHumanCharacterCreated(String characterName) {
+	public void onHumanCharacterCreated(HumanCharacter humanCharacter) {
 		CreateCharacterAnimalAvatarFragment animalAvatarFragment = new CreateCharacterAnimalAvatarFragment();
 		
+		this.humanCharacter = humanCharacter;
+
+		Intent humanCharacterIntent = new Intent();
+		humanCharacterIntent.putExtra("humanCharacter", humanCharacter);
+		
 		Bundle characterNameBundle = new Bundle();
-		characterNameBundle.putString("characterName", characterName);
+		characterNameBundle = humanCharacterIntent.getExtras();
 		animalAvatarFragment.setArguments(characterNameBundle);
 
 		getSupportFragmentManager().beginTransaction()
@@ -77,7 +86,7 @@ public class CreateCharacterActivity
 	@Override
 	public void onAnimalAvatarSelected(String characterName, int avatar) {
 		CreateCharacterAnimalDetailsFragment animalDetailsFragment = new CreateCharacterAnimalDetailsFragment();
-		
+
 		Bundle avatarBundle = new Bundle();
 		avatarBundle.putInt("avatar", avatar);
 		avatarBundle.putString("characterName", characterName);
@@ -91,8 +100,25 @@ public class CreateCharacterActivity
 	}
 
 	@Override
-	public void onAnimalCharacterCreated() {
-		startActivity(new Intent(this, HomeActivity.class));
-	}
+	public void onAnimalCharacterCreated(AnimalCharacter animalCharacter) {
+		CreateCharacterPasswordFragment passwordFragment = new CreateCharacterPasswordFragment();
 
+		/**
+		 * Bundle does not like Parcelable and that is why Parcelable is put into Intent
+		 * and only then Bundle gets extras from Intent.
+		 */
+		Intent passwordIntent = new Intent();
+		passwordIntent.putExtra("animalCharacter", animalCharacter);
+		passwordIntent.putExtra("humanCharacter", humanCharacter);
+
+		Bundle passwordBundle = new Bundle();
+		passwordBundle = passwordIntent.getExtras();
+		passwordFragment.setArguments(passwordBundle);
+
+		getSupportFragmentManager().beginTransaction()
+		.setCustomAnimations(R.anim.anim_slide_in, R.anim.anim_slie_out)
+		.replace(R.id.fragment_container_create_character, passwordFragment)
+		.addToBackStack(null)
+		.commit();
+	}
 }

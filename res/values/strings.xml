@@ -34,6 +34,9 @@
 	<string name="button_create_character_avatar_next">Next!</string>
 	<string name="text_rating_sleep">Sleepyness</string>
 	<string name="text_rating_fitness">Fitness</string>
+	<string name="text_character_password">Here you can put in your password and edit names.</string>
+	<string name="edit_blank_hint"></string>
+	<string name="button_create_character_confirm_password">Confirm password</string>
 	
 	<string name="activity_game_map">Game main</string>
 	<string name="text_virtual_map_distance">distance: 0</string>

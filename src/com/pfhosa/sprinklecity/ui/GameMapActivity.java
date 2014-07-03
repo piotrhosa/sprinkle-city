@@ -2,6 +2,7 @@ package com.pfhosa.sprinklecity.ui;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -33,7 +34,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 	// Update frequency in milliseconds
 	private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
 	// The fastest update frequency, in seconds
-	private static final int FASTEST_INTERVAL_IN_SECONDS = 5;
+	private static final int FASTEST_INTERVAL_IN_SECONDS = 1;
 	// A fast frequency ceiling in milliseconds
 	private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
 
@@ -43,6 +44,8 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
 	SharedPreferences mPrefs;
 	Editor mEditor;
+	
+	Intent newLocation;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,8 +57,7 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
 		if(servicesConnected()) {
 			mLocationClient = new LocationClient(this, this, this);
-			//mLocationClient.connect();
-			// Start with updates turned off
+
 			mUpdatesRequested = false;
 
 			mLocationRequest = LocationRequest.create();
@@ -210,6 +212,14 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 				Double.toString(location.getLatitude()) + "," +
 				Double.toString(location.getLongitude());
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+		
+		Intent newLocation = new Intent("newLocation");
+		newLocation.putExtra("location", location);
+		newLocation.putExtra("latitude", location.getLatitude());
+		newLocation.putExtra("longitude", location.getLongitude());
+		this.sendBroadcast(newLocation);
+		
+		
 	}
 	
 	
@@ -248,7 +258,4 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 			showErrorDialog(connectionResult.getErrorCode());
 		}
 	}
-
-
-
 }

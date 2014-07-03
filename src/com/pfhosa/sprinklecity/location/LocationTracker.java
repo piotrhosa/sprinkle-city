@@ -97,7 +97,7 @@ public class LocationTracker extends Service implements LocationListener {
 		
 		Log.e("location", "changed");
 
-		float distance = previousLocation.distanceTo(currentLocation);
+		//float distance = previousLocation.distanceTo(currentLocation);
 
 		Intent locationUpdate = new Intent("locationUpdater");
 		locationUpdate.putExtra("distance", currentLocation);
