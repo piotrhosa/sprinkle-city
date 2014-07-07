@@ -12,7 +12,6 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -249,7 +248,7 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	}
 	
 	public void startNewUserAsyncTask() {
-		CheckUsernameAvailabilityAsyncTask checkUsernameAT = new CheckUsernameAvailabilityAsyncTask();
+		CheckUsernameAvailabilityAsyncTask checkUsernameAT = new CheckUsernameAvailabilityAsyncTask(newHuman.getName());
 		usernameAvailabilityWeakReference = new WeakReference<CheckUsernameAvailabilityAsyncTask>(checkUsernameAT);
 		checkUsernameAT.execute();		
 	}
@@ -270,15 +269,20 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	}
 	
 	public class CheckUsernameAvailabilityAsyncTask extends AsyncTask<Void, Void, Void> {
+		String name;
+		
+		public CheckUsernameAvailabilityAsyncTask(String name) {
+			this.name = name;
+		}
 		@SuppressWarnings("unused")
 		protected Void doInBackground(Void... params) {
 			// declare parameters that are passed to PHP script i.e. the name "birthyear" and its value submitted by user   
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 
-			Looper.prepare();
+			//Looper.prepare();
 
 			// define the parameter
-			postParameters.add(new BasicNameValuePair("Username", newHuman.getName()));
+			postParameters.add(new BasicNameValuePair("Username", name));
 			String response = null;
 
 			// call executeHttpPost method passing necessary parameters 

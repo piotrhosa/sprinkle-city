@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -95,14 +94,15 @@ public class CreateCharacterPasswordFragment extends Fragment {
 		});
 
 	}
-	
+
 	public void startHomeActivity() {
 		startActivity(new Intent(getActivity(), HomeActivity.class));
 	}
 
 
 	public void startNewUserAsyncTask() {
-		NewUserAsyncTask newUserAT = new NewUserAsyncTask();
+		NewUserAsyncTask newUserAT = new NewUserAsyncTask(globalUser.getCharacterName(),
+				globalUser.getPassword(), globalUser.getAnimalName());
 		newUserWeakReference = new WeakReference<NewUserAsyncTask>(newUserAT);
 		newUserAT.execute();		
 	}
@@ -114,17 +114,27 @@ public class CreateCharacterPasswordFragment extends Fragment {
 	}
 
 	public class NewUserAsyncTask extends AsyncTask<Void, Void, Void> {
+		String name, password, animal;
+		
+		public NewUserAsyncTask(String name, String password, String animal) {
+			this.name = name;
+			this.password = password;
+			this.animal = animal;
+		}
 
 		protected Void doInBackground(Void... params) {
+			
+			String name = params.toString();
+
 			// declare parameters that are passed to PHP script i.e. the name "birthyear" and its value submitted by user   
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 
-			Looper.prepare();
+			//Looper.prepare();
 
 			// define the parameter
-			postParameters.add(new BasicNameValuePair("Username", globalUser.getCharacterName()));
-			postParameters.add(new BasicNameValuePair("Password", globalUser.getPassword()));
-			postParameters.add(new BasicNameValuePair("Animal", globalUser.getAnimalName()));
+			postParameters.add(new BasicNameValuePair("Username", name));
+			postParameters.add(new BasicNameValuePair("Password", password));
+			postParameters.add(new BasicNameValuePair("Animal", animal));
 
 			// call executeHttpPost method passing necessary parameters 
 			try {
@@ -135,14 +145,27 @@ public class CreateCharacterPasswordFragment extends Fragment {
 			catch (Exception e) {
 				Log.e("log_tag","Error in http connection!!" + e.toString());
 			}  
-			
+
 			startHomeActivity();
-			
+/**
+			try {
+				this.cancel(true);
+			} catch(UnsupportedOperationException e) {
+				e.printStackTrace();
+			}
+*/			
+
+
 			return null;
 		}
 
 		protected void onPostExecute(Void result) {
-			this.cancel(true);
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
 		}
 	}
 
