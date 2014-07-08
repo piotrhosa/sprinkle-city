@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,25 +19,20 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pfhosa.sprinklecity.R;
 
 public class VirtualMapFragment extends Fragment {
 
-	LinearLayout linearLayout;
-	static TextView distanceTextView;
-
-	static float distance;
+	static float distance, distanceGlobal;
 	static double currentLatitude, currentLongitude;
-	static Location previousLocation, currentLocation;
+	static Location previousLocation, currentLocation = null, seenLocation = null;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// Register BroadcastReceiver
-		getActivity().registerReceiver(new LocationReceiver(), new IntentFilter("newLocation"));
+		getActivity().registerReceiver(new LocationReceiver(), new IntentFilter("newLocationIntent"));
 
-		//return linearLayout;
 		return new MapSurfaceView(getActivity());
 	}
 
@@ -46,52 +40,51 @@ public class VirtualMapFragment extends Fragment {
 	 * Method that creates Location from latitude and longitude parameters. Distance between two consecutive locations is obtained
 	 * and output to display.
 	 */
-	public static void makeNewLocation(double latitude, double longitude) {
-		if(currentLocation != null)
-			previousLocation = currentLocation;
+	public void setNewDistance(Location currentLocation) {
 
-		currentLocation = new Location("currentLocation");
-
-		currentLocation.setLatitude(latitude);
-		currentLocation.setLongitude(longitude);		
-
-		if(previousLocation == null) {
+		if(previousLocation == null) 
 			distance = 0;
-		}
-		else {
-			distance = previousLocation.distanceTo(currentLocation);
-		}
+		else 
+			distance = previousLocation.distanceTo(currentLocation);		
 
-		if(distance != 0.0) {
-			Log.d("distance", Float.toString(distance));
-		}
+		distanceGlobal = distance;
+		previousLocation = currentLocation;
+		
+		Log.d("distance", Float.toString(distance));
+		Toast.makeText(getActivity(), Float.toString(distance), Toast.LENGTH_SHORT).show();
 	}
 
-
-	// BroadcastReceiver class passes latitude and longitude to makeNewLocation
-	public static class LocationReceiver extends BroadcastReceiver {
+	// BroadcastReceiver class passes latitude and longitude to setNewDistance
+	public class LocationReceiver extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			currentLatitude = intent.getExtras().getDouble("latitude");
-			currentLongitude = intent.getExtras().getDouble("longitude");
 
-			makeNewLocation(currentLatitude, currentLongitude);
+			try {
+				currentLatitude = intent.getExtras().getDouble("latitude");
+				currentLongitude = intent.getExtras().getDouble("longitude");
 
+				currentLocation = new Location("currentLocation");
+
+				currentLocation.setLatitude(currentLatitude);
+				currentLocation.setLongitude(currentLongitude);
+
+				setNewDistance(currentLocation);
+
+			} catch(NullPointerException e) {
+				e.printStackTrace();
+			}	
 		}
-
 	}
 
-	// 
 	public class MapSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
-		// Variables go here
 		private MapThread thread;
 		Context context;
 		SurfaceHolder surfaceHolder;
-		Paint paint;
 
 		public MapSurfaceView(Context context) {
+			
 			super(context);
 
 			surfaceHolder = getHolder();
@@ -115,9 +108,11 @@ public class VirtualMapFragment extends Fragment {
 		}
 
 		public void surfaceDestroyed(SurfaceHolder holder) {
+			
 			boolean retry = true;
-
+			
 			thread.setRunning(false);
+			
 			while (retry) {
 				try {
 					thread.join();
@@ -141,20 +136,22 @@ public class VirtualMapFragment extends Fragment {
 	}
 
 	public class MapThread extends Thread {
+		
+		public static final int PIXELS_PER_METER = 50;
+		
+		@SuppressWarnings("unused")
 		private int canvasWidth = 200;
 		private int canvasHeight = 400;
-		private static final int SPEED = 2;
 		private boolean running = false;
 
-		private float bubbleX;
-		private float bubbleY;
-		private float headingX;
+		private float characterX;
+		private float characterY;
 		private float headingY;
 
 		SurfaceHolder surfaceHolder;
 		Handler handler;
 		Context context;
-		Bitmap background, scaled, character;
+		Bitmap backgroundBitmap, characterBitmap, scaledBackgroundBitmap, scaledCharacterBitmap;
 		Canvas canvas = null;
 
 		float distance = 0;
@@ -162,50 +159,58 @@ public class VirtualMapFragment extends Fragment {
 
 
 		public MapThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
+			
 			this.surfaceHolder = surfaceHolder;
 			this.handler = handler;
 			this.context = context;
 		}
 
+		// 
 		public void doStart() {
+			
 			synchronized (surfaceHolder) {
-				// Start bubble in centre and create some random motion
 
 				DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-
 				float pxHeight = displayMetrics.heightPixels;
 				float pxWidth = displayMetrics.widthPixels;
 
-				background = BitmapFactory.decodeResource(getResources(), R.drawable.street_view);
-				
-				float scaleHeight = (float)background.getHeight()/(float)pxHeight;
-				float scaleWidth = (float)background.getWidth()/(float)pxWidth;
-				
-				newHeight = Math.round(background.getHeight()/scaleHeight);
-				newWidth = Math.round(background.getWidth()/scaleWidth);
+				backgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.street_view);
+				characterBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.character_human);
 
-				scaled = Bitmap.createScaledBitmap(background, newWidth, newHeight, true);
+				float scaleHeight = (float)backgroundBitmap.getHeight()/(float)pxHeight;
+				float scaleWidth = (float)backgroundBitmap.getWidth()/(float)pxWidth;
 
-				character = BitmapFactory.decodeResource(getResources(), R.drawable.character_human);
+				newHeight = Math.round(backgroundBitmap.getHeight()/scaleHeight);
+				newWidth = Math.round(backgroundBitmap.getWidth()/scaleWidth);
 
-				bubbleX = pxWidth / 3;
-				bubbleY = (float) (canvasHeight * 0.8);
+				scaledBackgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, newWidth, newHeight, true);
+				scaledCharacterBitmap = Bitmap.createScaledBitmap(characterBitmap, 300, 300, true);
 				
+				canvas.drawBitmap(scaledBackgroundBitmap, 0, 0, null);
+				canvas.drawBitmap(scaledCharacterBitmap, characterX, characterY, null);
+				
+				characterX = pxWidth / 2;
+				characterY = (float) (canvasHeight * 0.8);
+
 				headingY = - 1;
 
 			}
 		}
 
 		public void run() {
+			
 			while (running) {
 				try {
 					canvas = surfaceHolder.lockCanvas(null);
+
 					synchronized (surfaceHolder) {
-						doDraw(canvas);
+						doDraw(canvas, distanceGlobal);
 					}
-				} catch(NullPointerException e) {
-					e.printStackTrace();
-				} finally {
+				} 
+				catch(NullPointerException e) {
+					e.printStackTrace();					
+				} 
+				finally {
 					if (canvas != null) {
 						surfaceHolder.unlockCanvasAndPost(canvas);
 					}
@@ -218,6 +223,7 @@ public class VirtualMapFragment extends Fragment {
 		}
 
 		public void setSurfaceSize(int width, int height) {
+			
 			synchronized (surfaceHolder) {
 				canvasWidth = width;
 				canvasHeight = height;
@@ -225,16 +231,15 @@ public class VirtualMapFragment extends Fragment {
 			}
 		}
 
-		private void doDraw(Canvas canvas) {
-
-			bubbleX = bubbleX;
-			bubbleY = bubbleY + (headingY * SPEED);
-			//canvas.restore();
+		private void doDraw(Canvas canvas, float distance) {
 			
-			//character = Bitmap.createScaledBitmap(character, (int)(character.getWidth() * 0.8), (int)(character.getHeight() *0.8), false);
+			if(distanceGlobal != 0) 
+				characterY = characterY + (headingY * distanceGlobal * PIXELS_PER_METER);		
 
-			canvas.drawBitmap(scaled, 0, 0, null);
-			canvas.drawBitmap(character, bubbleX, bubbleY, null);
+			distanceGlobal = 0;
+			
+			canvas.drawBitmap(scaledBackgroundBitmap, 0,  0, null);
+			canvas.drawBitmap(scaledCharacterBitmap, characterX, characterY, null);
 		}
 	}
 }

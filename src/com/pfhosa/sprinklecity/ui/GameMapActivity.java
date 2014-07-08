@@ -26,18 +26,17 @@ import com.pfhosa.sprinklecity.fragments.VirtualMapFragment;
 
 public class GameMapActivity extends FragmentActivity implements       
 GooglePlayServicesClient.ConnectionCallbacks,
-GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
+GooglePlayServicesClient.OnConnectionFailedListener, 
+LocationListener {
 
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
 	private static final int MILLISECONDS_PER_SECOND = 1000;
-	// Update frequency in seconds
-	public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
-	// Update frequency in milliseconds
+	public static final int UPDATE_INTERVAL_IN_SECONDS = 10;
+	private static final int FASTEST_INTERVAL_IN_SECONDS = 5;
+	private static final int MIN_DISPLACEMENT_IN_METERS = 5;
+
 	private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
-	// The fastest update frequency, in seconds
-	private static final int FASTEST_INTERVAL_IN_SECONDS = 1;
-	// A fast frequency ceiling in milliseconds
 	private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
 
 	LocationRequest mLocationRequest;
@@ -46,15 +45,13 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 
 	SharedPreferences mPrefs;
 	Editor mEditor;
-	
-	Intent newLocation;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        
+
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 		setContentView(R.layout.activity_game_map);
 
 		mPrefs = getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE);
@@ -67,16 +64,11 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 			mUpdatesRequested = false;
 
 			mLocationRequest = LocationRequest.create();
-			// Use high accuracy
 			mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-			// Set the update interval to 5 seconds
 			mLocationRequest.setInterval(UPDATE_INTERVAL);
-			// Set the fastest update interval to 1 second
-			mLocationRequest.setFastestInterval(FASTEST_INTERVAL);			
-			
-		}
-		else {
-			
+			mLocationRequest.setFastestInterval(FASTEST_INTERVAL);	
+			mLocationRequest.setSmallestDisplacement(MIN_DISPLACEMENT_IN_METERS);
+
 		}
 
 		if (findViewById(R.id.fragment_container_game_map) != null) {
@@ -84,11 +76,11 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 			if (savedInstanceState != null)
 				return;
 
-
 			VirtualMapFragment virtualMapFragment = new VirtualMapFragment();
 
 			getSupportFragmentManager().beginTransaction()
-				.add(R.id.fragment_container_game_map, virtualMapFragment).commit();
+			.add(R.id.fragment_container_game_map, virtualMapFragment)
+			.commit();
 		}
 
 	}
@@ -114,31 +106,22 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 		 */
 		if (mPrefs.contains("KEY_UPDATES_ON")) {
 			mUpdatesRequested = mPrefs.getBoolean("KEY_UPDATES_ON", false);
-
-			// Otherwise, turn off location updates
 		} 
 		else {
 			mEditor.putBoolean("KEY_UPDATES_ON", false);
 			mEditor.commit();
 		}
+
 		super.onResume();
 	}
 
 	@Override
 	protected void onStop() {
-		// If the client is connected
+
 		if (mLocationClient.isConnected()) {
-			/*
-			 * Remove location updates for a listener.
-			 * The current Activity is the listener, so
-			 * the argument is "this".
-			 */
 			mLocationClient.removeLocationUpdates(this);
 		}
-		/*
-		 * After disconnect() is called, the client is
-		 * considered "dead".
-		 */
+
 		mLocationClient.disconnect();
 		super.onStop();
 	}
@@ -207,28 +190,30 @@ GooglePlayServicesClient.OnConnectionFailedListener, LocationListener {
 		Log.d("Location changed", "yes");
 
 	}
+
 	@Override
 	public void onDisconnected() {
 		Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
 
 	}
+
 	@Override
 	public void onLocationChanged(Location location) {
+		/**
 		String msg = "Updated Location: " +
 				Double.toString(location.getLatitude()) + "," +
 				Double.toString(location.getLongitude());
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-		
-		Intent newLocation = new Intent("newLocation");
-		newLocation.putExtra("location", location);
-		newLocation.putExtra("latitude", location.getLatitude());
-		newLocation.putExtra("longitude", location.getLongitude());
-		this.sendBroadcast(newLocation);
-		
-		
+		 */
+
+		Intent newLocationIntent = new Intent("newLocationIntent");
+		newLocationIntent.putExtra("latitude", location.getLatitude());
+		newLocationIntent.putExtra("longitude", location.getLongitude());
+
+		this.sendBroadcast(newLocationIntent);		
 	}
-	
-	
+
+
 	public void onProviderDisabled(String arg0) {
 		// TODO Auto-generated method stub
 
