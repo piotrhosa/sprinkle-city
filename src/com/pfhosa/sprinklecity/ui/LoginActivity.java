@@ -103,19 +103,15 @@ public class LoginActivity extends Activity {
 				try{
 					JSONArray jArray = new JSONArray(result);		
 
-					for(int i = 0; i < jArray.length(); ++i){
+					for(int i = 0; i < jArray.length(); ++i) {
 						JSONObject json_data = jArray.getJSONObject(i);
 
-						//Get an output to the screen
-						//username = json_data.getString("Username");
-
-						openMapFragment();
 					}
 
 					openMapFragment();
 
 				} 
-				catch(JSONException e){
+				catch (JSONException e){
 					Log.e("log_tag", "Error parsing data "+ e.toString());
 					makeToastWrongData();
 				}   
