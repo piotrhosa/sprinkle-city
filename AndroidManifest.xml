@@ -43,6 +43,8 @@
             android:name="com.pfhosa.sprinklecity.ui.GameMapActivity"
             android:label="@string/activity_game_map" >
         </activity>
+        <activity android:name="com.pfhosa.sprinklecity.ui.GameLocationActivity" >
+        </activity>
     </application>
 
 </manifest>
