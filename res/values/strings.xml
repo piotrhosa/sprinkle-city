@@ -2,6 +2,8 @@
 <resources>
     
     <color name="main_background">#62FFD1</color>
+    <color name="yellow">#FFFD64</color>
+    <color name="disabled">#CCCCCC</color>
 
     <string name="app_name">Sprinkle City</string>
     <string name="action_settings">Settings</string>
@@ -40,5 +42,7 @@
 	
 	<string name="activity_game_map">Game main</string>
 	<string name="text_virtual_map_distance">distance: 0</string>
+	
+	<string name="text_virtual_location_accelerometer">0.0</string>
 	
 </resources>

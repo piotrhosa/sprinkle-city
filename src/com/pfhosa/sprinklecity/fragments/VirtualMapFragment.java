@@ -234,9 +234,9 @@ public class VirtualMapFragment extends Fragment {
 		private int canvasHeight = 400;
 		private boolean running = false;
 
-		private float characterX;
-		private float characterY;
-		private float headingY;
+		private int characterX;
+		private int characterY;
+		private int headingY;
 
 		SurfaceHolder surfaceHolder;
 		Handler handler;
@@ -285,8 +285,8 @@ public class VirtualMapFragment extends Fragment {
 				canvas.drawBitmap(scaledBackgroundBitmap, 0, 0, null);
 				canvas.drawBitmap(scaledCharacterBitmap, characterX, characterY, null);
 
-				characterX = pxWidth / 2;
-				characterY = (float) (canvasHeight * 0.8);
+				characterX = (int)pxWidth / 2;
+				characterY = (int)(canvasHeight * 0.8);
 
 				headingY = - 1;
 
@@ -405,7 +405,7 @@ public class VirtualMapFragment extends Fragment {
 		private void doDraw(Canvas canvas, float distance) {
 
 			if(distanceGlobal != 0) 
-				characterY = characterY + (headingY * distanceGlobal * PIXELS_PER_METER);		
+				characterY = (int)(characterY + (headingY * distanceGlobal * PIXELS_PER_METER));		
 
 			distanceGlobal = 0;
 			
