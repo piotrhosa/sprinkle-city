@@ -55,7 +55,7 @@ LocationListener {
 		setContentView(R.layout.activity_game_map);
 
 		mPrefs = getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE);
-		// Get a SharedPreferences editor
+		
 		mEditor = mPrefs.edit();
 
 		if(servicesConnected()) {
@@ -68,7 +68,6 @@ LocationListener {
 			mLocationRequest.setInterval(UPDATE_INTERVAL);
 			mLocationRequest.setFastestInterval(FASTEST_INTERVAL);	
 			mLocationRequest.setSmallestDisplacement(MIN_DISPLACEMENT_IN_METERS);
-
 		}
 
 		if (findViewById(R.id.fragment_container_game_map) != null) {
@@ -86,20 +85,23 @@ LocationListener {
 	}
 	@Override
 	protected void onPause() {
-		// Save the current setting for updates
+		super.onPause();
+
 		mEditor.putBoolean("KEY_UPDATES_ON", mUpdatesRequested);
 		mEditor.commit();
-		super.onPause();
 	}
 
 	@Override
 	protected void onStart() {
-		mLocationClient.connect();
 		super.onStart();
+		
+		mLocationClient.connect();
 	}
 
 	@Override
 	protected void onResume() {
+		super.onResume();
+
 		/*
 		 * Get any previous setting for location updates
 		 * Gets "false" if an error occurs
@@ -111,19 +113,17 @@ LocationListener {
 			mEditor.putBoolean("KEY_UPDATES_ON", false);
 			mEditor.commit();
 		}
-
-		super.onResume();
 	}
 
 	@Override
 	protected void onStop() {
+		super.onStop();
 
 		if (mLocationClient.isConnected()) {
 			mLocationClient.removeLocationUpdates(this);
 		}
 
 		mLocationClient.disconnect();
-		super.onStop();
 	}
 
 	public static class ErrorDialogFragment extends DialogFragment {
@@ -146,7 +146,7 @@ LocationListener {
 	}
 
 	public void showErrorDialog(int errorCode) {
-		//TODO make new Dialog
+		//TODO
 	}
 
 	private boolean servicesConnected() {
@@ -187,8 +187,6 @@ LocationListener {
 	public void onConnected(Bundle connectionHint) {
 		mLocationClient.requestLocationUpdates(mLocationRequest, this);
 		Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
-		Log.d("Location changed", "yes");
-
 	}
 
 	@Override
@@ -199,12 +197,6 @@ LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-		/**
-		String msg = "Updated Location: " +
-				Double.toString(location.getLatitude()) + "," +
-				Double.toString(location.getLongitude());
-		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-		 */
 
 		Intent newLocationIntent = new Intent("newLocationIntent");
 		newLocationIntent.putExtra("latitude", location.getLatitude());
@@ -212,20 +204,13 @@ LocationListener {
 
 		this.sendBroadcast(newLocationIntent);		
 	}
-
-
-	public void onProviderDisabled(String arg0) {
-		// TODO Auto-generated method stub
-
-	}
-	public void onProviderEnabled(String arg0) {
-		// TODO Auto-generated method stub
-
-	}
-	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		// TODO Auto-generated method stub
-
-	}
+	
+	public void onProviderDisabled(String arg0) {}
+	
+	public void onProviderEnabled(String arg0) {}
+	
+	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {}
+	
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		if (connectionResult.hasResolution()) {

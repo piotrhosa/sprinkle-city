@@ -424,10 +424,11 @@ containing a value of this type.
         public static final int job_postman=0x7f020029;
         public static final int location_shop=0x7f02002a;
         public static final int location_temple=0x7f02002b;
-        public static final int powered_by_google_dark=0x7f02002c;
-        public static final int powered_by_google_light=0x7f02002d;
-        public static final int street_view=0x7f02002e;
-        public static final int yellow_progress_bar=0x7f02002f;
+        public static final int picking_apples=0x7f02002c;
+        public static final int powered_by_google_dark=0x7f02002d;
+        public static final int powered_by_google_light=0x7f02002e;
+        public static final int street_view=0x7f02002f;
+        public static final int yellow_progress_bar=0x7f020030;
     }
     public static final class id {
         public static final int action_settings=0x7f07004c;

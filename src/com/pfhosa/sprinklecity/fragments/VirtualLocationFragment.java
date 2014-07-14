@@ -1,8 +1,7 @@
 package com.pfhosa.sprinklecity.fragments;
 
-import com.pfhosa.sprinklecity.R;
-
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -18,16 +17,19 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.pfhosa.sprinklecity.R;
+import com.pfhosa.sprinklecity.ui.GameMapActivity;
+
 public class VirtualLocationFragment extends Fragment implements SensorEventListener {
 
 	LinearLayout linearLayout;
 	ProgressBar pickingProgressBar;
-	TextView tvX;
+	TextView progressTextView;
 
 	Thread thread;
 	Handler handler = new Handler();
 
-	private float mLastX, mLastY, mLastZ;
+	private float mLastY;
 	private boolean mInitialized;
 	int progressStatus;
 
@@ -49,12 +51,10 @@ public class VirtualLocationFragment extends Fragment implements SensorEventList
 		mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);		
 
-		tvX = (TextView)linearLayout.findViewById(R.id.text_virtual_location_accelerometer);
+		progressTextView = (TextView)linearLayout.findViewById(R.id.text_virtual_location_accelerometer);
 		pickingProgressBar = (ProgressBar)linearLayout.findViewById(R.id.progress_virtual_location);
 
 		Log.d("Fragment initialized", "yes");
-
-		runProgressThread();
 
 		return linearLayout;
 	}
@@ -67,7 +67,6 @@ public class VirtualLocationFragment extends Fragment implements SensorEventList
 	public void onPause() {
 		super.onPause();
 		mSensorManager.unregisterListener(this);
-		//thread.interrupt();
 	}
 
 	@Override
@@ -75,66 +74,65 @@ public class VirtualLocationFragment extends Fragment implements SensorEventList
 	}
 
 	@Override
-	public void onSensorChanged(SensorEvent event) {		
-		float x = event.values[0];
+	public void onSensorChanged(SensorEvent event) {	
 		float y = event.values[1];
-		float z = event.values[2];
 
 		if (!mInitialized) {
-			mLastX = x;
 			mLastY = y;
-			mLastZ = z;
-			//tvX.setText("0.0");
+
 			mInitialized = true;
 		} 
 		else {
-			float deltaX = Math.abs(mLastX - x);
+
 			float deltaY = Math.abs(mLastY - y);
-			float deltaZ = Math.abs(mLastZ - z);
-			if (deltaX < NOISE) deltaX = (float)0.0;
 			if (deltaY < NOISE) deltaY = (float)0.0;
-			if (deltaZ < NOISE) deltaZ = (float)0.0;
-			mLastX = x;
 			mLastY = y;
-			mLastZ = z;
-			//tvX.setText(Float.toString(deltaY));
 
 			if(progressStatus < 100)
 				progressStatus = (progressStatus + (int)(deltaY*0.2));
 			else
 				progressStatus = 100;
 			
-			Log.d("Progress status", Float.toString(progressStatus));
+			pickingProgressBar.setProgress(progressStatus);
+			progressTextView.setText(progressStatus + "/" + pickingProgressBar.getMax());
+			
+			if(progressStatus >= 100) {
+				Intent openMap = new Intent(getActivity(), GameMapActivity.class);
+				startActivity(openMap);
+			}
+
+			Log.d("Progress status", Integer.toString(progressStatus));
 		}
 	}
 
-	public void runProgressThread() {
+	/**
+	public void runProgressThread(int progressStat) {
+		
+		final int progress = progressStat;
 		thread = new Thread(new Runnable() {
 			public void run() {
-				while (progressStatus <= 100) {
-					//progressStatus += 1;
-					// Update the progress bar and display the 
-					//current value in the text view
-					handler.post(new Runnable() {
-						public void run() {
-							pickingProgressBar.setProgress(progressStatus);
-							tvX.setText(progressStatus + "/" + pickingProgressBar.getMax());
-							Log.d("bar set to", Integer.toString(progressStatus));
-						}
-					});
+
+				//while(progressStatus < 100) {
 					try {
-						// Sleep for 200 milliseconds. 
-						//Just to display the progress slowly
+						// Sleep for 200 milliseconds just to display the progress slowly.
 						Thread.sleep(200);
 					} 
 					catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-				}
+
+					handler.post(new Runnable() {
+						public void run() {
+							pickingProgressBar.setProgress(progressStatus);
+							progressTextView.setText(progress + "/" + pickingProgressBar.getMax());
+						}
+					});
+				//}
 			}
 		});
-		
+
 		thread.run();
-		
+
 	}
+	*/
 }

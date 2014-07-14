@@ -108,10 +108,11 @@ int drawable job_farmer 0x7f020028
 int drawable job_postman 0x7f020029
 int drawable location_shop 0x7f02002a
 int drawable location_temple 0x7f02002b
-int drawable powered_by_google_dark 0x7f02002c
-int drawable powered_by_google_light 0x7f02002d
-int drawable street_view 0x7f02002e
-int drawable yellow_progress_bar 0x7f02002f
+int drawable picking_apples 0x7f02002c
+int drawable powered_by_google_dark 0x7f02002d
+int drawable powered_by_google_light 0x7f02002e
+int drawable street_view 0x7f02002f
+int drawable yellow_progress_bar 0x7f020030
 int id action_settings 0x7f07004c
 int id book_now 0x7f070010
 int id button_create_animal_character_next 0x7f07004b

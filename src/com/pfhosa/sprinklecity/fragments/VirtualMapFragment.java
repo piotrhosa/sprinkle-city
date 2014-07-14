@@ -34,6 +34,7 @@ import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.CustomHttpClient;
 import com.pfhosa.sprinklecity.model.VirtualLocation;
 import com.pfhosa.sprinklecity.ui.GameLocationActivity;
+import com.pfhosa.sprinklecity.ui.HomeActivity;
 
 public class VirtualMapFragment extends Fragment {
 
@@ -171,6 +172,18 @@ public class VirtualMapFragment extends Fragment {
 				if(thread.isTouchOnAvatar(touchX, touchY))
 					thread.setDrawArrows(true);
 			}
+			
+			if(event.getAction() == MotionEvent.ACTION_UP) {
+
+				touchX = (int)event.getX();
+				touchY = (int)event.getY();
+
+				if(thread.isTouchOnUpperLeft(touchX, touchY)) {
+					Intent openHome = new Intent(getActivity(), HomeActivity.class);
+					startActivity(openHome);
+				}
+					
+			}
 
 			if(event.getAction() == MotionEvent.ACTION_UP) {
 				touchX = (int)event.getX();
@@ -228,6 +241,7 @@ public class VirtualMapFragment extends Fragment {
 		public static final int AVATAR_EDGE_MARGIN = 0;
 		public static final int LOCATION_EDGE = 300;
 		public static final int ARROWS_EDGE = 600;
+		public static final int CORNER_EDGE = 300;
 
 		@SuppressWarnings("unused")
 		private int canvasWidth = 200;
@@ -333,6 +347,12 @@ public class VirtualMapFragment extends Fragment {
 					(touchX < characterX + AVATAR_EDGE) &&
 					(characterY < touchY) &&
 					(touchY < characterY + AVATAR_EDGE);			
+		}
+		
+		public boolean isTouchOnUpperLeft(int touchX, int touchY) {
+			
+			return 	(CORNER_EDGE > touchX) &&
+					(CORNER_EDGE > touchY);
 		}
 
 		public boolean swipeArrowUp(int touchX, int touchY) {

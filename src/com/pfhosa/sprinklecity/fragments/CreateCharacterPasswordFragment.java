@@ -124,7 +124,7 @@ public class CreateCharacterPasswordFragment extends Fragment {
 
 		protected Void doInBackground(Void... params) {
 			
-			String name = params.toString();
+			//String name = params.toString();
 
 			// declare parameters that are passed to PHP script i.e. the name "birthyear" and its value submitted by user   
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
