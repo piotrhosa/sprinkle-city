@@ -1,7 +1,6 @@
 package com.pfhosa.sprinklecity.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -18,7 +17,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.pfhosa.sprinklecity.R;
-import com.pfhosa.sprinklecity.ui.GameMapActivity;
 
 public class VirtualLocationFragment extends Fragment implements SensorEventListener {
 
@@ -96,10 +94,9 @@ public class VirtualLocationFragment extends Fragment implements SensorEventList
 			pickingProgressBar.setProgress(progressStatus);
 			progressTextView.setText(progressStatus + "/" + pickingProgressBar.getMax());
 			
-			if(progressStatus >= 100) {
-				Intent openMap = new Intent(getActivity(), GameMapActivity.class);
-				startActivity(openMap);
-			}
+			if(progressStatus >= 100) 
+				getActivity().finish();
+				
 
 			Log.d("Progress status", Integer.toString(progressStatus));
 		}

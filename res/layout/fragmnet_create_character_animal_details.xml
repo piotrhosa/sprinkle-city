@@ -17,8 +17,8 @@
             android:id="@+id/edit_animal_character_name"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:inputType="textCapWords"
-            android:hint="@string/edit_character_name_hint" />
+            android:hint="@string/edit_character_name_hint"
+            android:inputType="textCapWords" />
     </LinearLayout>
 
     <LinearLayout
@@ -106,5 +106,10 @@
             android:layout_height="wrap_content"
             android:text="@string/button_create_character_next" />
     </LinearLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
 </LinearLayout>

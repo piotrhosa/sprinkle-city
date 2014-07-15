@@ -45,12 +45,16 @@ LocationListener {
 
 	SharedPreferences mPrefs;
 	Editor mEditor;
+	
+	Bundle characterData;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
+		characterData = getIntent().getExtras();		
 
 		setContentView(R.layout.activity_game_map);
 
@@ -77,6 +81,8 @@ LocationListener {
 
 			VirtualMapFragment virtualMapFragment = new VirtualMapFragment();
 
+			virtualMapFragment.setArguments(characterData);
+			
 			getSupportFragmentManager().beginTransaction()
 			.add(R.id.fragment_container_game_map, virtualMapFragment)
 			.commit();

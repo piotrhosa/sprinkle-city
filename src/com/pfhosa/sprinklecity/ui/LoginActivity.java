@@ -63,8 +63,10 @@ public class LoginActivity extends Activity {
 		});
 	}
 
-	public void openMapFragment() {
+	public void openMapFragment(String username, int avatar) {
 		Intent intent = new Intent(this, GameMapActivity.class);
+		intent.putExtra("Username", username);
+		intent.putExtra("Avatar", avatar);
 		startActivity(intent);
 	}
 
@@ -84,17 +86,22 @@ public class LoginActivity extends Activity {
 		protected Void doInBackground(Void... params) {
 			// declare parameters that are passed to PHP script i.e. the name "birthyear" and its value submitted by user   
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
+			ArrayList<NameValuePair> postParametersData = new ArrayList<NameValuePair>();
 
 			Looper.prepare();
 
 			// define the parameter
 			postParameters.add(new BasicNameValuePair("Username", nameLoginString));
 			postParameters.add(new BasicNameValuePair("Password", passwordLoginString));
+			postParametersData.add(new BasicNameValuePair("Username", nameLoginString));
 			String response = null;
+			String responseData = null;
+			String username = null, avatar = null;
 
 			// call executeHttpPost method passing necessary parameters 
 			try {
 				response = CustomHttpClient.executeHttpPost("http://www2.macs.hw.ac.uk/~ph109/DBConnect/connect.php", postParameters);
+				responseData = CustomHttpClient.executeHttpPost("http://www2.macs.hw.ac.uk/~ph109/DBConnect/getCharacter.php", postParametersData);
 
 				// store the result returned by PHP script that runs MySQL query
 				String result = response.toString();  
@@ -105,10 +112,12 @@ public class LoginActivity extends Activity {
 
 					for(int i = 0; i < jArray.length(); ++i) {
 						JSONObject json_data = jArray.getJSONObject(i);
+						username = json_data.getString("Username");
+						avatar = json_data.getString("Avatar");
 
 					}
 
-					openMapFragment();
+					openMapFragment(username, Integer.parseInt(avatar));
 
 				} 
 				catch (JSONException e){

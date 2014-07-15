@@ -154,7 +154,7 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 							getFitness()
 							);			
 					
-					db.newAnimalCharacter(newAnimal);
+					//db.newAnimalCharacter(newAnimal);
 					advanceListener.onAnimalCharacterCreated(newAnimal);
 				}
 			}

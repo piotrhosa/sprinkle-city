@@ -11,16 +11,10 @@ public class VirtualLocation {
 		this.locationY = locationY;
 	}
 	
-	public String getOwner() {
-		return owner;
-	}
+	public String getOwner() {return owner;}
 	
-	public int getLocationX() {
-		return locationX;
-	}
+	public int getLocationX() {return locationX;}
 	
-	public int getLocationY() {
-		return locationY;
-	}
+	public int getLocationY() {return locationY;}
 
 }

@@ -32,15 +32,28 @@ import android.widget.Toast;
 
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.CustomHttpClient;
+import com.pfhosa.sprinklecity.model.HumanAvatar;
 import com.pfhosa.sprinklecity.model.VirtualLocation;
 import com.pfhosa.sprinklecity.ui.GameLocationActivity;
 import com.pfhosa.sprinklecity.ui.HomeActivity;
 
 public class VirtualMapFragment extends Fragment {
+	
+	public static final int PIXELS_PER_METER = 50;
+	public static final int AVATAR_EDGE = 300;
+	public static final int AVATAR_EDGE_MARGIN = 0;
+	public static final int LOCATION_EDGE = 300;
+	public static final int ARROWS_EDGE = 600;
+	public static final int CORNER_EDGE = 300;
 
 	static float distance, distanceGlobal;
 	static double currentLatitude, currentLongitude;
 	static Location previousLocation, currentLocation = null, seenLocation = null;
+	
+	HumanAvatar humanAvatar;
+	
+	String username;
+	int avatar;
 
 
 	ArrayList<VirtualLocation> virtualLocations= new ArrayList<VirtualLocation>();
@@ -51,6 +64,13 @@ public class VirtualMapFragment extends Fragment {
 		// Register BroadcastReceiver
 		LocationReceiver locationReceiver = new LocationReceiver();
 		getActivity().registerReceiver(locationReceiver, new IntentFilter("newLocationIntent"));
+		
+		if(getArguments() != null) {
+			username = getArguments().getString("Username");
+			avatar = getArguments().getInt("Avatar");
+		}
+		
+		makeNewAvatar();
 
 		new GetLocationsAsyncTask().execute();
 
@@ -61,6 +81,15 @@ public class VirtualMapFragment extends Fragment {
 	public void onStop() {
 		//unregisterReceiver(locationReceiver);
 		super.onStop();
+	}
+	
+	public void makeNewAvatar() {
+		humanAvatar = new HumanAvatar(
+				username, 
+				avatar,
+				AVATAR_EDGE,
+				0,
+				0);
 	}
 
 	/**
@@ -236,13 +265,6 @@ public class VirtualMapFragment extends Fragment {
 	 */
 	public class MapThread extends Thread {
 
-		public static final int PIXELS_PER_METER = 50;
-		public static final int AVATAR_EDGE = 300;
-		public static final int AVATAR_EDGE_MARGIN = 0;
-		public static final int LOCATION_EDGE = 300;
-		public static final int ARROWS_EDGE = 600;
-		public static final int CORNER_EDGE = 300;
-
 		@SuppressWarnings("unused")
 		private int canvasWidth = 200;
 		private int canvasHeight = 400;
@@ -405,9 +427,6 @@ public class VirtualMapFragment extends Fragment {
 			for(VirtualLocation vl : virtualLocations) { 
 				locationX = vl.getLocationX();
 				locationY = vl.getLocationY();
-				Log.d("Owner is", vl.getOwner());
-				Log.d("Avatar vertex", Float.toString(characterX) + ", " + Float.toString(characterY));
-				Log.d("Location vertex", Integer.toString(locationX) + ", " + Integer.toString(locationY));
 				
 				if((characterX < locationX) &&
 						(locationY + LOCATION_EDGE / 2 > characterY + AVATAR_EDGE_MARGIN) &&

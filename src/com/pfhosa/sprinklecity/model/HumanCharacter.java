@@ -23,35 +23,21 @@ public class HumanCharacter implements Parcelable {
 	
 	// Accessors
 	
-	public String getName() {
-		return name;
-	}
+	public String getName() {return name;}
 	
-	public int getAvatar() {
-		return avatar;
-	}
+	public int getAvatar() {return avatar;}
 	
-	public String getJob(){
-		return job;
-	}
+	public String getJob(){return job;}
 	
-	public int getSocialTrait() {
-		return social;
-	}
+	public int getSocialTrait() {return social;}
 	
-	public int getAnimalTrait() {
-		return animal;
-	}
+	public int getAnimalTrait() {return animal;}
 	
-	public int getBusinessTrait() {
-		return business;
-	}
+	public int getBusinessTrait() {return business;}
 	
 	// Parcelable implementation
 	
-	public int describeContents() {
-		return 0;
-	}
+	public int describeContents() {return 0;}
 	
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(getName());

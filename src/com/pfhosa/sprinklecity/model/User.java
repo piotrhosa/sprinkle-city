@@ -12,15 +12,9 @@ public class User {
 		this.animalName = animalName;
 	}
 	
-	public String getCharacterName() {
-		return characterName;
-	}
+	public String getCharacterName() {return characterName;}
 	
-	public String getPassword() {
-		return password;
-	}
+	public String getPassword() {return password;}
 	
-	public String getAnimalName() {
-		return animalName;
-	}
+	public String getAnimalName() {return animalName;}
 }

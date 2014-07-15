@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.CustomHttpClient;
 import com.pfhosa.sprinklecity.database.Database;
+import com.pfhosa.sprinklecity.database.InsertRowAsyncTask;
 import com.pfhosa.sprinklecity.model.HumanCharacter;
 
 public class CreateCharacterHumanDetailsFragment extends Fragment {
@@ -237,9 +238,9 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 							getAnimalTrait(),
 							getBusinessTrait());
 
-					db.newHumanCharacter(newHuman);	
+					//db.newHumanCharacter(newHuman);	
 					
-					startNewUserAsyncTask();
+					startNewUserAsyncTask(newHuman);
 
 				}
 			}
@@ -247,13 +248,29 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		});
 	}
 	
-	public void startNewUserAsyncTask() {
+	public void startNewUserAsyncTask(HumanCharacter newHuman) {		
 		CheckUsernameAvailabilityAsyncTask checkUsernameAT = new CheckUsernameAvailabilityAsyncTask(newHuman.getName());
 		usernameAvailabilityWeakReference = new WeakReference<CheckUsernameAvailabilityAsyncTask>(checkUsernameAT);
 		checkUsernameAT.execute();		
 	}
 	
 	public void usernameIsAvailable() {
+		String url = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/insertHumanCharacter.php";
+
+		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();	
+		postParameters.add(new BasicNameValuePair("Username", newHuman.getName()));
+		postParameters.add(new BasicNameValuePair("Avatar", Integer.toString(newHuman.getAvatar())));
+		postParameters.add(new BasicNameValuePair("Job", newHuman.getJob()));
+		postParameters.add(new BasicNameValuePair("Social", Integer.toString(newHuman.getSocialTrait())));
+		postParameters.add(new BasicNameValuePair("Animal", Integer.toString(newHuman.getAnimalTrait())));
+		postParameters.add(new BasicNameValuePair("Business", Integer.toString(newHuman.getBusinessTrait())));
+		
+		InsertRowAsyncTask newHumanAsyncTask = new InsertRowAsyncTask(url, postParameters, getActivity());
+		WeakReference<InsertRowAsyncTask> newHumanWeakReference = new WeakReference<InsertRowAsyncTask>(newHumanAsyncTask);
+		newHumanAsyncTask.execute();		
+
+		Log.d("Username", "available");
+		
 		advanceListener.onHumanCharacterCreated(newHuman);
 	}
 

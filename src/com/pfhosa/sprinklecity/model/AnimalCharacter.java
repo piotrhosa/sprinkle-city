@@ -19,27 +19,17 @@ public class AnimalCharacter implements Parcelable {
 
 	// Accessors
 
-	public String getName() {
-		return name;
-	}
+	public String getName() {return name;}
 
-	public int getAvatar() {
-		return avatar;
-	}
+	public int getAvatar() {return avatar;}
 
-	public int getSleep() {
-		return sleep;
-	}
+	public int getSleep() {return sleep;}
 
-	public int getFitness() {
-		return fitness;
-	}
+	public int getFitness() {return fitness;}
 
 	// Parcelable implementation
 
-	public int describeContents() {
-		return 0;
-	}
+	public int describeContents() {return 0;}
 
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeString(getName());

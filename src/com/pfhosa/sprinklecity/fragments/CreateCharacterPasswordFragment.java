@@ -7,11 +7,9 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,8 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pfhosa.sprinklecity.R;
-import com.pfhosa.sprinklecity.database.CustomHttpClient;
 import com.pfhosa.sprinklecity.database.Database;
+import com.pfhosa.sprinklecity.database.InsertRowAsyncTask;
 import com.pfhosa.sprinklecity.model.AnimalCharacter;
 import com.pfhosa.sprinklecity.model.HumanCharacter;
 import com.pfhosa.sprinklecity.model.User;
@@ -34,8 +32,7 @@ public class CreateCharacterPasswordFragment extends Fragment {
 	Database db;
 
 	// Use WeakReference so that AsyncTasks can be garbage collected
-
-	private WeakReference<NewUserAsyncTask> newUserWeakReference;
+	private WeakReference<InsertRowAsyncTask> newUserWeakReference;
 
 	LinearLayout linearLayout;
 	TextView descriptionTextView;
@@ -45,6 +42,8 @@ public class CreateCharacterPasswordFragment extends Fragment {
 	HumanCharacter humanCharacter;
 	AnimalCharacter animalCharacter;
 	User globalUser;
+
+	InsertRowAsyncTask newUserAsyncTask;
 
 	boolean usernameIsAvailable;
 
@@ -78,7 +77,6 @@ public class CreateCharacterPasswordFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				//TODO check if name exists in database already
 
 				User newUser = new User(
 						characterNameEditText.getText().toString(),
@@ -87,86 +85,32 @@ public class CreateCharacterPasswordFragment extends Fragment {
 
 				globalUser = newUser;
 
-				if(!isNewUserATRunning())
-					startNewUserAsyncTask();			
-
+				if(!isNewUserAsyncTaskRunning())
+					startNewUserAsyncTask();	
+				
+				startActivity(new Intent(getActivity(), HomeActivity.class));
+				
 			}
 		});
-
 	}
-
-	public void startHomeActivity() {
-		startActivity(new Intent(getActivity(), HomeActivity.class));
-	}
-
 
 	public void startNewUserAsyncTask() {
-		NewUserAsyncTask newUserAT = new NewUserAsyncTask(globalUser.getCharacterName(),
-				globalUser.getPassword(), globalUser.getAnimalName());
-		newUserWeakReference = new WeakReference<NewUserAsyncTask>(newUserAT);
-		newUserAT.execute();		
+
+		String url = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/insertUser.php";
+
+		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();	
+		postParameters.add(new BasicNameValuePair("Username", globalUser.getCharacterName()));
+		postParameters.add(new BasicNameValuePair("Password", globalUser.getPassword()));
+		postParameters.add(new BasicNameValuePair("Animal", globalUser.getAnimalName()));
+
+		newUserAsyncTask = new InsertRowAsyncTask(url, postParameters, getActivity());
+		newUserWeakReference = new WeakReference<InsertRowAsyncTask>(newUserAsyncTask);
+		newUserAsyncTask.execute();	
 	}
 
-	private boolean isNewUserATRunning() {
-		return this.newUserWeakReference != null &&
+	private boolean isNewUserAsyncTaskRunning() {
+		return 	this.newUserWeakReference != null &&
 				this.newUserWeakReference.get() != null && 
 				!this.newUserWeakReference.get().getStatus().equals(Status.FINISHED);
 	}
-
-	public class NewUserAsyncTask extends AsyncTask<Void, Void, Void> {
-		String name, password, animal;
-		
-		public NewUserAsyncTask(String name, String password, String animal) {
-			this.name = name;
-			this.password = password;
-			this.animal = animal;
-		}
-
-		protected Void doInBackground(Void... params) {
-			
-			//String name = params.toString();
-
-			// declare parameters that are passed to PHP script i.e. the name "birthyear" and its value submitted by user   
-			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-
-			//Looper.prepare();
-
-			// define the parameter
-			postParameters.add(new BasicNameValuePair("Username", name));
-			postParameters.add(new BasicNameValuePair("Password", password));
-			postParameters.add(new BasicNameValuePair("Animal", animal));
-
-			// call executeHttpPost method passing necessary parameters 
-			try {
-				CustomHttpClient.executeHttpPostInsert("http://www2.macs.hw.ac.uk/~ph109/DBConnect/insertUser.php", postParameters);
-				Log.d("connection attempted", "true");
-
-			} 
-			catch (Exception e) {
-				Log.e("log_tag","Error in http connection!!" + e.toString());
-			}  
-
-			startHomeActivity();
-/**
-			try {
-				this.cancel(true);
-			} catch(UnsupportedOperationException e) {
-				e.printStackTrace();
-			}
-*/			
-
-
-			return null;
-		}
-
-		protected void onPostExecute(Void result) {
-			try {
-				Thread.sleep(1);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
-		}
-	}
-
 }

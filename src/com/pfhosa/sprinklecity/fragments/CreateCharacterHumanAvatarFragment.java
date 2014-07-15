@@ -43,7 +43,7 @@ public class CreateCharacterHumanAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onHumanAvatarSelected(0);
+				advanceListener.onHumanAvatarSelected(R.drawable.character_human_0);
 			}
 		});
 
@@ -51,7 +51,7 @@ public class CreateCharacterHumanAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onHumanAvatarSelected(1);
+				advanceListener.onHumanAvatarSelected(R.drawable.character_human_1);
 			}
 		});
 
@@ -59,7 +59,7 @@ public class CreateCharacterHumanAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onHumanAvatarSelected(2);
+				advanceListener.onHumanAvatarSelected(R.drawable.character_human_2);
 			}
 		});
 	}	
