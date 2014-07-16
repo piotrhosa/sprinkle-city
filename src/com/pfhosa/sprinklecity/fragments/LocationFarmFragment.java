@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.pfhosa.sprinklecity.R;
 
-public class VirtualLocationFragment extends Fragment implements SensorEventListener {
+public class LocationFarmFragment extends Fragment implements SensorEventListener {
 
 	LinearLayout linearLayout;
 	ProgressBar pickingProgressBar;
@@ -95,7 +95,7 @@ public class VirtualLocationFragment extends Fragment implements SensorEventList
 			progressTextView.setText(progressStatus + "/" + pickingProgressBar.getMax());
 			
 			if(progressStatus >= 100) 
-				getActivity().finish();
+				//getActivity().getFragmentManager().beginTransaction().remove(this).commit();
 				
 
 			Log.d("Progress status", Integer.toString(progressStatus));

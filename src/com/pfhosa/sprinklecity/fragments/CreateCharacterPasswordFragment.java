@@ -21,7 +21,7 @@ import android.widget.TextView;
 
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.Database;
-import com.pfhosa.sprinklecity.database.InsertRowAsyncTask;
+import com.pfhosa.sprinklecity.database.WriteToRemoteAsyncTask;
 import com.pfhosa.sprinklecity.model.AnimalCharacter;
 import com.pfhosa.sprinklecity.model.HumanCharacter;
 import com.pfhosa.sprinklecity.model.User;
@@ -32,7 +32,7 @@ public class CreateCharacterPasswordFragment extends Fragment {
 	Database db;
 
 	// Use WeakReference so that AsyncTasks can be garbage collected
-	private WeakReference<InsertRowAsyncTask> newUserWeakReference;
+	private WeakReference<WriteToRemoteAsyncTask> newUserWeakReference, newAvatarWeakReference;
 
 	LinearLayout linearLayout;
 	TextView descriptionTextView;
@@ -43,7 +43,7 @@ public class CreateCharacterPasswordFragment extends Fragment {
 	AnimalCharacter animalCharacter;
 	User globalUser;
 
-	InsertRowAsyncTask newUserAsyncTask;
+	WriteToRemoteAsyncTask newUserAsyncTask, newAvatarAsyncTask;
 
 	boolean usernameIsAvailable;
 
@@ -88,6 +88,9 @@ public class CreateCharacterPasswordFragment extends Fragment {
 				if(!isNewUserAsyncTaskRunning())
 					startNewUserAsyncTask();	
 				
+				if(!isNewAvatarAsyncTaskRunning())
+					startNewAvatarAsyncTask();
+				
 				startActivity(new Intent(getActivity(), HomeActivity.class));
 				
 			}
@@ -95,22 +98,43 @@ public class CreateCharacterPasswordFragment extends Fragment {
 	}
 
 	public void startNewUserAsyncTask() {
+		String urlUser = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/insertUser.php";
 
-		String url = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/insertUser.php";
-
-		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();	
-		postParameters.add(new BasicNameValuePair("Username", globalUser.getCharacterName()));
-		postParameters.add(new BasicNameValuePair("Password", globalUser.getPassword()));
-		postParameters.add(new BasicNameValuePair("Animal", globalUser.getAnimalName()));
-
-		newUserAsyncTask = new InsertRowAsyncTask(url, postParameters, getActivity());
-		newUserWeakReference = new WeakReference<InsertRowAsyncTask>(newUserAsyncTask);
+		ArrayList<NameValuePair> postParametersUser = new ArrayList<NameValuePair>();	
+		postParametersUser.add(new BasicNameValuePair("Username", globalUser.getCharacterName()));
+		postParametersUser.add(new BasicNameValuePair("Password", globalUser.getPassword()));
+		postParametersUser.add(new BasicNameValuePair("Animal", globalUser.getAnimalName()));
+		
+		newUserAsyncTask = new WriteToRemoteAsyncTask(urlUser, postParametersUser, getActivity());
+		newUserWeakReference = new WeakReference<WriteToRemoteAsyncTask>(newUserAsyncTask);
+		
 		newUserAsyncTask.execute();	
+	}
+	
+	public void startNewAvatarAsyncTask() {
+		String urlAvatar = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/insertHumanAvatar.php";
+		
+		ArrayList<NameValuePair> postParametersAvatar = new ArrayList<NameValuePair>();	
+		postParametersAvatar.add(new BasicNameValuePair("Username", globalUser.getCharacterName()));
+		postParametersAvatar.add(new BasicNameValuePair("PositionX", Integer.toString(0)));
+		postParametersAvatar.add(new BasicNameValuePair("PositionY", Integer.toString(0)));	
+		postParametersAvatar.add(new BasicNameValuePair("Direction", Integer.toString(-1)));
+		
+		newAvatarAsyncTask = new WriteToRemoteAsyncTask(urlAvatar, postParametersAvatar, getActivity());
+		newAvatarWeakReference = new WeakReference<WriteToRemoteAsyncTask>(newAvatarAsyncTask);
+		
+		newAvatarAsyncTask.execute();		
 	}
 
 	private boolean isNewUserAsyncTaskRunning() {
 		return 	this.newUserWeakReference != null &&
 				this.newUserWeakReference.get() != null && 
 				!this.newUserWeakReference.get().getStatus().equals(Status.FINISHED);
+	}
+	
+	private boolean isNewAvatarAsyncTaskRunning() {
+		return 	this.newAvatarWeakReference != null &&
+				this.newAvatarWeakReference.get() != null && 
+				!this.newAvatarWeakReference.get().getStatus().equals(Status.FINISHED);
 	}
 }

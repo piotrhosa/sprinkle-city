@@ -9,34 +9,51 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
-        <ImageButton
-            android:id="@+id/image_character_human_0"
-            android:layout_width="200dip"
-            android:layout_height="200dip"
-            android:layout_marginLeft="50dip"
-            android:layout_marginRight="25dip"
-            android:background="@drawable/character_human_0"
-            android:contentDescription="@string/image_character_human" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
-        <ImageButton
-            android:id="@+id/image_character_human_1"
-            android:layout_width="200dip"
-            android:layout_height="200dip"
-            android:layout_marginLeft="25dip"
-            android:layout_marginRight="25dip"
-            android:background="@drawable/character_human_1"
-            android:contentDescription="@string/image_character_human" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
 
-        <ImageButton
-            android:id="@+id/image_character_human_2"
-            android:layout_width="200dip"
-            android:layout_height="200dip"
-            android:layout_marginLeft="25dip"
-            android:layout_marginRight="50dip"
-            android:background="@drawable/character_human_2"
-            android:contentDescription="@string/image_character_human" />
+            <ImageButton
+                android:id="@+id/image_character_human_0"
+                android:layout_width="200dip"
+                android:layout_height="200dip"
+                android:layout_marginLeft="50dip"
+                android:layout_marginRight="25dip"
+                android:background="@drawable/character_human_0"
+                android:contentDescription="@string/image_character_human" />
+
+            <ImageButton
+                android:id="@+id/image_character_human_1"
+                android:layout_width="200dip"
+                android:layout_height="200dip"
+                android:layout_marginLeft="25dip"
+                android:layout_marginRight="25dip"
+                android:background="@drawable/character_human_1"
+                android:contentDescription="@string/image_character_human" />
+
+            <ImageButton
+                android:id="@+id/image_character_human_2"
+                android:layout_width="200dip"
+                android:layout_height="200dip"
+                android:layout_marginLeft="25dip"
+                android:layout_marginRight="50dip"
+                android:background="@drawable/character_human_2"
+                android:contentDescription="@string/image_character_human" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
     </LinearLayout>
 
 </HorizontalScrollView>

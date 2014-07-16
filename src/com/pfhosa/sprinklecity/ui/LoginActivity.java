@@ -96,15 +96,17 @@ public class LoginActivity extends Activity {
 			postParametersData.add(new BasicNameValuePair("Username", nameLoginString));
 			String response = null;
 			String responseData = null;
-			String username = null, avatar = null;
+			String username = null;
+			int avatar = 0;
 
 			// call executeHttpPost method passing necessary parameters 
 			try {
 				response = CustomHttpClient.executeHttpPost("http://www2.macs.hw.ac.uk/~ph109/DBConnect/connect.php", postParameters);
-				responseData = CustomHttpClient.executeHttpPost("http://www2.macs.hw.ac.uk/~ph109/DBConnect/getCharacter.php", postParametersData);
+				responseData = CustomHttpClient.executeHttpPost("http://www2.macs.hw.ac.uk/~ph109/DBConnect/getHumanCharacter.php", postParametersData);
 
 				// store the result returned by PHP script that runs MySQL query
 				String result = response.toString();  
+				String resultData = responseData.toString();
 
 				//parse json data
 				try{
@@ -112,12 +114,21 @@ public class LoginActivity extends Activity {
 
 					for(int i = 0; i < jArray.length(); ++i) {
 						JSONObject json_data = jArray.getJSONObject(i);
+						//username = json_data.getString("Username");
+						//avatar = json_data.getString("Avatar");
+
+					}
+					
+					JSONArray jArrayData = new JSONArray(resultData);		
+
+					for(int i = 0; i < jArrayData.length(); ++i) {
+						JSONObject json_data = jArrayData.getJSONObject(i);
 						username = json_data.getString("Username");
-						avatar = json_data.getString("Avatar");
+						avatar = Integer.parseInt(json_data.getString("Avatar"));
 
 					}
 
-					openMapFragment(username, Integer.parseInt(avatar));
+					openMapFragment(username, avatar);
 
 				} 
 				catch (JSONException e){

@@ -3,14 +3,15 @@ package com.pfhosa.sprinklecity.model;
 public class HumanAvatar {
 	
 	String username;
-	int avatarImage, avatarEdge, positionX, positionY;
+	int avatarImage, avatarEdge, positionX, positionY, direction;
 	
-	public HumanAvatar(String username, int avatarImage, int avatarEdge, int positionX, int positionY) {
+	public HumanAvatar(String username, int avatarImage, int avatarEdge, int positionX, int positionY, int direction) {
 		this.username = username;
 		this.avatarImage = avatarImage;
 		this.avatarEdge = avatarEdge;
 		this.positionX = positionX;
 		this.positionY = positionY;
+		this.direction = direction;
 	}
 	
 	// Accessors
@@ -25,9 +26,23 @@ public class HumanAvatar {
 	
 	public int getPositionY() {return positionY;}
 	
+	public int getDirection() {return direction;}
+	
+	public void setPositionX(int positionX) {
+		this.positionX = positionX;
+	}
+	
+	public void setPositionY(int positionY) {
+		this.positionY = positionY;
+	}
+	
 	public void setPosition(int positionX, int positionY) {
 		this.positionX = positionX;
 		this.positionY = positionY;
+	}
+	
+	public void setDirection(int direction) {
+		this.direction = direction;
 	}
 	
 	// Methods

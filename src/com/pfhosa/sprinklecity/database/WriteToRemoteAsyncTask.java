@@ -8,7 +8,7 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class InsertRowAsyncTask extends AsyncTask<Void, Void, Void> {
+public class WriteToRemoteAsyncTask extends AsyncTask<Void, Void, Void> {
 
 	String response = null;
 
@@ -16,7 +16,7 @@ public class InsertRowAsyncTask extends AsyncTask<Void, Void, Void> {
 	ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 	Activity feedbackActivity;
 
-	public InsertRowAsyncTask(String url, ArrayList<NameValuePair> postParameters, Activity feedbackActivity) {		
+	public WriteToRemoteAsyncTask(String url, ArrayList<NameValuePair> postParameters, Activity feedbackActivity) {		
 		this.url = url;
 		this.postParameters = postParameters;
 		this.feedbackActivity = feedbackActivity;

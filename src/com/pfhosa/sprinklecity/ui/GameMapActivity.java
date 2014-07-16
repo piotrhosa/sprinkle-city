@@ -22,12 +22,15 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.pfhosa.sprinklecity.R;
+import com.pfhosa.sprinklecity.fragments.LocationFarmFragment;
 import com.pfhosa.sprinklecity.fragments.VirtualMapFragment;
+import com.pfhosa.sprinklecity.fragments.VirtualMapFragment.OnLocationSelectedListener;
 
 public class GameMapActivity extends FragmentActivity implements       
 GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, 
-LocationListener {
+LocationListener,
+OnLocationSelectedListener {
 
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
@@ -85,6 +88,7 @@ LocationListener {
 			
 			getSupportFragmentManager().beginTransaction()
 			.add(R.id.fragment_container_game_map, virtualMapFragment)
+			.addToBackStack(null)
 			.commit();
 		}
 
@@ -239,5 +243,22 @@ LocationListener {
 			 */
 			showErrorDialog(connectionResult.getErrorCode());
 		}
+	}
+	
+	public void openFarmFragment() {
+		LocationFarmFragment farmFragment = new LocationFarmFragment();
+
+		getSupportFragmentManager().beginTransaction()
+		.replace(R.id.fragment_container_game_map, farmFragment)
+		.addToBackStack(null)
+		.commit();
+	}
+	@Override
+	public void onLocationSelected(int fragment) {
+		switch(fragment) {
+		case 1: openFarmFragment(); break;
+		default: break;
+		}
+		
 	}
 }

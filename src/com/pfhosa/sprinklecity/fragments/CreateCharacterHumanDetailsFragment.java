@@ -32,7 +32,7 @@ import android.widget.Toast;
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.CustomHttpClient;
 import com.pfhosa.sprinklecity.database.Database;
-import com.pfhosa.sprinklecity.database.InsertRowAsyncTask;
+import com.pfhosa.sprinklecity.database.WriteToRemoteAsyncTask;
 import com.pfhosa.sprinklecity.model.HumanCharacter;
 
 public class CreateCharacterHumanDetailsFragment extends Fragment {
@@ -265,8 +265,8 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		postParameters.add(new BasicNameValuePair("Animal", Integer.toString(newHuman.getAnimalTrait())));
 		postParameters.add(new BasicNameValuePair("Business", Integer.toString(newHuman.getBusinessTrait())));
 		
-		InsertRowAsyncTask newHumanAsyncTask = new InsertRowAsyncTask(url, postParameters, getActivity());
-		WeakReference<InsertRowAsyncTask> newHumanWeakReference = new WeakReference<InsertRowAsyncTask>(newHumanAsyncTask);
+		WriteToRemoteAsyncTask newHumanAsyncTask = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
+		WeakReference<WriteToRemoteAsyncTask> newHumanWeakReference = new WeakReference<WriteToRemoteAsyncTask>(newHumanAsyncTask);
 		newHumanAsyncTask.execute();		
 
 		Log.d("Username", "available");
