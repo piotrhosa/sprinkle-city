@@ -266,6 +266,7 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		postParameters.add(new BasicNameValuePair("Business", Integer.toString(newHuman.getBusinessTrait())));
 		
 		WriteToRemoteAsyncTask newHumanAsyncTask = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
+
 		WeakReference<WriteToRemoteAsyncTask> newHumanWeakReference = new WeakReference<WriteToRemoteAsyncTask>(newHumanAsyncTask);
 		newHumanAsyncTask.execute();		
 

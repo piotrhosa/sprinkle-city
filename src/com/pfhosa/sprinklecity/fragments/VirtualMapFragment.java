@@ -345,9 +345,9 @@ public class VirtualMapFragment extends Fragment {
 				canvas.drawBitmap(scaledBackgroundBitmap, 0, 0, null);
 				canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
 
-				humanAvatar.setPosition(
-						(int)((pxWidth - humanAvatar.getAvatarEdge()) / 2), 
-						(int)(canvasHeight * 0.8));
+				//humanAvatar.setPosition(
+						//(int)((pxWidth - humanAvatar.getAvatarEdge()) / 2), 
+						//(int)(canvasHeight * 0.8));
 			}
 		}
 
@@ -433,6 +433,7 @@ public class VirtualMapFragment extends Fragment {
 
 			//canvas.drawBitmap(scaledCharacterBitmap, characterX, characterY, null);
 			canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
+			Log.d("Adjusted position", Integer.toString(humanAvatar.getPositionY()));
 
 			if(drawArrows)
 				canvas.drawBitmap(scaledArrowsBitmap, humanAvatar.getPositionX() - 150, humanAvatar.getPositionY() - 200, null);
