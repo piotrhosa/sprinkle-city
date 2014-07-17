@@ -2,19 +2,19 @@ package com.pfhosa.sprinklecity.model;
 
 public class User {
 	
-	String characterName;
-	String password;
-	String animalName;
+	String mUsername;
+	String mPassword;
+	String mAnimalName;
 	
-	public User(String characterName, String password, String animalName) {
-		this.characterName = characterName;
-		this.password = password;
-		this.animalName = animalName;
+	public User(String username, String password, String animalName) {
+		mUsername = username;
+		mPassword = password;
+		mAnimalName = animalName;
 	}
 	
-	public String getCharacterName() {return characterName;}
+	public String getCharacterName() {return mUsername;}
 	
-	public String getPassword() {return password;}
+	public String getPassword() {return mPassword;}
 	
-	public String getAnimalName() {return animalName;}
+	public String getAnimalName() {return mAnimalName;}
 }

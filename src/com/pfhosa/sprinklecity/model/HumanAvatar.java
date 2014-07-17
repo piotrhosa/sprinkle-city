@@ -2,85 +2,85 @@ package com.pfhosa.sprinklecity.model;
 
 public class HumanAvatar {
 	
-	String username;
-	int avatarImage, avatarEdge, positionX, positionY, direction;
+	String mUsername;
+	int mAvatarImage, mAvatarEdge, mPositionX, mPositionY, mDirection;
 	
 	public HumanAvatar(String username, int avatarImage, int avatarEdge, int positionX, int positionY, int direction) {
-		this.username = username;
-		this.avatarImage = avatarImage;
-		this.avatarEdge = avatarEdge;
-		this.positionX = positionX;
-		this.positionY = positionY;
-		this.direction = direction;
+		mUsername = username;
+		mAvatarImage = avatarImage;
+		mAvatarEdge = avatarEdge;
+		mPositionX = positionX;
+		mPositionY = positionY;
+		mDirection = direction;
 	}
 	
 	// Accessors
 	
-	public String getUsername() {return username;}
+	public String getUsername() {return mUsername;}
 	
-	public int getAvatarImage() {return avatarImage;}
+	public int getAvatarImage() {return mAvatarImage;}
 	
-	public int getAvatarEdge() {return avatarEdge;}
+	public int getAvatarEdge() {return mAvatarEdge;}
 	
-	public int getPositionX() {return positionX;}
+	public int getPositionX() {return mPositionX;}
 	
-	public int getPositionY() {return positionY;}
+	public int getPositionY() {return mPositionY;}
 	
-	public int getDirection() {return direction;}
+	public int getDirection() {return mDirection;}
 	
 	public void setPositionX(int positionX) {
-		this.positionX = positionX;
+		mPositionX = positionX;
 	}
 	
 	public void setPositionY(int positionY) {
-		this.positionY = positionY;
+		mPositionY = positionY;
 	}
 	
 	public void setPosition(int positionX, int positionY) {
-		this.positionX = positionX;
-		this.positionY = positionY;
+		mPositionX = positionX;
+		mPositionY = positionY;
 	}
 	
 	public void setDirection(int direction) {
-		this.direction = direction;
+		mDirection = direction;
 	}
 	
 	// Methods
 	
 	public boolean isTouchOnAvatar(int touchX, int touchY) {
 		
-		return 	(touchX > positionX) &&
-				(touchX < positionX + avatarEdge) &&
-				(touchY > positionY) &&
-				(touchY < positionY + avatarEdge);	
+		return 	(touchX > mPositionX) &&
+				(touchX < mPositionX + mAvatarEdge) &&
+				(touchY > mPositionY) &&
+				(touchY < mPositionY + mAvatarEdge);	
 	}
 	
 	public boolean swipeArrowUp(int touchX, int touchY) {
 
-		return 	(touchX > positionX) &&
-				(touchX < positionX + avatarEdge) &&
-				(touchY < positionY);
+		return 	(touchX > mPositionX) &&
+				(touchX < mPositionX + mAvatarEdge) &&
+				(touchY < mPositionY);
 	}
 
 	public boolean swipeArrowDown(int touchX, int touchY) {
 
-		return 	(touchX > positionX) &&
-				(touchX < positionX + avatarEdge) &&
-				(touchY > positionY + avatarEdge);
+		return 	(touchX > mPositionX) &&
+				(touchX < mPositionX + mAvatarEdge) &&
+				(touchY > mPositionY + mAvatarEdge);
 	}
 
 	public boolean swipeArrowLeft(int touchX, int touchY) {
 
-		return 	(touchX < positionX) &&
-				(touchY > positionY) &&
-				(touchY < positionY + avatarEdge); 
+		return 	(touchX < mPositionX) &&
+				(touchY > mPositionY) &&
+				(touchY < mPositionY + mAvatarEdge); 
 	}
 
 	public boolean swipeArrowRight(int touchX, int touchY) {
 
-		return	(touchX > positionX + avatarEdge) &&
-				(touchY > positionY) &&
-				(touchY < positionY + avatarEdge);
+		return	(touchX > mPositionX + mAvatarEdge) &&
+				(touchY > mPositionY) &&
+				(touchY < mPositionY + mAvatarEdge);
 	}
 
 }

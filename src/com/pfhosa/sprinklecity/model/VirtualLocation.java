@@ -2,38 +2,38 @@ package com.pfhosa.sprinklecity.model;
 
 public class VirtualLocation {
 	
-	String owner;
-	int locationX, locationY, locationEdge;	
+	String mOwner;
+	int mLocationX, mLocationY, mLocationEdge;	
 	
-	public VirtualLocation(String owner, int locatoinX, int locationY, int locationEdge) {
-		this.owner = owner;
-		this.locationX = locatoinX;
-		this.locationY = locationY;
-		this.locationEdge = locationEdge;
+	public VirtualLocation(String owner, int locationX, int locationY, int locationEdge) {
+		mOwner = owner;
+		mLocationX = locationX;
+		mLocationY = locationY;
+		mLocationEdge = locationEdge;
 	}
 	
 	// Accessors
 	
-	public String getOwner() {return owner;}
+	public String getOwner() {return mOwner;}
 	
-	public int getLocationX() {return locationX;}
+	public int getLocationX() {return mLocationX;}
 	
-	public int getLocationY() {return locationY;}
+	public int getLocationY() {return mLocationY;}
 	
-	public int getLocationEdge() {return locationEdge;}
+	public int getLocationEdge() {return mLocationEdge;}
 	
 	// Methods
 	
 	public boolean isLocationOnLeft(int avatarX, int avatarY, int avatarEdge, int avatarEdgeMargin) {
-		return	(locationX < avatarX + avatarEdge) &&
-				(locationY + locationEdge / 2 > avatarY + avatarEdgeMargin) &&
-				(locationY + locationEdge / 2 < avatarY + avatarEdge - avatarEdgeMargin);
+		return	(mLocationX < avatarX + avatarEdge) &&
+				(mLocationY + mLocationEdge / 2 > avatarY + avatarEdgeMargin) &&
+				(mLocationY + mLocationEdge / 2 < avatarY + avatarEdge - avatarEdgeMargin);
 	}
 	
 	public boolean isLocationOnRight(int avatarX, int avatarY, int avatarEdge, int avatarEdgeMargin) {
-		return	(locationX > avatarX) &&
-				(locationY + locationEdge / 2 > avatarY + avatarEdgeMargin) &&
-				(locationY + locationEdge / 2 < avatarY + avatarEdge - avatarEdgeMargin);
+		return	(mLocationX > avatarX) &&
+				(mLocationY + mLocationEdge / 2 > avatarY + avatarEdgeMargin) &&
+				(mLocationY + mLocationEdge / 2 < avatarY + avatarEdge - avatarEdgeMargin);
 	}
 
 }

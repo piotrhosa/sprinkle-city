@@ -88,7 +88,7 @@ OnLocationSelectedListener {
 			
 			getSupportFragmentManager().beginTransaction()
 			.add(R.id.fragment_container_game_map, virtualMapFragment)
-			.addToBackStack(null)
+			.addToBackStack("virtualMapFragment")
 			.commit();
 		}
 
@@ -250,7 +250,7 @@ OnLocationSelectedListener {
 
 		getSupportFragmentManager().beginTransaction()
 		.replace(R.id.fragment_container_game_map, farmFragment)
-		.addToBackStack(null)
+		.addToBackStack("farmFragment")
 		.commit();
 	}
 	@Override

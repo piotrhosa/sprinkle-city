@@ -8,6 +8,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,8 +95,13 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 			pickingProgressBar.setProgress(progressStatus);
 			progressTextView.setText(progressStatus + "/" + pickingProgressBar.getMax());
 			
-			if(progressStatus >= 100) 
+			if(progressStatus < 100) {
 				//getActivity().getFragmentManager().beginTransaction().remove(this).commit();
+	            FragmentManager fm = getActivity().getSupportFragmentManager();
+	            fm.popBackStack("virtualMapFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+	            
+	            Log.d("Pop back", "jasjdjd");
+			}
 				
 
 			Log.d("Progress status", Integer.toString(progressStatus));

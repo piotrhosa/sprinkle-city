@@ -5,35 +5,31 @@ import android.os.Parcelable;
 
 public class HumanCharacter implements Parcelable {
 
-	String name;
-	int avatar;
-	String job;
-	int social;
-	int animal;
-	int business;
+	String mUsername, mJob;
+	int mAvatar, mSocial, mAnimal, mBusiness;
 	
-	public HumanCharacter(String name, int avatar, String job, int social, int animal, int business) {
-		this.name = name;
-		this.avatar = avatar;
-		this.job = job;
-		this.social = social;
-		this.animal = animal;
-		this.business = business;		
+	public HumanCharacter(String username, int avatar, String job, int social, int animal, int business) {
+		mUsername = username;
+		mAvatar = avatar;
+		mJob = job;
+		mSocial = social;
+		mAnimal = animal;
+		mBusiness = business;		
 	}
 	
 	// Accessors
 	
-	public String getName() {return name;}
+	public String getName() {return mUsername;}
 	
-	public int getAvatar() {return avatar;}
+	public int getAvatar() {return mAvatar;}
 	
-	public String getJob(){return job;}
+	public String getJob(){return mJob;}
 	
-	public int getSocialTrait() {return social;}
+	public int getSocialTrait() {return mSocial;}
 	
-	public int getAnimalTrait() {return animal;}
+	public int getAnimalTrait() {return mAnimal;}
 	
-	public int getBusinessTrait() {return business;}
+	public int getBusinessTrait() {return mBusiness;}
 	
 	// Parcelable implementation
 	
@@ -59,11 +55,11 @@ public class HumanCharacter implements Parcelable {
     };
 
     private HumanCharacter(Parcel in) {
-        this.name = in.readString();
-        this.avatar = in.readInt();
-        this.job = in.readString();
-        this.social = in.readInt();
-        this.animal = in.readInt();
-        this.business = in.readInt();
+        mUsername = in.readString();
+        mAvatar = in.readInt();
+        mJob = in.readString();
+        mSocial = in.readInt();
+        mAnimal = in.readInt();
+        mBusiness = in.readInt();
     }
 }

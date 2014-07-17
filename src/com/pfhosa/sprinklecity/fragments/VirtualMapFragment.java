@@ -41,6 +41,7 @@ import com.pfhosa.sprinklecity.ui.HomeActivity;
 
 public class VirtualMapFragment extends Fragment {
 
+	// Constants
 	public static final int PIXELS_PER_METER = 50;
 	public static final int AVATAR_EDGE = 300;
 	public static final int AVATAR_EDGE_MARGIN = 0;
@@ -49,16 +50,18 @@ public class VirtualMapFragment extends Fragment {
 	public static final int CORNER_EDGE = 300;
 	public static final double DISTANCE_FACTOR = 0.5;
 
+	// Location
 	static float distance, distanceGlobal;
 	static double currentLatitude, currentLongitude;
 	static Location previousLocation, currentLocation = null, seenLocation = null;
-	
+
 	OnLocationSelectedListener locationSelectedListener;
 
 	HumanAvatar humanAvatar;
+	int avatarGlobal;
 
 	String usernameGlobal;
-	int avatarGlobal;
+
 
 	WriteToRemoteAsyncTask updateHumanAvatar;
 
@@ -75,12 +78,14 @@ public class VirtualMapFragment extends Fragment {
 			usernameGlobal = getArguments().getString("Username");
 			avatarGlobal = getArguments().getInt("Avatar");
 		}
-		
+
 		makeNewAvatar();
 
 		new GetLocationsAsyncTask().execute();
 		new GetAvatarAsyncTask().execute();
-		
+
+		Log.d("SurfaceView created", "true");
+
 		return new MapSurfaceView(getActivity());
 	}
 
@@ -88,10 +93,12 @@ public class VirtualMapFragment extends Fragment {
 	public void onPause() {
 		super.onPause();
 		updateAvatar();
+		//thread.interrupt();
+		//thread = null;
 		//unregisterReceiver(locationReceiver);
 
 	}
-	
+
 	public void makeNewAvatar() {
 		humanAvatar = new HumanAvatar(
 				usernameGlobal, 
@@ -100,9 +107,9 @@ public class VirtualMapFragment extends Fragment {
 				0,
 				0,
 				-1);
-	
+
 	}
-	
+
 	public void updateAvatar() {
 		String url = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/updateHumanAvatar.php";
 
@@ -111,9 +118,9 @@ public class VirtualMapFragment extends Fragment {
 		postParameters.add(new BasicNameValuePair("PositionX", Integer.toString(humanAvatar.getPositionX())));
 		postParameters.add(new BasicNameValuePair("PositionY", Integer.toString(humanAvatar.getPositionY())));
 		postParameters.add(new BasicNameValuePair("Direction", Integer.toString(humanAvatar.getDirection())));
-		
+
 		updateHumanAvatar = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
-		
+
 		updateHumanAvatar.execute();
 		Log.d("Update avatar", "executing");
 	}
@@ -170,6 +177,7 @@ public class VirtualMapFragment extends Fragment {
 	public class MapSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
 		private MapThread thread;
+
 		Context context;
 		SurfaceHolder surfaceHolder;
 
@@ -184,15 +192,22 @@ public class VirtualMapFragment extends Fragment {
 
 			thread = new MapThread(surfaceHolder, context, new Handler());
 			setFocusable(true);
+
+			Log.d("New instance of MapThread", "new");
 		}
 
 		public MapThread getThread() {
 			return thread;
 		}
 
-		public void surfaceCreated(SurfaceHolder holder) {
+		public void surfaceCreated(SurfaceHolder holder) {     
+			if (thread.getState() == Thread.State.TERMINATED)
+				new MapSurfaceView(getActivity());
+			
 			thread.setRunning(true);
-			thread.start();
+			
+			if(thread.getState() == Thread.State.NEW)
+				thread.start();
 		}
 
 		public void surfaceChanged(SurfaceHolder holder, int format, int width,	int height) {      
@@ -201,6 +216,7 @@ public class VirtualMapFragment extends Fragment {
 
 		public void surfaceDestroyed(SurfaceHolder holder) {
 
+			Log.d("Surface destroyed", "aye");
 			boolean retry = true;
 
 			thread.setRunning(false);
@@ -281,10 +297,7 @@ public class VirtualMapFragment extends Fragment {
 			return true;  
 		}
 
-		@Override
-		protected void onDraw(Canvas canvas) {
 
-		}
 	}
 
 	/**
@@ -345,9 +358,9 @@ public class VirtualMapFragment extends Fragment {
 				canvas.drawBitmap(scaledBackgroundBitmap, 0, 0, null);
 				canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
 
-				//humanAvatar.setPosition(
-						//(int)((pxWidth - humanAvatar.getAvatarEdge()) / 2), 
-						//(int)(canvasHeight * 0.8));
+				humanAvatar.setPosition(
+						(int)((pxWidth - humanAvatar.getAvatarEdge()) / 2), 
+						(int)(canvasHeight * 0.8));
 			}
 		}
 
@@ -357,8 +370,10 @@ public class VirtualMapFragment extends Fragment {
 				try {
 					canvas = surfaceHolder.lockCanvas(null);
 
-					synchronized (surfaceHolder) {
-						doDraw(canvas, distanceGlobal);
+					if(canvas != null) {
+						synchronized (surfaceHolder) {
+							doDraw(canvas, distanceGlobal);
+						}
 					}
 				} 
 				catch(NullPointerException e) {
@@ -371,6 +386,8 @@ public class VirtualMapFragment extends Fragment {
 				}
 			}
 		}
+
+		public boolean getRunning() {return running;}
 
 		public void setRunning(boolean running) { 
 			this.running = running;
@@ -393,7 +410,7 @@ public class VirtualMapFragment extends Fragment {
 		}
 
 		public String locationToLeftExists() {
-			
+
 			for(VirtualLocation vl : virtualLocations) { 
 				if(vl.isLocationOnLeft(humanAvatar.getPositionX(),
 						humanAvatar.getPositionY(), 
@@ -433,7 +450,6 @@ public class VirtualMapFragment extends Fragment {
 
 			//canvas.drawBitmap(scaledCharacterBitmap, characterX, characterY, null);
 			canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
-			Log.d("Adjusted position", Integer.toString(humanAvatar.getPositionY()));
 
 			if(drawArrows)
 				canvas.drawBitmap(scaledArrowsBitmap, humanAvatar.getPositionX() - 150, humanAvatar.getPositionY() - 200, null);
@@ -513,7 +529,7 @@ public class VirtualMapFragment extends Fragment {
 			return virtualLocations;
 		}
 	}
-	
+
 	public class GetAvatarAsyncTask extends AsyncTask<Void, Void, Void> {
 
 		String username, owner;
@@ -567,7 +583,7 @@ public class VirtualMapFragment extends Fragment {
 
 		}
 	}
-	
+
 	public interface OnLocationSelectedListener {
 		public void onLocationSelected(int fragment);
 	}

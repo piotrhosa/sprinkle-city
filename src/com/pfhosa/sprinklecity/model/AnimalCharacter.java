@@ -5,27 +5,27 @@ import android.os.Parcelable;
 
 public class AnimalCharacter implements Parcelable {
 
-	String name;
-	int avatar;
-	int sleep;
-	int fitness;
+	String mName;
+	int mAvatar;
+	int mSleep;
+	int mFitness;
 
 	public AnimalCharacter(String name, int avatar, int sleep, int fitness) {
-		this.name = name;
-		this.avatar = avatar;
-		this.sleep = sleep;
-		this.fitness = fitness;		
+		mName = name;
+		mAvatar = avatar;
+		mSleep = sleep;
+		mFitness = fitness;		
 	}
 
 	// Accessors
 
-	public String getName() {return name;}
+	public String getName() {return mName;}
 
-	public int getAvatar() {return avatar;}
+	public int getAvatar() {return mAvatar;}
 
-	public int getSleep() {return sleep;}
+	public int getSleep() {return mSleep;}
 
-	public int getFitness() {return fitness;}
+	public int getFitness() {return mFitness;}
 
 	// Parcelable implementation
 
@@ -49,9 +49,9 @@ public class AnimalCharacter implements Parcelable {
 	};
 
 	private AnimalCharacter(Parcel in) {
-		this.name = in.readString();
-		this.avatar = in.readInt();
-		this.sleep = in.readInt();
-		this.fitness = in.readInt();
+		mName = in.readString();
+		mAvatar = in.readInt();
+		mSleep = in.readInt();
+		mFitness = in.readInt();
 	}
 }
