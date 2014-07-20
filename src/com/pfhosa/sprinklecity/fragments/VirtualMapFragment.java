@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,7 +19,6 @@ import android.graphics.Canvas;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
@@ -57,6 +57,7 @@ public class VirtualMapFragment extends Fragment {
 
 	OnLocationSelectedListener locationSelectedListener;
 
+	MapSurfaceView mapSurfaceView;
 	HumanAvatar humanAvatar;
 	int avatarGlobal;
 
@@ -68,8 +69,17 @@ public class VirtualMapFragment extends Fragment {
 	ArrayList<VirtualLocation> virtualLocations= new ArrayList<VirtualLocation>();
 
 	LocationReceiver locationReceiver;
+	
+	 @Override
+	public void onResume() {
+	  if (mapSurfaceView != null){
+	   mapSurfaceView.surfaceRestart();
+	  }
+	  super.onResume();
+	 }
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
 		// Register BroadcastReceiver
 		LocationReceiver locationReceiver = new LocationReceiver();
 		getActivity().registerReceiver(locationReceiver, new IntentFilter("newLocationIntent"));
@@ -86,16 +96,18 @@ public class VirtualMapFragment extends Fragment {
 
 		Log.d("SurfaceView created", "true");
 
-		return new MapSurfaceView(getActivity());
+		mapSurfaceView = new MapSurfaceView(getActivity());
+		return mapSurfaceView;
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
 		updateAvatar();
-		//thread.interrupt();
-		//thread = null;
-		//unregisterReceiver(locationReceiver);
+
+		if(mapSurfaceView != null){
+			mapSurfaceView.surfaceDestroyed(mapSurfaceView.getHolder());
+		}
 
 	}
 
@@ -176,6 +188,17 @@ public class VirtualMapFragment extends Fragment {
 
 	public class MapSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
+		@SuppressWarnings("unused")
+		private int canvasWidth = 200;
+		private int canvasHeight = 400;
+
+		Bitmap backgroundBitmap, characterBitmap, arrowsBitmap,  locationBitmap;
+		Bitmap scaledBackgroundBitmap, scaledCharacterBitmap, scaledArrowsBitmap, scaledLocationBitmap;
+
+		float distance = 0;
+		int newWidth, newHeight;
+		boolean drawArrows = false;
+
 		private MapThread thread;
 
 		Context context;
@@ -184,16 +207,10 @@ public class VirtualMapFragment extends Fragment {
 		int touchX, touchY;
 
 		public MapSurfaceView(Context context) {
-
 			super(context);
-
-			surfaceHolder = getHolder();
-			surfaceHolder.addCallback(this);
-
-			thread = new MapThread(surfaceHolder, context, new Handler());
 			setFocusable(true);
 
-			Log.d("New instance of MapThread", "new");
+			thread = new MapThread(mapSurfaceView);
 		}
 
 		public MapThread getThread() {
@@ -201,13 +218,7 @@ public class VirtualMapFragment extends Fragment {
 		}
 
 		public void surfaceCreated(SurfaceHolder holder) {     
-			if (thread.getState() == Thread.State.TERMINATED)
-				new MapSurfaceView(getActivity());
-			
-			thread.setRunning(true);
-			
-			if(thread.getState() == Thread.State.NEW)
-				thread.start();
+
 		}
 
 		public void surfaceChanged(SurfaceHolder holder, int format, int width,	int height) {      
@@ -215,19 +226,12 @@ public class VirtualMapFragment extends Fragment {
 		}
 
 		public void surfaceDestroyed(SurfaceHolder holder) {
+			thread.terminateSurface();
+		}
 
-			Log.d("Surface destroyed", "aye");
-			boolean retry = true;
-
-			thread.setRunning(false);
-
-			while (retry) {
-				try {
-					thread.join();
-					retry = false;
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+		public void surfaceRestart(){
+			if (thread != null){
+				thread.restartSurface(); 
 			}
 		}
 
@@ -297,42 +301,7 @@ public class VirtualMapFragment extends Fragment {
 			return true;  
 		}
 
-
-	}
-
-	/**
-	 * @author Piotr
-	 * This class is a new thread for SurfaceView. All drawing and canvas measurements are done here.
-	 */
-	public class MapThread extends Thread {
-
-		@SuppressWarnings("unused")
-		private int canvasWidth = 200;
-		private int canvasHeight = 400;
-		private boolean running = false;
-
-		SurfaceHolder surfaceHolder;
-		Handler handler;
-		Context context;
-		Bitmap backgroundBitmap, characterBitmap, arrowsBitmap,  locationBitmap;
-		Bitmap scaledBackgroundBitmap, scaledCharacterBitmap, scaledArrowsBitmap, scaledLocationBitmap;
-		Canvas canvas = null;
-
-		float distance = 0;
-		int newWidth, newHeight;
-		boolean drawArrows = false;
-
-
-		public MapThread(SurfaceHolder surfaceHolder, Context context, Handler handler) {
-
-			this.surfaceHolder = surfaceHolder;
-			this.handler = handler;
-			this.context = context;
-		}
-
-		// 
-		public void doStart() {
-
+		public void onPrepare(Canvas canvas) {
 			synchronized (surfaceHolder) {
 
 				DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
@@ -351,7 +320,8 @@ public class VirtualMapFragment extends Fragment {
 				newWidth = Math.round(backgroundBitmap.getWidth()/scaleWidth);
 
 				scaledBackgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, newWidth, newHeight, true);
-				scaledCharacterBitmap = Bitmap.createScaledBitmap(characterBitmap, humanAvatar.getAvatarEdge(), humanAvatar.getAvatarEdge(), true);
+				scaledCharacterBitmap = Bitmap.createScaledBitmap(characterBitmap, humanAvatar.getAvatarEdge(), humanAvatar.getAvatarEdge(), 
+						true);
 				scaledArrowsBitmap = Bitmap.createScaledBitmap(arrowsBitmap, ARROWS_EDGE, ARROWS_EDGE, true);
 				scaledLocationBitmap = Bitmap.createScaledBitmap(locationBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
 
@@ -364,22 +334,68 @@ public class VirtualMapFragment extends Fragment {
 			}
 		}
 
-		public void run() {
+		public void onDraw(Canvas canvas) {
+			canvas.drawBitmap(scaledBackgroundBitmap, 0,  0, null);
 
-			while (running) {
+			for(VirtualLocation vl : virtualLocations) 
+				canvas.drawBitmap(scaledLocationBitmap, vl.getLocationX(), vl.getLocationY(), null);			
+
+			//canvas.drawBitmap(scaledCharacterBitmap, characterX, characterY, null);
+			canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
+
+			if(drawArrows)
+				canvas.drawBitmap(scaledArrowsBitmap, humanAvatar.getPositionX() - 150, humanAvatar.getPositionY() - 200, null);
+		}
+
+
+	}
+
+	/**
+	 * @author Piotr
+	 * This class is a new thread for SurfaceView. All drawing and canvas measurements are done here.
+	 */
+
+	private class MapThread implements Runnable {
+		private SurfaceHolder surfaceHolder;
+		private MapSurfaceView mMapSurfaceView;
+		private Canvas canvas;
+		volatile Thread thread;
+		
+		boolean drawArrows;
+		int canvasHeight, canvasWidth;
+
+		public MapThread(MapSurfaceView mapSurfaceView){
+			surfaceHolder = mapSurfaceView.getHolder();
+			mMapSurfaceView = mapSurfaceView;
+			canvas = new Canvas();
+
+			thread = new Thread(this);
+			thread.start();
+		}
+		public void terminateSurface(){
+			this.thread.interrupt();
+		}
+		public void restartSurface() {
+			if (thread.getState() == Thread.State.TERMINATED){
+				thread = new Thread(this);
+				thread.start();  // Start a new thread
+			} 
+		}
+		
+		@SuppressLint("WrongCall")
+		@Override
+		public void run() {
+			while (!Thread.currentThread().isInterrupted()) {
 				try {
 					canvas = surfaceHolder.lockCanvas(null);
-
-					if(canvas != null) {
+					if (canvas == null){
+						surfaceHolder = mMapSurfaceView.getHolder();
+					} else {
 						synchronized (surfaceHolder) {
-							doDraw(canvas, distanceGlobal);
+							mMapSurfaceView.onDraw(canvas);
 						}
-					}
-				} 
-				catch(NullPointerException e) {
-					e.printStackTrace();					
-				} 
-				finally {
+					}   
+				} finally {
 					if (canvas != null) {
 						surfaceHolder.unlockCanvasAndPost(canvas);
 					}
@@ -387,18 +403,12 @@ public class VirtualMapFragment extends Fragment {
 			}
 		}
 
-		public boolean getRunning() {return running;}
-
-		public void setRunning(boolean running) { 
-			this.running = running;
-		}
-
 		public void setSurfaceSize(int width, int height) {
 
 			synchronized (surfaceHolder) {
 				canvasWidth = width;
 				canvasHeight = height;
-				doStart();
+				mMapSurfaceView.onPrepare(canvas);
 			}
 		}
 
@@ -437,27 +447,6 @@ public class VirtualMapFragment extends Fragment {
 
 		public void setDrawArrows(boolean set) {
 			drawArrows = set;
-		}
-
-		private void doDraw(Canvas canvas, float distance) {
-
-			// Order of Bitmaps is important (they are drawn in this order).
-
-			canvas.drawBitmap(scaledBackgroundBitmap, 0,  0, null);
-
-			for(VirtualLocation vl : virtualLocations) 
-				canvas.drawBitmap(scaledLocationBitmap, vl.getLocationX(), vl.getLocationY(), null);			
-
-			//canvas.drawBitmap(scaledCharacterBitmap, characterX, characterY, null);
-			canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
-
-			if(drawArrows)
-				canvas.drawBitmap(scaledArrowsBitmap, humanAvatar.getPositionX() - 150, humanAvatar.getPositionY() - 200, null);
-
-		}
-
-		public void setVirtualLocations() {
-
 		}
 	}
 
