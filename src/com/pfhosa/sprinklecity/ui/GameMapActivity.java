@@ -24,13 +24,12 @@ import com.google.android.gms.location.LocationRequest;
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.fragments.LocationFarmFragment;
 import com.pfhosa.sprinklecity.fragments.VirtualMapFragment;
-import com.pfhosa.sprinklecity.fragments.VirtualMapFragment.OnLocationSelectedListener;
 
 public class GameMapActivity extends FragmentActivity implements       
 GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, 
-LocationListener,
-OnLocationSelectedListener {
+LocationListener {
+//OnLocationSelectedListener {
 
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
@@ -253,6 +252,7 @@ OnLocationSelectedListener {
 		.addToBackStack("farmFragment")
 		.commit();
 	}
+	/**
 	@Override
 	public void onLocationSelected(int fragment) {
 		switch(fragment) {
@@ -261,4 +261,5 @@ OnLocationSelectedListener {
 		}
 		
 	}
+	*/
 }

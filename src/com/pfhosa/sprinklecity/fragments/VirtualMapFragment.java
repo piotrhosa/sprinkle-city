@@ -8,7 +8,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.annotation.SuppressLint;
+import com.pfhosa.sprinklecity.R;
+import com.pfhosa.sprinklecity.database.CustomHttpClient;
+import com.pfhosa.sprinklecity.database.WriteToRemoteAsyncTask;
+import com.pfhosa.sprinklecity.model.DrawableObject;
+import com.pfhosa.sprinklecity.model.HumanAvatar;
+import com.pfhosa.sprinklecity.model.VirtualLocation;
+import com.pfhosa.sprinklecity.ui.GameLocationActivity;
+import com.pfhosa.sprinklecity.ui.HomeActivity;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +24,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,15 +40,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.pfhosa.sprinklecity.R;
-import com.pfhosa.sprinklecity.database.CustomHttpClient;
-import com.pfhosa.sprinklecity.database.WriteToRemoteAsyncTask;
-import com.pfhosa.sprinklecity.model.HumanAvatar;
-import com.pfhosa.sprinklecity.model.VirtualLocation;
-import com.pfhosa.sprinklecity.ui.GameLocationActivity;
-import com.pfhosa.sprinklecity.ui.HomeActivity;
-
 public class VirtualMapFragment extends Fragment {
+
+	private MapSurfaceView mapSurfaceView;
 
 	// Constants
 	public static final int PIXELS_PER_METER = 50;
@@ -57,30 +60,35 @@ public class VirtualMapFragment extends Fragment {
 
 	OnLocationSelectedListener locationSelectedListener;
 
-	MapSurfaceView mapSurfaceView;
 	HumanAvatar humanAvatar;
 	int avatarGlobal;
 
 	String usernameGlobal;
+	int touchX, touchY;
 
+	DrawableObject arrows;
 
 	WriteToRemoteAsyncTask updateHumanAvatar;
+	
+	volatile Thread thread;
 
 	ArrayList<VirtualLocation> virtualLocations= new ArrayList<VirtualLocation>();
 
 	LocationReceiver locationReceiver;
-	
-	 @Override
+
+	@Override
 	public void onResume() {
-	  if (mapSurfaceView != null){
-	   mapSurfaceView.surfaceRestart();
-	  }
-	  super.onResume();
-	 }
+		if (mapSurfaceView != null){
+			mapSurfaceView.surfaceRestart();
+		}
+		super.onResume();
+	}
 
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		if(mapSurfaceView == null)
+			mapSurfaceView = new MapSurfaceView(getActivity());
 
-		// Register BroadcastReceiver
 		LocationReceiver locationReceiver = new LocationReceiver();
 		getActivity().registerReceiver(locationReceiver, new IntentFilter("newLocationIntent"));
 
@@ -88,77 +96,23 @@ public class VirtualMapFragment extends Fragment {
 			usernameGlobal = getArguments().getString("Username");
 			avatarGlobal = getArguments().getInt("Avatar");
 		}
-
+		
 		makeNewAvatar();
+		
+		mapSurfaceView.doPrepare();
 
-		new GetLocationsAsyncTask().execute();
-		new GetAvatarAsyncTask().execute();
-
-		Log.d("SurfaceView created", "true");
-
-		mapSurfaceView = new MapSurfaceView(getActivity());
 		return mapSurfaceView;
 	}
 
+
 	@Override
 	public void onPause() {
-		super.onPause();
-		updateAvatar();
-
-		if(mapSurfaceView != null){
+		if (mapSurfaceView != null){
 			mapSurfaceView.surfaceDestroyed(mapSurfaceView.getHolder());
 		}
-
+		super.onPause();
 	}
 
-	public void makeNewAvatar() {
-		humanAvatar = new HumanAvatar(
-				usernameGlobal, 
-				avatarGlobal,
-				AVATAR_EDGE,
-				0,
-				0,
-				-1);
-
-	}
-
-	public void updateAvatar() {
-		String url = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/updateHumanAvatar.php";
-
-		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-		postParameters.add(new BasicNameValuePair("Username", humanAvatar.getUsername()));
-		postParameters.add(new BasicNameValuePair("PositionX", Integer.toString(humanAvatar.getPositionX())));
-		postParameters.add(new BasicNameValuePair("PositionY", Integer.toString(humanAvatar.getPositionY())));
-		postParameters.add(new BasicNameValuePair("Direction", Integer.toString(humanAvatar.getDirection())));
-
-		updateHumanAvatar = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
-
-		updateHumanAvatar.execute();
-		Log.d("Update avatar", "executing");
-	}
-
-	/**
-	 * This method takes the current Location and calculates the distance between the current and old one. 
-	 */
-	public void setNewDistance(Location currentLocation) {
-
-		if(previousLocation == null) 
-			distance = 0;
-		else 
-			distance = previousLocation.distanceTo(currentLocation);		
-
-		distanceGlobal = distance;
-		previousLocation = currentLocation;
-
-		humanAvatar.setPositionY(humanAvatar.getPositionY() + (int)(PIXELS_PER_METER * distance * humanAvatar.getDirection()));
-
-		Log.d("distance", Float.toString(distance));
-	}
-
-	/**
-	 * This method receives new latitude and longitude that were broadcast and passes the new Location to
-	 * setNewDistance.
-	 */
 	public class LocationReceiver extends BroadcastReceiver {
 
 		@Override
@@ -180,74 +134,136 @@ public class VirtualMapFragment extends Fragment {
 			}	
 		}
 	}
+	
+	public void makeNewAvatar() {
+		humanAvatar = new HumanAvatar(
+				usernameGlobal, 
+				avatarGlobal,
+				AVATAR_EDGE,
+				0,
+				0,
+				-1);
 
-	/**
-	 * @author Piotr
-	 * This class creates SurfaceView and makes new thread for it. It also listens to MotionEvents.
-	 */
+	}
 
-	public class MapSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+	public void populateMap(ArrayList<VirtualLocation> virtualLocations) {
 
-		@SuppressWarnings("unused")
-		private int canvasWidth = 200;
-		private int canvasHeight = 400;
+		for(VirtualLocation vl : virtualLocations) 
+			Log.d("Username location", "" + vl.getOwner());
+	}
 
+	public void setNewDistance(Location currentLocation) {
+
+		if(previousLocation == null) 
+			distance = 0;
+		else 
+			distance = previousLocation.distanceTo(currentLocation);		
+
+		distanceGlobal = distance;
+		previousLocation = currentLocation;
+
+		humanAvatar.setPositionY(humanAvatar.getPositionY() + (int)(PIXELS_PER_METER * distance * humanAvatar.getDirection()));
+
+	}
+
+	private class MapSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+		
+		int newWidth, newHeight;
+		
 		Bitmap backgroundBitmap, characterBitmap, arrowsBitmap,  locationBitmap;
 		Bitmap scaledBackgroundBitmap, scaledCharacterBitmap, scaledArrowsBitmap, scaledLocationBitmap;
 
-		float distance = 0;
-		int newWidth, newHeight;
-		boolean drawArrows = false;
-
-		private MapThread thread;
-
-		Context context;
-		SurfaceHolder surfaceHolder;
-
-		int touchX, touchY;
+		private SurfaceThread surfaceThread;
 
 		public MapSurfaceView(Context context) {
 			super(context);
 			setFocusable(true);
-
-			thread = new MapThread(mapSurfaceView);
+			surfaceThread = new SurfaceThread(this);
 		}
 
-		public MapThread getThread() {
-			return thread;
+		@Override
+		public void surfaceChanged(SurfaceHolder holder, int format, int width,
+				int height) {
 		}
 
-		public void surfaceCreated(SurfaceHolder holder) {     
-
+		@Override
+		public void surfaceCreated(SurfaceHolder holder) {
+			surfaceThread.restartSurface();
 		}
 
-		public void surfaceChanged(SurfaceHolder holder, int format, int width,	int height) {      
-			thread.setSurfaceSize(width, height);
-		}
-
+		@Override
 		public void surfaceDestroyed(SurfaceHolder holder) {
-			thread.terminateSurface();
+			surfaceThread.terminateSurface();
 		}
 
 		public void surfaceRestart(){
-			if (thread != null){
-				thread.restartSurface(); 
+			if (surfaceThread != null){
+				surfaceThread.restartSurface(); 
 			}
 		}
+		
+		public void doPrepare() {
+			
 
-		/**
-		 * Handles tapping on avatar and swiping arrows that set direction.
-		 */
-		@Override
-		public boolean onTouchEvent(MotionEvent event) {
+				arrows = new DrawableObject(0, 0, R.drawable.arrows, false);
 
+				DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
+				float pxHeight = displayMetrics.heightPixels;
+				float pxWidth = displayMetrics.widthPixels;
+
+				backgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.street_view);
+				characterBitmap = BitmapFactory.decodeResource(getResources(), humanAvatar.getAvatarImage());
+				arrowsBitmap = BitmapFactory.decodeResource(getResources(), arrows.getImage());
+				locationBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_temple);
+
+				float scaleHeight = (float)backgroundBitmap.getHeight()/(float)pxHeight;
+				float scaleWidth = (float)backgroundBitmap.getWidth()/(float)pxWidth;
+
+				newHeight = Math.round(backgroundBitmap.getHeight()/scaleHeight);
+				newWidth = Math.round(backgroundBitmap.getWidth()/scaleWidth);
+
+				scaledBackgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, newWidth, newHeight, true);
+				scaledCharacterBitmap = Bitmap.createScaledBitmap(characterBitmap, humanAvatar.getAvatarEdge(), humanAvatar.getAvatarEdge(), true);
+				scaledArrowsBitmap = Bitmap.createScaledBitmap(arrowsBitmap, ARROWS_EDGE, ARROWS_EDGE, true);
+				scaledLocationBitmap = Bitmap.createScaledBitmap(locationBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
+
+				//canvas.drawBitmap(scaledBackgroundBitmap, 0, 0, null);
+				//canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
+
+				humanAvatar.setPosition(
+						(int)((pxWidth - humanAvatar.getAvatarEdge()) / 2), 
+						(int)(pxHeight * 0.8));
+		}
+		
+		public void doDraw(Canvas canvas){
+
+			Log.d("Drawing", "...");
+
+			// Order of Bitmaps is important (they are drawn in this order).
+
+			canvas.drawBitmap(scaledBackgroundBitmap, 0,  0, null);
+
+			for(VirtualLocation vl : virtualLocations) 
+				canvas.drawBitmap(scaledLocationBitmap, vl.getLocationX(), vl.getLocationY(), null);			
+
+			//canvas.drawBitmap(scaledCharacterBitmap, characterX, characterY, null);
+			canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
+
+			if(arrows.getVisibility())
+				canvas.drawBitmap(scaledArrowsBitmap, humanAvatar.getPositionX() - 150, humanAvatar.getPositionY() - 200, null);
+
+		}
+
+		@Override 
+		public boolean onTouchEvent(MotionEvent event){
 			if(event.getAction() == MotionEvent.ACTION_DOWN) {
 
 				touchX = (int)event.getX();
 				touchY = (int)event.getY();
 
 				if(humanAvatar.isTouchOnAvatar(touchX, touchY))
-					thread.setDrawArrows(true);
+					//thread.setDrawArrows(true);
+					arrows.setVisibility(true);
 			}
 
 			if(event.getAction() == MotionEvent.ACTION_UP) {
@@ -255,7 +271,7 @@ public class VirtualMapFragment extends Fragment {
 				touchX = (int)event.getX();
 				touchY = (int)event.getY();
 
-				if(thread.isTouchOnUpperLeft(touchX, touchY)) {
+				if(surfaceThread.isTouchOnUpperLeft(touchX, touchY)) {
 					Intent openHome = new Intent(getActivity(), HomeActivity.class);
 					startActivity(openHome);
 				}					
@@ -266,153 +282,99 @@ public class VirtualMapFragment extends Fragment {
 				touchY = (int)event.getY();
 
 				if(humanAvatar.isTouchOnAvatar(touchX, touchY))
-					thread.setDrawArrows(false);
+					//thread.setDrawArrows(false);
+
+					arrows.setVisibility(false);
 
 				if(humanAvatar.swipeArrowUp(touchX, touchY)) {
-					thread.setDrawArrows(false);
+					//thread.setDrawArrows(false);
+					arrows.setVisibility(false);
 					humanAvatar.setDirection(-1);
 					Toast.makeText(getActivity(), "Up", Toast.LENGTH_SHORT).show();
 				}
 
 				if(humanAvatar.swipeArrowDown(touchX, touchY)) {
-					thread.setDrawArrows(false);
+					//thread.setDrawArrows(false);
+					arrows.setVisibility(false);
 					humanAvatar.setDirection(1);
 					Toast.makeText(getActivity(), "Down", Toast.LENGTH_SHORT).show();
 				}
 
 				if(humanAvatar.swipeArrowLeft(touchX, touchY)) {
-					thread.setDrawArrows(false);
+					//thread.setDrawArrows(false);
+					arrows.setVisibility(false);
 					Toast.makeText(getActivity(), "Left", Toast.LENGTH_SHORT).show();
-					if("noLocation" != thread.locationToLeftExists()){
+					if("noLocation" != surfaceThread.locationToLeftExists()){
 						locationSelectedListener.onLocationSelected(1);
 					}
 				}
 
 				if(humanAvatar.swipeArrowRight(touchX, touchY)) {
-					thread.setDrawArrows(false);
+					//thread.setDrawArrows(false);
+					arrows.setVisibility(false);
 					Toast.makeText(getActivity(), "Right", Toast.LENGTH_SHORT).show();
-					if("noLocation" != thread.locationToRightExists()){
+					if("noLocation" != surfaceThread.locationToRightExists()){
 						Intent openFarm = new Intent(getActivity(), GameLocationActivity.class);
 						getActivity().startActivity(openFarm);	
 					}
 				}
 
 			}
-			return true;  
-		}
-
-		public void onPrepare(Canvas canvas) {
-			synchronized (surfaceHolder) {
-
-				DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-				float pxHeight = displayMetrics.heightPixels;
-				float pxWidth = displayMetrics.widthPixels;
-
-				backgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.street_view);
-				characterBitmap = BitmapFactory.decodeResource(getResources(), humanAvatar.getAvatarImage());
-				arrowsBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.arrows);
-				locationBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_temple);
-
-				float scaleHeight = (float)backgroundBitmap.getHeight()/(float)pxHeight;
-				float scaleWidth = (float)backgroundBitmap.getWidth()/(float)pxWidth;
-
-				newHeight = Math.round(backgroundBitmap.getHeight()/scaleHeight);
-				newWidth = Math.round(backgroundBitmap.getWidth()/scaleWidth);
-
-				scaledBackgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, newWidth, newHeight, true);
-				scaledCharacterBitmap = Bitmap.createScaledBitmap(characterBitmap, humanAvatar.getAvatarEdge(), humanAvatar.getAvatarEdge(), 
-						true);
-				scaledArrowsBitmap = Bitmap.createScaledBitmap(arrowsBitmap, ARROWS_EDGE, ARROWS_EDGE, true);
-				scaledLocationBitmap = Bitmap.createScaledBitmap(locationBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
-
-				canvas.drawBitmap(scaledBackgroundBitmap, 0, 0, null);
-				canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
-
-				humanAvatar.setPosition(
-						(int)((pxWidth - humanAvatar.getAvatarEdge()) / 2), 
-						(int)(canvasHeight * 0.8));
-			}
-		}
-
-		public void onDraw(Canvas canvas) {
-			canvas.drawBitmap(scaledBackgroundBitmap, 0,  0, null);
-
-			for(VirtualLocation vl : virtualLocations) 
-				canvas.drawBitmap(scaledLocationBitmap, vl.getLocationX(), vl.getLocationY(), null);			
-
-			//canvas.drawBitmap(scaledCharacterBitmap, characterX, characterY, null);
-			canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
-
-			if(drawArrows)
-				canvas.drawBitmap(scaledArrowsBitmap, humanAvatar.getPositionX() - 150, humanAvatar.getPositionY() - 200, null);
+			return true;   
 		}
 
 
 	}
 
-	/**
-	 * @author Piotr
-	 * This class is a new thread for SurfaceView. All drawing and canvas measurements are done here.
-	 */
-
-	private class MapThread implements Runnable {
-		private SurfaceHolder surfaceHolder;
+	private class SurfaceThread implements Runnable {
+		private SurfaceHolder mSurfaceHolder;
 		private MapSurfaceView mMapSurfaceView;
-		private Canvas canvas;
-		volatile Thread thread;
-		
-		boolean drawArrows;
-		int canvasHeight, canvasWidth;
+		private Canvas mCanvas;
 
-		public MapThread(MapSurfaceView mapSurfaceView){
-			surfaceHolder = mapSurfaceView.getHolder();
+		public SurfaceThread(MapSurfaceView mapSurfaceView){
+			mSurfaceHolder = mapSurfaceView.getHolder();
 			mMapSurfaceView = mapSurfaceView;
-			canvas = new Canvas();
+			mCanvas = new Canvas();
 
 			thread = new Thread(this);
 			thread.start();
 		}
+
 		public void terminateSurface(){
-			this.thread.interrupt();
+			thread.interrupt();
 		}
+
 		public void restartSurface() {
 			if (thread.getState() == Thread.State.TERMINATED){
 				thread = new Thread(this);
 				thread.start();  // Start a new thread
 			} 
 		}
-		
-		@SuppressLint("WrongCall")
+
+		public SurfaceHolder getSurfaceHolder() {
+			return mSurfaceHolder;
+		}
+
 		@Override
 		public void run() {
 			while (!Thread.currentThread().isInterrupted()) {
 				try {
-					canvas = surfaceHolder.lockCanvas(null);
-					if (canvas == null){
-						surfaceHolder = mMapSurfaceView.getHolder();
+					mCanvas = mSurfaceHolder.lockCanvas(null);
+					if (mCanvas == null){
+						mSurfaceHolder = mMapSurfaceView.getHolder();
 					} else {
-						synchronized (surfaceHolder) {
-							mMapSurfaceView.onDraw(canvas);
+						synchronized (mSurfaceHolder) {
+							mapSurfaceView.doDraw(mCanvas);
 						}
 					}   
 				} finally {
-					if (canvas != null) {
-						surfaceHolder.unlockCanvasAndPost(canvas);
+					if (mCanvas != null) {
+						mSurfaceHolder.unlockCanvasAndPost(mCanvas);
 					}
 				}
 			}
 		}
-
-		public void setSurfaceSize(int width, int height) {
-
-			synchronized (surfaceHolder) {
-				canvasWidth = width;
-				canvasHeight = height;
-				mMapSurfaceView.onPrepare(canvas);
-			}
-		}
-
-
+		
 		public boolean isTouchOnUpperLeft(int touchX, int touchY) {
 
 			return 	(CORNER_EDGE > touchX) &&
@@ -444,16 +406,6 @@ public class VirtualMapFragment extends Fragment {
 
 			return "noLocation";
 		}
-
-		public void setDrawArrows(boolean set) {
-			drawArrows = set;
-		}
-	}
-
-	public void populateMap(ArrayList<VirtualLocation> virtualLocations) {
-
-		for(VirtualLocation vl : virtualLocations) 
-			Log.d("Username location", "" + vl.getOwner());
 	}
 
 	public class GetLocationsAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -505,11 +457,7 @@ public class VirtualMapFragment extends Fragment {
 			}  
 			return null;
 		}
-
-		protected void onPostExecute(Void result) {
-
-		}
-
+		
 		public void setLocationsArray(ArrayList<VirtualLocation> vl) {
 			virtualLocations = vl;
 		}

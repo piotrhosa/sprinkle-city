@@ -88,7 +88,7 @@ public class LoginActivity extends Activity {
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 			ArrayList<NameValuePair> postParametersData = new ArrayList<NameValuePair>();
 
-			Looper.prepare();
+			//Looper.prepare();
 
 			// define the parameter
 			postParameters.add(new BasicNameValuePair("Username", nameLoginString));
