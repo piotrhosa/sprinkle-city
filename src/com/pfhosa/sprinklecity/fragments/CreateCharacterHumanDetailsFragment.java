@@ -10,8 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -268,6 +266,7 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		
 		WriteToRemoteAsyncTask newHumanAsyncTask = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
 
+		@SuppressWarnings("unused")
 		WeakReference<WriteToRemoteAsyncTask> newHumanWeakReference = new WeakReference<WriteToRemoteAsyncTask>(newHumanAsyncTask);
 		newHumanAsyncTask.execute();		
 

@@ -41,8 +41,6 @@ import com.pfhosa.sprinklecity.ui.HomeActivity;
 
 public class VirtualMapFragment extends Fragment {
 
-	private MapSurfaceView mapSurfaceView;
-
 	// Constants
 	public static final int PIXELS_PER_METER = 50;
 	public static final int AVATAR_EDGE = 300;
@@ -52,42 +50,32 @@ public class VirtualMapFragment extends Fragment {
 	public static final int CORNER_EDGE = 300;
 	public static final double DISTANCE_FACTOR = 0.3;
 
-
 	// Location
 	static float distance;
+	static Location previousLocation;
+	LocationReceiver locationReceiver;
 
-	static Location previousLocation, currentLocation = null, seenLocation = null;
-
-	OnLocationSelectedListener locationSelectedListener;
-
+	// View
+	private MapSurfaceView mapSurfaceView;
 	HumanAvatar humanAvatar;
-	int avatarGlobal;
-
-	String usernameGlobal;
-
-
 	DrawableObject arrows;
-
-	WriteToRemoteAsyncTask updateHumanAvatar;
-
-	Thread thread;
-
 	ArrayList<VirtualLocation> virtualLocations= new ArrayList<VirtualLocation>();
 
-	LocationReceiver locationReceiver;
+	// Open new Fragment listener
+	OnLocationSelectedListener locationSelectedListener;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {		
 		if(getArguments() != null) {
-			usernameGlobal = getArguments().getString("Username");
-			avatarGlobal = getArguments().getInt("Avatar");
-			
-			makeNewAvatar(usernameGlobal, avatarGlobal);
+			String username = getArguments().getString("Username");
+			int avatar = getArguments().getInt("Avatar");
+
+			makeNewAvatar(username, avatar);
 		}
-		
+
 		if(mapSurfaceView == null)
 			mapSurfaceView = new MapSurfaceView(getActivity());
-		
+
 		LocationReceiver locationReceiver = new LocationReceiver();
 		getActivity().registerReceiver(locationReceiver, new IntentFilter("newLocationIntent"));
 
@@ -96,7 +84,7 @@ public class VirtualMapFragment extends Fragment {
 
 		return mapSurfaceView;
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -123,8 +111,9 @@ public class VirtualMapFragment extends Fragment {
 	}
 
 	public class LocationReceiver extends BroadcastReceiver {
-		
+
 		double currentLatitude, currentLongitude;
+		Location currentLocation;
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -147,17 +136,10 @@ public class VirtualMapFragment extends Fragment {
 	}
 
 	public void makeNewAvatar(String username, int avatar) {
-		humanAvatar = new HumanAvatar(
-				username, 
-				avatar,
-				AVATAR_EDGE,
-				0,
-				0,
-				-1);
+		humanAvatar = new HumanAvatar(username, avatar, AVATAR_EDGE, 0, 0, -1);
 	}
 
 	public void populateMap(ArrayList<VirtualLocation> virtualLocations) {
-
 		for(VirtualLocation vl : virtualLocations) 
 			Log.d("Username location", "" + vl.getOwner());
 	}
@@ -168,7 +150,7 @@ public class VirtualMapFragment extends Fragment {
 			distance = 0;
 		else 
 			distance = previousLocation.distanceTo(currentLocation);		
-		
+
 		previousLocation = currentLocation;
 
 		Log.d("Raw distance",Float.toString(distance));
@@ -188,9 +170,9 @@ public class VirtualMapFragment extends Fragment {
 
 	private class MapSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
-		private SurfaceThread surfaceThread;
+		private SurfaceHandler surfaceHandler;
 		private SurfaceHolder surfaceHolder;
-		
+
 		int touchX, touchY;
 
 		public MapSurfaceView(Context context) {
@@ -200,7 +182,7 @@ public class VirtualMapFragment extends Fragment {
 			surfaceHolder = getHolder();
 			surfaceHolder.addCallback(this);
 
-			surfaceThread = new SurfaceThread(this);
+			surfaceHandler = new SurfaceHandler(this);
 		}
 
 		@Override
@@ -209,17 +191,17 @@ public class VirtualMapFragment extends Fragment {
 
 		@Override
 		public void surfaceCreated(SurfaceHolder holder) {
-			surfaceThread.restartSurface();
+			surfaceHandler.restartSurface();
 		}
 
 		@Override
 		public void surfaceDestroyed(SurfaceHolder holder) {
-			surfaceThread.terminateSurface();
+			surfaceHandler.terminateSurface();
 		}
 
 		public void surfaceRestart(){
-			if (surfaceThread != null){
-				surfaceThread.restartSurface(); 
+			if (surfaceHandler != null){
+				surfaceHandler.restartSurface(); 
 			}
 		}
 
@@ -241,7 +223,7 @@ public class VirtualMapFragment extends Fragment {
 				touchX = (int)event.getX();
 				touchY = (int)event.getY();
 
-				if(surfaceThread.isTouchOnUpperLeft(touchX, touchY)) {
+				if(surfaceHandler.isTouchOnUpperLeft(touchX, touchY)) {
 					Intent openHome = new Intent(getActivity(), HomeActivity.class);
 					startActivity(openHome);
 				}					
@@ -274,7 +256,7 @@ public class VirtualMapFragment extends Fragment {
 					//thread.setDrawArrows(false);
 					arrows.setVisibility(false);
 					Toast.makeText(getActivity(), "Left", Toast.LENGTH_SHORT).show();
-					if("noLocation" != surfaceThread.locationToLeftExists()){
+					if("noLocation" != surfaceHandler.locationToLeftExists()){
 						locationSelectedListener.onLocationSelected(1);
 					}
 				}
@@ -283,7 +265,7 @@ public class VirtualMapFragment extends Fragment {
 					//thread.setDrawArrows(false);
 					arrows.setVisibility(false);
 					Toast.makeText(getActivity(), "Right", Toast.LENGTH_SHORT).show();
-					if("noLocation" != surfaceThread.locationToRightExists()){
+					if("noLocation" != surfaceHandler.locationToRightExists()){
 						Intent openFarm = new Intent(getActivity(), GameLocationActivity.class);
 						getActivity().startActivity(openFarm);	
 					}
@@ -292,61 +274,56 @@ public class VirtualMapFragment extends Fragment {
 			}
 			return true;   
 		}
-
-
 	}
 
-	//TODO see if you can do it with Thread Class
-	private class SurfaceThread implements Runnable {
+	private class SurfaceHandler implements Runnable {
+		// Class fields
 		private SurfaceHolder mSurfaceHolder;
 		private MapSurfaceView mMapSurfaceView;
 		private Canvas mCanvas = null;
-		private final Handler handler;
-		
-		
-		int newWidth, newHeight;
+		private final Handler mHandler;			
 
+		// View
 		Bitmap backgroundBitmap, characterBitmap, arrowsBitmap,  locationBitmap;
 		Bitmap scaledBackgroundBitmap, scaledCharacterBitmap, scaledArrowsBitmap, scaledLocationBitmap;
+		int newWidth, newHeight;
 
-		public SurfaceThread(MapSurfaceView mapSurfaceView){
+		public SurfaceHandler(MapSurfaceView mapSurfaceView){
 			mSurfaceHolder = mapSurfaceView.getHolder();
 			mMapSurfaceView = mapSurfaceView;
 			mCanvas = new Canvas();
 
-			handler=new Handler();
-			
-			handler.post(this);
+			mHandler=new Handler();
+			mHandler.post(this);
 
 			doPrepare();
 		}
 
 		public void terminateSurface(){
-			handler.removeCallbacks(this);
+			mHandler.removeCallbacks(this);
 		}
 
 		public void restartSurface() {
-			handler.post(this);
+			mHandler.post(this);
 		}
 
 		@Override
 		public void run() {
-			handler.postDelayed(this,500);	
+			mHandler.postDelayed(this,500);	
 			try {
-					mCanvas = mSurfaceHolder.lockCanvas(null);
-					if (mCanvas == null){
-						mSurfaceHolder = mMapSurfaceView.getHolder();
-					} else {
-						doDraw(mCanvas);
-					}   
-				} finally {
-					if (mCanvas != null) {
-						mSurfaceHolder.unlockCanvasAndPost(mCanvas);
-					}
-				}
-			//}
+				mCanvas = mSurfaceHolder.lockCanvas(null);
+				if (mCanvas == null)
+					mSurfaceHolder = mMapSurfaceView.getHolder();
+				else 
+					doDraw(mCanvas);				
+			} 
+			finally {
+				if (mCanvas != null) 
+					mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+			}
+
 		}
-		
+
 		public void doPrepare() {
 
 			synchronized (mSurfaceHolder) {			
@@ -372,9 +349,7 @@ public class VirtualMapFragment extends Fragment {
 				scaledCharacterBitmap = Bitmap.createScaledBitmap(characterBitmap, humanAvatar.getAvatarEdge(), humanAvatar.getAvatarEdge(), true);
 				scaledArrowsBitmap = Bitmap.createScaledBitmap(arrowsBitmap, ARROWS_EDGE, ARROWS_EDGE, true);
 				scaledLocationBitmap = Bitmap.createScaledBitmap(locationBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
-
-
-				/**
+				/*
 				humanAvatar.setPosition(
 						(int)((pxWidth - humanAvatar.getAvatarEdge()) / 2), 
 						(int)(pxHeight * 0.8));
@@ -391,7 +366,6 @@ public class VirtualMapFragment extends Fragment {
 			for(VirtualLocation vl : virtualLocations) 
 				canvas.drawBitmap(scaledLocationBitmap, vl.getLocationX(), vl.getLocationY(), null);			
 
-			//canvas.drawBitmap(scaledCharacterBitmap, characterX, characterY, null);
 			canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
 
 			if(arrows.getVisibility())
@@ -442,7 +416,7 @@ public class VirtualMapFragment extends Fragment {
 		postParameters.add(new BasicNameValuePair("PositionY", Integer.toString(humanAvatar.getPositionY())));
 		postParameters.add(new BasicNameValuePair("Direction", Integer.toString(humanAvatar.getDirection())));
 
-		updateHumanAvatar = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
+		WriteToRemoteAsyncTask updateHumanAvatar = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
 
 		updateHumanAvatar.execute();
 		Log.d("Update avatar", "executing");
