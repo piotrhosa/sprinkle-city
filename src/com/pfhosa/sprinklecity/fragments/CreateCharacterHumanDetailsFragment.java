@@ -10,6 +10,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -99,13 +101,12 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		});
 	}
 	public void activateBakerButtonListener() {
-		ImageButton bakerButton = (ImageButton) linearLayout.findViewById(R.id.image_job_baker);
+		final ImageButton bakerButton = (ImageButton) linearLayout.findViewById(R.id.image_job_baker);
 
 		bakerButton.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-
 				setJob("baker");
 			}
 

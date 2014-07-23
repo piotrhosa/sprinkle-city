@@ -3,6 +3,7 @@
     android:layout_height="match_parent"
     android:background="@color/main_background"
     android:baselineAligned="false"
+    android:keepScreenOn="true"
     android:orientation="vertical" >
 
     <FrameLayout

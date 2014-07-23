@@ -38,8 +38,8 @@ public class LoginActivity extends Activity {
 
 		nameLogin = (EditText)findViewById(R.id.edit_character_name);
 		passwordLogin = (EditText)findViewById(R.id.edit_password);
-		loginReturn = (TextView)findViewById(R.id.text_login_return);
-		loginDetails = (TextView)findViewById(R.id.text_login_details);
+		//loginReturn = (TextView)findViewById(R.id.text_login_return);
+		//loginDetails = (TextView)findViewById(R.id.text_login_details);
 
 		activateLoginButtonListener();
 	}	
@@ -55,7 +55,7 @@ public class LoginActivity extends Activity {
 				nameLoginString = nameLogin.getText().toString();
 				passwordLoginString = passwordLogin.getText().toString();
 
-				loginDetails.setText(nameLoginString + " " + passwordLoginString);
+				//loginDetails.setText(nameLoginString + " " + passwordLoginString);
 
 				new ConnectAsyncTask().execute();
 			}

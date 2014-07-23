@@ -11,8 +11,6 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -24,19 +22,20 @@ import com.google.android.gms.location.LocationRequest;
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.fragments.LocationFarmFragment;
 import com.pfhosa.sprinklecity.fragments.VirtualMapFragment;
+import com.pfhosa.sprinklecity.fragments.VirtualMapFragment.OnLocationSelectedListener;
 
 public class GameMapActivity extends FragmentActivity implements       
 GooglePlayServicesClient.ConnectionCallbacks,
 GooglePlayServicesClient.OnConnectionFailedListener, 
-LocationListener {
-//OnLocationSelectedListener {
+LocationListener,
+OnLocationSelectedListener {
 
 	private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
 	private static final int MILLISECONDS_PER_SECOND = 1000;
-	public static final int UPDATE_INTERVAL_IN_SECONDS = 10;
-	private static final int FASTEST_INTERVAL_IN_SECONDS = 5;
-	private static final int MIN_DISPLACEMENT_IN_METERS = 5;
+	public static final int UPDATE_INTERVAL_IN_SECONDS = 1;
+	private static final int FASTEST_INTERVAL_IN_SECONDS = 1;
+	private static final int MIN_DISPLACEMENT_IN_METERS = 1;
 
 	private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
 	private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
@@ -47,23 +46,21 @@ LocationListener {
 
 	SharedPreferences mPrefs;
 	Editor mEditor;
-	
+
 	Bundle characterData;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		setContentView(R.layout.activity_game_map);
 		
+		// Get Extras
 		characterData = getIntent().getExtras();		
 
-		setContentView(R.layout.activity_game_map);
-
-		mPrefs = getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE);
-		
+		// Record location
+		mPrefs = getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE);		
 		mEditor = mPrefs.edit();
 
+		// Initialize location updates
 		if(servicesConnected()) {
 			mLocationClient = new LocationClient(this, this, this);
 
@@ -84,7 +81,7 @@ LocationListener {
 			VirtualMapFragment virtualMapFragment = new VirtualMapFragment();
 
 			virtualMapFragment.setArguments(characterData);
-			
+
 			getSupportFragmentManager().beginTransaction()
 			.add(R.id.fragment_container_game_map, virtualMapFragment)
 			.addToBackStack("virtualMapFragment")
@@ -92,18 +89,11 @@ LocationListener {
 		}
 
 	}
-	@Override
-	protected void onPause() {
-		super.onPause();
-
-		mEditor.putBoolean("KEY_UPDATES_ON", mUpdatesRequested);
-		mEditor.commit();
-	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
-		
+
 		mLocationClient.connect();
 	}
 
@@ -122,6 +112,14 @@ LocationListener {
 			mEditor.putBoolean("KEY_UPDATES_ON", false);
 			mEditor.commit();
 		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		mEditor.putBoolean("KEY_UPDATES_ON", mUpdatesRequested);
+		mEditor.commit();
 	}
 
 	@Override
@@ -213,13 +211,13 @@ LocationListener {
 
 		this.sendBroadcast(newLocationIntent);		
 	}
-	
+
 	public void onProviderDisabled(String arg0) {}
-	
+
 	public void onProviderEnabled(String arg0) {}
-	
+
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {}
-	
+
 	@Override
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		if (connectionResult.hasResolution()) {
@@ -243,7 +241,7 @@ LocationListener {
 			showErrorDialog(connectionResult.getErrorCode());
 		}
 	}
-	
+
 	public void openFarmFragment() {
 		LocationFarmFragment farmFragment = new LocationFarmFragment();
 
@@ -252,14 +250,14 @@ LocationListener {
 		.addToBackStack("farmFragment")
 		.commit();
 	}
-	/**
+
 	@Override
 	public void onLocationSelected(int fragment) {
 		switch(fragment) {
 		case 1: openFarmFragment(); break;
 		default: break;
 		}
-		
+
 	}
-	*/
+
 }

@@ -96,10 +96,7 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 			progressTextView.setText(progressStatus + "/" + pickingProgressBar.getMax());
 			
 			if(progressStatus < 100) {
-				//getActivity().getFragmentManager().beginTransaction().remove(this).commit();
-	            FragmentManager fm = getActivity().getSupportFragmentManager();
-	            fm.popBackStack("virtualMapFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-	            
+	            //TODO Pop back stack
 	            Log.d("Pop back", "jasjdjd");
 			}
 				

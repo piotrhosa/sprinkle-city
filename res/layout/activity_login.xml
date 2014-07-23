@@ -37,7 +37,8 @@
         android:layout_height="wrap_content"
         android:text="@string/button_login_final" />
 
-    <TextView
+    <!--
+        <TextView
         android:id="@+id/text_login_return"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -48,5 +49,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/text_login_details" />
+    -->
 
 </LinearLayout>
