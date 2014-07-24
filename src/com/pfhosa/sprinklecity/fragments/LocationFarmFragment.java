@@ -94,13 +94,10 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 			pickingProgressBar.setProgress(progressStatus);
 			progressTextView.setText(progressStatus + "/" + pickingProgressBar.getMax());
 			
-			if(progressStatus < 100) {
-	            //TODO Pop back stack
-	            Log.d("Pop back", "jasjdjd");
+			if(progressStatus >= 100) {
+				getActivity().onBackPressed();
+				Log.d("Pop back", "jasjdjd");
 			}
-				
-
-			Log.d("Progress status", Integer.toString(progressStatus));
 		}
 	}
 

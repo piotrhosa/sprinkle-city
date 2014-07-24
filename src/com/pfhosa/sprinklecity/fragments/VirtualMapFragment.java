@@ -42,13 +42,12 @@ import com.pfhosa.sprinklecity.ui.HomeActivity;
 public class VirtualMapFragment extends Fragment {
 
 	// Constants
-	public static final int PIXELS_PER_METER = 50;
+	public static final int PIXELS_PER_METER = 10;
 	public static final int AVATAR_EDGE = 300;
 	public static final int AVATAR_EDGE_MARGIN = 0;
 	public static final int LOCATION_EDGE = 300;
 	public static final int ARROWS_EDGE = 600;
 	public static final int CORNER_EDGE = 300;
-	public static final double DISTANCE_FACTOR = 0.3;
 
 	// Location
 	static float distance;
@@ -162,7 +161,9 @@ public class VirtualMapFragment extends Fragment {
 		if(0 < humanAvatar.getPositionY() + (int)(PIXELS_PER_METER * distance * humanAvatar.getDirection()) &&
 				pxHeight - humanAvatar.getAvatarEdge() > humanAvatar.getPositionY() + (int)(PIXELS_PER_METER * distance * humanAvatar.getDirection()) &&
 				distance < 20) {
+
 			humanAvatar.setPositionY(humanAvatar.getPositionY() + (int)(PIXELS_PER_METER * distance * humanAvatar.getDirection()));
+
 			Log.d("Adjusted distance",Float.toString(distance));
 		}
 
@@ -325,7 +326,6 @@ public class VirtualMapFragment extends Fragment {
 		}
 
 		public void doPrepare() {
-
 			synchronized (mSurfaceHolder) {			
 
 				arrows = new DrawableObject(0, 0, R.drawable.arrows, false);
@@ -372,6 +372,8 @@ public class VirtualMapFragment extends Fragment {
 				canvas.drawBitmap(scaledArrowsBitmap, humanAvatar.getPositionX() - 150, humanAvatar.getPositionY() - 200, null);
 
 		}
+
+
 
 		public boolean isTouchOnUpperLeft(int touchX, int touchY) {
 
