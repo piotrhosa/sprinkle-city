@@ -57,7 +57,7 @@ public class VirtualMapFragment extends Fragment {
 	// View
 	private MapSurfaceView mapSurfaceView;
 	HumanAvatar humanAvatar;
-	DrawableObject arrows;
+	DrawableObject arrows, home, inventory;
 	ArrayList<VirtualLocation> virtualLocations= new ArrayList<VirtualLocation>();
 
 	// Open new Fragment listener
@@ -222,19 +222,15 @@ public class VirtualMapFragment extends Fragment {
 				touchY = (int)event.getY();
 
 				if(humanAvatar.isTouchOnObject(touchX, touchY))
-					//thread.setDrawArrows(true);
 					arrows.setVisibility(true);
-			}
-
-			if(event.getAction() == MotionEvent.ACTION_UP) {
-
-				touchX = (int)event.getX();
-				touchY = (int)event.getY();
-
-				if(surfaceHandler.isTouchOnUpperLeft(touchX, touchY)) {
+				if(home.isTouchOnObject(touchX, touchY)) {
 					Intent openHome = new Intent(getActivity(), HomeActivity.class);
 					startActivity(openHome);
-				}					
+				}
+				if(inventory.isTouchOnObject(touchX, touchY)) {
+					//TODO open new activity
+					Toast.makeText(getActivity(), "Inventory", Toast.LENGTH_SHORT).show();
+				}
 			}
 
 			if(event.getAction() == MotionEvent.ACTION_UP) {
@@ -286,9 +282,9 @@ public class VirtualMapFragment extends Fragment {
 		private final Handler mHandler;			
 
 		// View
-		Bitmap backgroundBitmap, characterBitmap, arrowsBitmap;
+		Bitmap backgroundBitmap, characterBitmap, arrowsBitmap, inventoryBitmap, homeBitmap;
 		Bitmap farmBitmap, bakeryBitmap, postOfficeBitmap, parkBitmap, locationBitmap;
-		Bitmap scaledBackgroundBitmap, scaledCharacterBitmap, scaledArrowsBitmap;
+		Bitmap scaledBackgroundBitmap, scaledCharacterBitmap, scaledArrowsBitmap, scaledInventoryBitmap, scaledHomeBitmap;
 		Bitmap scaledFarmBitmap, scaledBakeryBitmap, scaledPostOfficeBitmap, scaledParkBitmap, scaledLocationBitmap;
 		int newWidth, newHeight;
 
@@ -330,16 +326,19 @@ public class VirtualMapFragment extends Fragment {
 
 		public void doPrepare() {
 			synchronized (mSurfaceHolder) {			
-
-				arrows = new DrawableObject(0, 0, R.drawable.arrows, ARROWS_EDGE, false);
-
 				DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
 				float pxHeight = displayMetrics.heightPixels;
 				float pxWidth = displayMetrics.widthPixels;
 
+				arrows = new DrawableObject(0, 0, R.drawable.arrows, ARROWS_EDGE, false);
+				inventory = new DrawableObject((int)pxWidth - LOCATION_EDGE, 0, R.drawable.button_inventory, LOCATION_EDGE, true);
+				home = new DrawableObject(0, 0, R.drawable.button_home, LOCATION_EDGE, true);
+
 				backgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.street_view);
 				characterBitmap = BitmapFactory.decodeResource(getResources(), humanAvatar.getImage());
 				arrowsBitmap = BitmapFactory.decodeResource(getResources(), arrows.getImage());
+				inventoryBitmap = BitmapFactory.decodeResource(getResources(), inventory.getImage());
+				homeBitmap = BitmapFactory.decodeResource(getResources(), home.getImage());
 
 				farmBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_farm);
 				bakeryBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_shop);
@@ -356,6 +355,8 @@ public class VirtualMapFragment extends Fragment {
 				scaledBackgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, newWidth, newHeight, true);
 				scaledCharacterBitmap = Bitmap.createScaledBitmap(characterBitmap, humanAvatar.getEdge(), humanAvatar.getEdge(), true);
 				scaledArrowsBitmap = Bitmap.createScaledBitmap(arrowsBitmap, ARROWS_EDGE, ARROWS_EDGE, true);
+				scaledInventoryBitmap = Bitmap.createScaledBitmap(inventoryBitmap, inventory.getEdge(), inventory.getEdge(), true);
+				scaledHomeBitmap = Bitmap.createScaledBitmap(homeBitmap, home.getEdge(), home.getEdge(), true);
 
 				scaledFarmBitmap = Bitmap.createScaledBitmap(farmBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
 				scaledBakeryBitmap = Bitmap.createScaledBitmap(bakeryBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
@@ -392,17 +393,13 @@ public class VirtualMapFragment extends Fragment {
 			for(VirtualLocation vl : virtualLocations) 
 				canvas.drawBitmap(getLocationBitmap(vl.getLocationType()), vl.getPositionX(), vl.getPositionY(), null);			
 
+			canvas.drawBitmap(scaledHomeBitmap, home.getPositionX(), home.getPositionY(), null);
+			canvas.drawBitmap(scaledInventoryBitmap, inventory.getPositionX(), inventory.getPositionY(), null);
 			canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
 
 			if(arrows.getVisibility())
 				canvas.drawBitmap(scaledArrowsBitmap, humanAvatar.getPositionX() - 150, humanAvatar.getPositionY() - 200, null);
 
-		}
-
-		public boolean isTouchOnUpperLeft(int touchX, int touchY) {
-
-			return 	(CORNER_EDGE > touchX) &&
-					(CORNER_EDGE > touchY);
 		}
 
 		public String locationToLeftExists() {

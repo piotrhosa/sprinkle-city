@@ -111,7 +111,7 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 
 				if(progressStatus >= 100 && !itemCreated) {
 					getActivity().onBackPressed();
-					InventoryItem apple = new InventoryItem("apple" + Integer.toString(counter));
+					InventoryItem apple = new InventoryItem("apple" + Integer.toString(counter), 1);
 					insertItemInRemote(apple);
 					itemCreated = true;
 				}
@@ -125,6 +125,7 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();	
 		postParameters.add(new BasicNameValuePair("Username", username));
 		postParameters.add(new BasicNameValuePair("Item", item.getItem()));
+		postParameters.add(new BasicNameValuePair("Value", Integer.toString(item.getValue())));
 		postParameters.add(new BasicNameValuePair("TimeCreated", Long.toString(item.getTimeCollected())));
 		Log.d("Username", username);
 		Log.d("Item", item.getItem());

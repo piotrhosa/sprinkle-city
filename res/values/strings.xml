@@ -45,4 +45,6 @@
 	
 	<string name="text_virtual_location_accelerometer">0.0</string>
 	
+	<string name="cupcake">cupcake</string>
+	
 </resources>

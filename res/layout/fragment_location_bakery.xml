@@ -1,13 +1,47 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/picking_apples"
+    android:background="@drawable/bakery"
     android:orientation="vertical" >
 
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/image_cupcake_0"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="25dip"
+            android:background="@drawable/cupcake_pink"
+            android:contentDescription="@string/cupcake" />
+
+        <ImageButton
+            android:id="@+id/image_cupcake_1"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="25dip"
+            android:background="@drawable/cupcake_black"
+            android:contentDescription="@string/cupcake" />
+
+        <ImageButton
+            android:id="@+id/image_cupcake_2"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:layout_marginLeft="50dip"
+            android:layout_marginRight="25dip"
+            android:background="@drawable/cupcake_violet"
+            android:contentDescription="@string/cupcake" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/text_virtual_location"

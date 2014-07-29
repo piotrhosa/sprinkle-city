@@ -45,8 +45,7 @@ public class LocationParkFragment extends Fragment implements SensorEventListene
 	private SensorManager mSensorManager; 
 	private Sensor mAccelerometer; 
 
-	private final float NOISE = (float)1.5;
-	
+	private final float NOISE = (float)1.5;	
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -110,7 +109,7 @@ public class LocationParkFragment extends Fragment implements SensorEventListene
 
 				if(progressStatus >= 100 && !itemCreated) {
 					getActivity().onBackPressed();
-					InventoryItem fetch = new InventoryItem("fetch" + Integer.toString(counter));
+					InventoryItem fetch = new InventoryItem("fetch" + Integer.toString(counter), 1);
 					insertItemInRemote(fetch);
 					itemCreated = true;
 				}
@@ -124,6 +123,7 @@ public class LocationParkFragment extends Fragment implements SensorEventListene
 		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();	
 		postParameters.add(new BasicNameValuePair("Username", username));
 		postParameters.add(new BasicNameValuePair("Item", item.getItem()));
+		postParameters.add(new BasicNameValuePair("Value", Integer.toString(item.getValue())));
 		postParameters.add(new BasicNameValuePair("TimeCreated", Long.toString(item.getTimeCollected())));
 		Log.d("Username", username);
 		Log.d("Item", item.getItem());
