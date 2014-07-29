@@ -436,9 +436,9 @@ containing a value of this type.
         public static final int yellow_progress_bar=0x7f020035;
     }
     public static final class id {
-        public static final int action_settings=0x7f07004a;
+        public static final int action_settings=0x7f07004b;
         public static final int book_now=0x7f070010;
-        public static final int button_create_animal_character_next=0x7f070049;
+        public static final int button_create_animal_character_next=0x7f07004a;
         public static final int button_create_character=0x7f070017;
         public static final int button_create_character_confirm_password=0x7f07003c;
         public static final int button_create_character_next=0x7f070037;
@@ -448,7 +448,7 @@ containing a value of this type.
         public static final int buy_now=0x7f07000f;
         public static final int buy_with_google=0x7f07000e;
         public static final int classic=0x7f070011;
-        public static final int edit_animal_character_name=0x7f070040;
+        public static final int edit_animal_character_name=0x7f070041;
         public static final int edit_animal_name_pass=0x7f07003a;
         public static final int edit_character_name=0x7f07001b;
         public static final int edit_character_name_pass=0x7f070039;
@@ -458,7 +458,7 @@ containing a value of this type.
         public static final int fragment_container_game_location=0x7f070015;
         public static final int fragment_container_game_map=0x7f070016;
         public static final int fragment_create_character_animal_avatar=0x7f07001e;
-        public static final int fragment_create_character_animal_details=0x7f07003f;
+        public static final int fragment_create_character_animal_details=0x7f070040;
         public static final int fragment_create_character_bottom_left=0x7f070023;
         public static final int grayscale=0x7f070012;
         public static final int holo_dark=0x7f070005;
@@ -477,22 +477,22 @@ containing a value of this type.
         public static final int layout_job=0x7f070027;
         public static final int layout_rating_animal_friendly=0x7f07002e;
         public static final int layout_rating_business=0x7f070031;
-        public static final int layout_rating_fitness=0x7f070044;
+        public static final int layout_rating_fitness=0x7f070045;
         public static final int layout_rating_left_stars=0x7f070034;
-        public static final int layout_rating_sleep=0x7f070041;
+        public static final int layout_rating_sleep=0x7f070042;
         public static final int layout_rating_social=0x7f07002b;
         public static final int match_parent=0x7f07000c;
         public static final int monochrome=0x7f070013;
         public static final int none=0x7f070000;
         public static final int normal=0x7f070001;
         public static final int production=0x7f070007;
-        public static final int progress_virtual_location=0x7f07003e;
+        public static final int progress_virtual_location=0x7f07003f;
         public static final int rating_animal_friendly=0x7f070030;
         public static final int rating_business=0x7f070033;
-        public static final int rating_fitness=0x7f070046;
+        public static final int rating_fitness=0x7f070047;
         public static final int rating_single_star=0x7f070036;
-        public static final int rating_single_star_animal=0x7f070048;
-        public static final int rating_sleep=0x7f070043;
+        public static final int rating_single_star_animal=0x7f070049;
+        public static final int rating_sleep=0x7f070044;
         public static final int rating_social=0x7f07002d;
         public static final int sandbox=0x7f070008;
         public static final int satellite=0x7f070002;
@@ -504,12 +504,13 @@ containing a value of this type.
         public static final int text_or_home=0x7f070018;
         public static final int text_rating_animal_friendly=0x7f07002f;
         public static final int text_rating_business=0x7f070032;
-        public static final int text_rating_fitness=0x7f070045;
+        public static final int text_rating_fitness=0x7f070046;
         public static final int text_rating_signle_star=0x7f070035;
-        public static final int text_rating_signle_star_animal=0x7f070047;
-        public static final int text_rating_sleep=0x7f070042;
+        public static final int text_rating_signle_star_animal=0x7f070048;
+        public static final int text_rating_sleep=0x7f070043;
         public static final int text_rating_social=0x7f07002c;
-        public static final int text_virtual_location_accelerometer=0x7f07003d;
+        public static final int text_virtual_location=0x7f07003d;
+        public static final int text_virtual_location_accelerometer=0x7f07003e;
         public static final int wrap_content=0x7f07000d;
     }
     public static final class integer {
@@ -525,9 +526,10 @@ containing a value of this type.
         public static final int fragment_create_character_human_avatar=0x7f030006;
         public static final int fragment_create_character_human_details=0x7f030007;
         public static final int fragment_create_character_password=0x7f030008;
-        public static final int fragment_virtual_location=0x7f030009;
-        public static final int fragment_virtual_map=0x7f03000a;
-        public static final int fragmnet_create_character_animal_details=0x7f03000b;
+        public static final int fragment_location_bakery=0x7f030009;
+        public static final int fragment_location_farm=0x7f03000a;
+        public static final int fragment_virtual_map=0x7f03000b;
+        public static final int fragmnet_create_character_animal_details=0x7f03000c;
     }
     public static final class menu {
         public static final int home_screen=0x7f0b0000;

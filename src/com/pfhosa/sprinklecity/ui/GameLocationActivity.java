@@ -6,7 +6,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.pfhosa.sprinklecity.R;
-import com.pfhosa.sprinklecity.fragments.LocationFarmFragment;
+import com.pfhosa.sprinklecity.virtuallocationfragments.LocationFarmFragment;
 
 public class GameLocationActivity extends FragmentActivity {	
 

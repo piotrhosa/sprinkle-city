@@ -1,4 +1,4 @@
-package com.pfhosa.sprinklecity.fragments;
+package com.pfhosa.sprinklecity.virtuallocationfragments;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 		if(getArguments() != null) 
 			username = getArguments().getString("Username");
 
-		linearLayout = (LinearLayout)inflater.inflate(R.layout.fragment_virtual_location, container, false);
+		linearLayout = (LinearLayout)inflater.inflate(R.layout.fragment_location_farm, container, false);
 
 		progressStatus = 0;
 

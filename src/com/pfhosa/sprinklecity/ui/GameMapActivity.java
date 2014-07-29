@@ -20,7 +20,6 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.pfhosa.sprinklecity.R;
-import com.pfhosa.sprinklecity.fragments.LocationFarmFragment;
 import com.pfhosa.sprinklecity.fragments.VirtualMapFragment;
 import com.pfhosa.sprinklecity.fragments.VirtualMapFragment.OnLocationSelectedListener;
 
@@ -247,41 +246,6 @@ OnLocationSelectedListener {
 		openLocation.putExtra("Fragment", location);
 		openLocation.putExtra("Username", characterData.getString("Username"));
 		startActivity(openLocation);	
-		/*
-		switch(location) {
-		case "farmer": openFarmLocation(location);
-		case "baker": openFarmLocation();
-		}
-		/*
-		Intent openLocation = new Intent(this, GameLocationActivity.class);
-		openLocation.putExtra("Fragment", "fragment");
-		openLocation.putExtra("Username", characterData.getString("Username"));
-		startActivity(openLocation);	
-
-		
-		LocationFarmFragment farmFragment = new LocationFarmFragment();
-
-		farmFragment.setArguments(characterData);
-
-		getSupportFragmentManager().beginTransaction()
-		.replace(R.id.fragment_container_game_map, farmFragment)
-		.addToBackStack("farmFragment")
-		.commit();
-		 */
-	}
-	
-	private void openFarmLocation() {
-
-		/*
-		LocationFarmFragment farmFragment = new LocationFarmFragment();
-
-		farmFragment.setArguments(characterData);
-
-		getSupportFragmentManager().beginTransaction()
-		.replace(R.id.fragment_container_game_map, farmFragment)
-		.addToBackStack("farmFragment")
-		.commit();
-		*/
 	}
 
 	@Override
