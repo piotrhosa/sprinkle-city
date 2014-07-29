@@ -2,11 +2,14 @@ package com.pfhosa.sprinklecity.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.pfhosa.sprinklecity.R;
+import com.pfhosa.sprinklecity.virtuallocationfragments.LocationBakeryFragment;
 import com.pfhosa.sprinklecity.virtuallocationfragments.LocationFarmFragment;
+import com.pfhosa.sprinklecity.virtuallocationfragments.LocationParkFragment;
 
 public class GameLocationActivity extends FragmentActivity {	
 
@@ -31,18 +34,33 @@ public class GameLocationActivity extends FragmentActivity {
 	private void fragmentSelector(String fragment, Bundle data) {
 		switch(fragment) {
 		case "farmer": openFarm(data); break;
-		case "baker": openFarm(data); break;
-		//case "park": openPark(data); break;
+		case "baker": openBakery(data); break;
+		case "park": openPark(data); break;
 		}
+		Log.d("Fragment", "" + fragment);
 	}
 	
 	private void openFarm(Bundle data) {
 		LocationFarmFragment farmFragment = new LocationFarmFragment();
-
-		farmFragment.setArguments(data);
-		
+		farmFragment.setArguments(data);		
 		getSupportFragmentManager().beginTransaction()
 		.add(R.id.fragment_container_game_location, farmFragment)
+		.commit();
+	}
+	
+	private void openBakery(Bundle data) {
+		LocationBakeryFragment bakeryFragment = new LocationBakeryFragment();
+		bakeryFragment.setArguments(data);
+		getSupportFragmentManager().beginTransaction()
+		.add(R.id.fragment_container_game_location, bakeryFragment)
+		.commit();
+	}
+	
+	private void openPark(Bundle data) {
+		LocationParkFragment parkFragment = new LocationParkFragment();
+		parkFragment.setArguments(data);
+		getSupportFragmentManager().beginTransaction()
+		.add(R.id.fragment_container_game_location, parkFragment)
 		.commit();
 	}
 

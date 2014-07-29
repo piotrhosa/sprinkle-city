@@ -260,6 +260,7 @@ public class VirtualMapFragment extends Fragment {
 					arrows.setVisibility(false);
 					Toast.makeText(getActivity(), "Left", Toast.LENGTH_SHORT).show();
 					if("noLocation" != surfaceHandler.locationToLeftExists()){
+						Log.d("Location", surfaceHandler.locationToRightExists().toString());
 						locationSelectedListener.onLocationSelected(surfaceHandler.locationToLeftExists());
 					}
 				}
@@ -286,9 +287,9 @@ public class VirtualMapFragment extends Fragment {
 
 		// View
 		Bitmap backgroundBitmap, characterBitmap, arrowsBitmap;
-		Bitmap farmBitmap, bakeryBitmap, postOfficeBitmap, locationBitmap;
+		Bitmap farmBitmap, bakeryBitmap, postOfficeBitmap, parkBitmap, locationBitmap;
 		Bitmap scaledBackgroundBitmap, scaledCharacterBitmap, scaledArrowsBitmap;
-		Bitmap scaledFarmBitmap, scaledBakeryBitmap, scaledPostOfficeBitmap, scaledLocationBitmap;
+		Bitmap scaledFarmBitmap, scaledBakeryBitmap, scaledPostOfficeBitmap, scaledParkBitmap, scaledLocationBitmap;
 		int newWidth, newHeight;
 
 		public SurfaceHandler(MapSurfaceView mapSurfaceView){
@@ -343,6 +344,7 @@ public class VirtualMapFragment extends Fragment {
 				farmBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_farm);
 				bakeryBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_shop);
 				postOfficeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_storage);
+				parkBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_park);
 				locationBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_temple);
 
 				float scaleHeight = (float)backgroundBitmap.getHeight()/(float)pxHeight;
@@ -358,12 +360,15 @@ public class VirtualMapFragment extends Fragment {
 				scaledFarmBitmap = Bitmap.createScaledBitmap(farmBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
 				scaledBakeryBitmap = Bitmap.createScaledBitmap(bakeryBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
 				scaledPostOfficeBitmap = Bitmap.createScaledBitmap(postOfficeBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
+				scaledParkBitmap = Bitmap.createScaledBitmap(parkBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
 				scaledLocationBitmap = Bitmap.createScaledBitmap(locationBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
-				/*
-				humanAvatar.setPosition(
-						(int)((pxWidth - humanAvatar.getAvatarEdge()) / 2), 
-						(int)(pxHeight * 0.8));
-				 */
+
+				if(humanAvatar.getPositionX() == 0 && humanAvatar.getPositionY() == 0) {
+					humanAvatar.setPosition(
+							(int)((pxWidth - humanAvatar.getEdge()) / 2), 
+							(int)(pxHeight * 0.8));
+				}
+
 			}
 		}
 
@@ -372,6 +377,7 @@ public class VirtualMapFragment extends Fragment {
 			case "farmer": return scaledFarmBitmap;
 			case "postman": return scaledPostOfficeBitmap;
 			case "baker": return scaledBakeryBitmap;
+			case "park": return scaledParkBitmap;
 			}
 
 			return scaledLocationBitmap;

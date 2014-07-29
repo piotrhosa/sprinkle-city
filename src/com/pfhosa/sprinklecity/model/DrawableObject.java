@@ -88,13 +88,13 @@ public class DrawableObject {
 	}
 	
 	public boolean isObjectOnLeftFrom(int avatarX, int avatarY, int avatarEdge, int avatarEdgeMargin) {
-		return	(mPositionX < avatarX + avatarEdge) &&
+		return	(mPositionX < avatarX + avatarEdge / 2) &&
 				(mPositionY + mEdge / 2 > avatarY + avatarEdgeMargin) &&
 				(mPositionY + mEdge / 2 < avatarY + avatarEdge - avatarEdgeMargin);
 	}
 	
 	public boolean isObjectOnRightFrom(int avatarX, int avatarY, int avatarEdge, int avatarEdgeMargin) {
-		return	(mPositionX > avatarX) &&
+		return	(mPositionX > avatarX + avatarEdge / 2) &&
 				(mPositionY + mEdge / 2 > avatarY + avatarEdgeMargin) &&
 				(mPositionY + mEdge / 2 < avatarY + avatarEdge - avatarEdgeMargin);
 	}

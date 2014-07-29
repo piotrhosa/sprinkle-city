@@ -426,14 +426,16 @@ containing a value of this type.
         public static final int job_postman=0x7f02002b;
         public static final int job_postman_pressed=0x7f02002c;
         public static final int location_farm=0x7f02002d;
-        public static final int location_shop=0x7f02002e;
-        public static final int location_storage=0x7f02002f;
-        public static final int location_temple=0x7f020030;
-        public static final int picking_apples=0x7f020031;
-        public static final int powered_by_google_dark=0x7f020032;
-        public static final int powered_by_google_light=0x7f020033;
-        public static final int street_view=0x7f020034;
-        public static final int yellow_progress_bar=0x7f020035;
+        public static final int location_park=0x7f02002e;
+        public static final int location_shop=0x7f02002f;
+        public static final int location_storage=0x7f020030;
+        public static final int location_temple=0x7f020031;
+        public static final int picking_apples=0x7f020032;
+        public static final int playing_fetch=0x7f020033;
+        public static final int powered_by_google_dark=0x7f020034;
+        public static final int powered_by_google_light=0x7f020035;
+        public static final int street_view=0x7f020036;
+        public static final int yellow_progress_bar=0x7f020037;
     }
     public static final class id {
         public static final int action_settings=0x7f07004b;
@@ -528,8 +530,9 @@ containing a value of this type.
         public static final int fragment_create_character_password=0x7f030008;
         public static final int fragment_location_bakery=0x7f030009;
         public static final int fragment_location_farm=0x7f03000a;
-        public static final int fragment_virtual_map=0x7f03000b;
-        public static final int fragmnet_create_character_animal_details=0x7f03000c;
+        public static final int fragment_location_park=0x7f03000b;
+        public static final int fragment_virtual_map=0x7f03000c;
+        public static final int fragmnet_create_character_animal_details=0x7f03000d;
     }
     public static final class menu {
         public static final int home_screen=0x7f0b0000;
