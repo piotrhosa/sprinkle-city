@@ -32,7 +32,6 @@ import android.widget.Toast;
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.CustomHttpClient;
 import com.pfhosa.sprinklecity.database.Database;
-import com.pfhosa.sprinklecity.database.WriteToRemoteAsyncTask;
 import com.pfhosa.sprinklecity.model.HumanCharacter;
 
 public class CreateCharacterHumanDetailsFragment extends Fragment {
@@ -45,7 +44,7 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	String job, name;
 	int avatar, socialTrait, animalTrait, businessTrait; 
 	int overallStarsLimit = 10, maxRating;	
-	
+
 	HumanCharacter newHuman;
 
 	@SuppressWarnings("unused")
@@ -238,7 +237,7 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 							getBusinessTrait());
 
 					//db.newHumanCharacter(newHuman);	
-					
+
 					startNewUserAsyncTask(newHuman);
 
 				}
@@ -246,32 +245,16 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 
 		});
 	}
-	
+
 	public void startNewUserAsyncTask(HumanCharacter newHuman) {		
 		CheckUsernameAvailabilityAsyncTask checkUsernameAT = new CheckUsernameAvailabilityAsyncTask(newHuman.getName());
 		usernameAvailabilityWeakReference = new WeakReference<CheckUsernameAvailabilityAsyncTask>(checkUsernameAT);
 		checkUsernameAT.execute();		
 	}
-	
+
 	public void usernameIsAvailable() {
-		String url = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/insertHumanCharacter.php";
-
-		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();	
-		postParameters.add(new BasicNameValuePair("Username", newHuman.getName()));
-		postParameters.add(new BasicNameValuePair("Avatar", Integer.toString(newHuman.getAvatar())));
-		postParameters.add(new BasicNameValuePair("Job", newHuman.getJob()));
-		postParameters.add(new BasicNameValuePair("Social", Integer.toString(newHuman.getSocialTrait())));
-		postParameters.add(new BasicNameValuePair("Animal", Integer.toString(newHuman.getAnimalTrait())));
-		postParameters.add(new BasicNameValuePair("Business", Integer.toString(newHuman.getBusinessTrait())));
-		
-		WriteToRemoteAsyncTask newHumanAsyncTask = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
-
-		@SuppressWarnings("unused")
-		WeakReference<WriteToRemoteAsyncTask> newHumanWeakReference = new WeakReference<WriteToRemoteAsyncTask>(newHumanAsyncTask);
-		newHumanAsyncTask.execute();		
-
 		Log.d("Username", "available");
-		
+
 		advanceListener.onHumanCharacterCreated(newHuman);
 	}
 
@@ -285,10 +268,10 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 			}
 		});
 	}
-	
+
 	public class CheckUsernameAvailabilityAsyncTask extends AsyncTask<Void, Void, Void> {
 		String name;
-		
+
 		public CheckUsernameAvailabilityAsyncTask(String name) {
 			this.name = name;
 		}

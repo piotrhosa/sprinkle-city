@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -36,7 +37,6 @@ import com.pfhosa.sprinklecity.database.WriteToRemoteAsyncTask;
 import com.pfhosa.sprinklecity.model.DrawableObject;
 import com.pfhosa.sprinklecity.model.HumanAvatar;
 import com.pfhosa.sprinklecity.model.VirtualLocation;
-import com.pfhosa.sprinklecity.ui.GameLocationActivity;
 import com.pfhosa.sprinklecity.ui.HomeActivity;
 
 public class VirtualMapFragment extends Fragment {
@@ -63,10 +63,17 @@ public class VirtualMapFragment extends Fragment {
 	// Open new Fragment listener
 	OnLocationSelectedListener locationSelectedListener;
 
+	String username;
+
+	public void onAttach (Activity activity) {
+		super.onAttach(activity);
+		locationSelectedListener = (OnLocationSelectedListener) activity;
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {		
 		if(getArguments() != null) {
-			String username = getArguments().getString("Username");
+			username = getArguments().getString("Username");
 			int avatar = getArguments().getInt("Avatar");
 
 			makeNewAvatar(username, avatar);
@@ -135,7 +142,7 @@ public class VirtualMapFragment extends Fragment {
 	}
 
 	public void makeNewAvatar(String username, int avatar) {
-		humanAvatar = new HumanAvatar(username, avatar, AVATAR_EDGE, 0, 0, -1);
+		humanAvatar = new HumanAvatar(username, avatar, AVATAR_EDGE, 0, 0, -1, true);
 	}
 
 	public void populateMap(ArrayList<VirtualLocation> virtualLocations) {
@@ -159,7 +166,7 @@ public class VirtualMapFragment extends Fragment {
 		//float pxWidth = displayMetrics.widthPixels;
 
 		if(0 < humanAvatar.getPositionY() + (int)(PIXELS_PER_METER * distance * humanAvatar.getDirection()) &&
-				pxHeight - humanAvatar.getAvatarEdge() > humanAvatar.getPositionY() + (int)(PIXELS_PER_METER * distance * humanAvatar.getDirection()) &&
+				pxHeight - humanAvatar.getEdge() > humanAvatar.getPositionY() + (int)(PIXELS_PER_METER * distance * humanAvatar.getDirection()) &&
 				distance < 20) {
 
 			humanAvatar.setPositionY(humanAvatar.getPositionY() + (int)(PIXELS_PER_METER * distance * humanAvatar.getDirection()));
@@ -214,7 +221,7 @@ public class VirtualMapFragment extends Fragment {
 				touchX = (int)event.getX();
 				touchY = (int)event.getY();
 
-				if(humanAvatar.isTouchOnAvatar(touchX, touchY))
+				if(humanAvatar.isTouchOnObject(touchX, touchY))
 					//thread.setDrawArrows(true);
 					arrows.setVisibility(true);
 			}
@@ -234,44 +241,37 @@ public class VirtualMapFragment extends Fragment {
 				touchX = (int)event.getX();
 				touchY = (int)event.getY();
 
-				if(humanAvatar.isTouchOnAvatar(touchX, touchY))
-					//thread.setDrawArrows(false);
-
+				if(humanAvatar.isTouchOnObject(touchX, touchY))
 					arrows.setVisibility(false);
 
 				if(humanAvatar.swipeArrowUp(touchX, touchY)) {
-					//thread.setDrawArrows(false);
 					arrows.setVisibility(false);
 					humanAvatar.setDirection(-1);
 					Toast.makeText(getActivity(), "Up", Toast.LENGTH_SHORT).show();
 				}
 
 				if(humanAvatar.swipeArrowDown(touchX, touchY)) {
-					//thread.setDrawArrows(false);
 					arrows.setVisibility(false);
 					humanAvatar.setDirection(1);
 					Toast.makeText(getActivity(), "Down", Toast.LENGTH_SHORT).show();
 				}
 
 				if(humanAvatar.swipeArrowLeft(touchX, touchY)) {
-					//thread.setDrawArrows(false);
 					arrows.setVisibility(false);
 					Toast.makeText(getActivity(), "Left", Toast.LENGTH_SHORT).show();
 					if("noLocation" != surfaceHandler.locationToLeftExists()){
-						locationSelectedListener.onLocationSelected(1);
+						locationSelectedListener.onLocationSelected(surfaceHandler.locationToLeftExists());
 					}
 				}
 
 				if(humanAvatar.swipeArrowRight(touchX, touchY)) {
-					//thread.setDrawArrows(false);
 					arrows.setVisibility(false);
 					Toast.makeText(getActivity(), "Right", Toast.LENGTH_SHORT).show();
 					if("noLocation" != surfaceHandler.locationToRightExists()){
-						Intent openFarm = new Intent(getActivity(), GameLocationActivity.class);
-						getActivity().startActivity(openFarm);	
+						Log.d("Location", surfaceHandler.locationToRightExists().toString());
+						locationSelectedListener.onLocationSelected(surfaceHandler.locationToRightExists());						
 					}
 				}
-
 			}
 			return true;   
 		}
@@ -285,8 +285,10 @@ public class VirtualMapFragment extends Fragment {
 		private final Handler mHandler;			
 
 		// View
-		Bitmap backgroundBitmap, characterBitmap, arrowsBitmap,  locationBitmap;
-		Bitmap scaledBackgroundBitmap, scaledCharacterBitmap, scaledArrowsBitmap, scaledLocationBitmap;
+		Bitmap backgroundBitmap, characterBitmap, arrowsBitmap;
+		Bitmap farmBitmap, bakeryBitmap, postOfficeBitmap, locationBitmap;
+		Bitmap scaledBackgroundBitmap, scaledCharacterBitmap, scaledArrowsBitmap;
+		Bitmap scaledFarmBitmap, scaledBakeryBitmap, scaledPostOfficeBitmap, scaledLocationBitmap;
 		int newWidth, newHeight;
 
 		public SurfaceHandler(MapSurfaceView mapSurfaceView){
@@ -328,15 +330,19 @@ public class VirtualMapFragment extends Fragment {
 		public void doPrepare() {
 			synchronized (mSurfaceHolder) {			
 
-				arrows = new DrawableObject(0, 0, R.drawable.arrows, false);
+				arrows = new DrawableObject(0, 0, R.drawable.arrows, ARROWS_EDGE, false);
 
 				DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
 				float pxHeight = displayMetrics.heightPixels;
 				float pxWidth = displayMetrics.widthPixels;
 
 				backgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.street_view);
-				characterBitmap = BitmapFactory.decodeResource(getResources(), humanAvatar.getAvatarImage());
+				characterBitmap = BitmapFactory.decodeResource(getResources(), humanAvatar.getImage());
 				arrowsBitmap = BitmapFactory.decodeResource(getResources(), arrows.getImage());
+
+				farmBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_farm);
+				bakeryBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_shop);
+				postOfficeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_storage);
 				locationBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_temple);
 
 				float scaleHeight = (float)backgroundBitmap.getHeight()/(float)pxHeight;
@@ -346,8 +352,12 @@ public class VirtualMapFragment extends Fragment {
 				newWidth = Math.round(backgroundBitmap.getWidth()/scaleWidth);
 
 				scaledBackgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, newWidth, newHeight, true);
-				scaledCharacterBitmap = Bitmap.createScaledBitmap(characterBitmap, humanAvatar.getAvatarEdge(), humanAvatar.getAvatarEdge(), true);
+				scaledCharacterBitmap = Bitmap.createScaledBitmap(characterBitmap, humanAvatar.getEdge(), humanAvatar.getEdge(), true);
 				scaledArrowsBitmap = Bitmap.createScaledBitmap(arrowsBitmap, ARROWS_EDGE, ARROWS_EDGE, true);
+
+				scaledFarmBitmap = Bitmap.createScaledBitmap(farmBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
+				scaledBakeryBitmap = Bitmap.createScaledBitmap(bakeryBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
+				scaledPostOfficeBitmap = Bitmap.createScaledBitmap(postOfficeBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
 				scaledLocationBitmap = Bitmap.createScaledBitmap(locationBitmap, LOCATION_EDGE, LOCATION_EDGE, true);
 				/*
 				humanAvatar.setPosition(
@@ -357,6 +367,16 @@ public class VirtualMapFragment extends Fragment {
 			}
 		}
 
+		public Bitmap getLocationBitmap(String locationType) {			
+			switch(locationType) {
+			case "farmer": return scaledFarmBitmap;
+			case "postman": return scaledPostOfficeBitmap;
+			case "baker": return scaledBakeryBitmap;
+			}
+
+			return scaledLocationBitmap;
+		}
+
 		public void doDraw(Canvas canvas){
 
 			// Order of Bitmaps is important (they are drawn in this order).
@@ -364,7 +384,7 @@ public class VirtualMapFragment extends Fragment {
 			canvas.drawBitmap(scaledBackgroundBitmap, 0,  0, null);
 
 			for(VirtualLocation vl : virtualLocations) 
-				canvas.drawBitmap(scaledLocationBitmap, vl.getLocationX(), vl.getLocationY(), null);			
+				canvas.drawBitmap(getLocationBitmap(vl.getLocationType()), vl.getPositionX(), vl.getPositionY(), null);			
 
 			canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX(), humanAvatar.getPositionY(), null);
 
@@ -372,8 +392,6 @@ public class VirtualMapFragment extends Fragment {
 				canvas.drawBitmap(scaledArrowsBitmap, humanAvatar.getPositionX() - 150, humanAvatar.getPositionY() - 200, null);
 
 		}
-
-
 
 		public boolean isTouchOnUpperLeft(int touchX, int touchY) {
 
@@ -384,11 +402,11 @@ public class VirtualMapFragment extends Fragment {
 		public String locationToLeftExists() {
 
 			for(VirtualLocation vl : virtualLocations) { 
-				if(vl.isLocationOnLeft(humanAvatar.getPositionX(),
+				if(vl.isObjectOnLeftFrom(humanAvatar.getPositionX(),
 						humanAvatar.getPositionY(), 
-						humanAvatar.getAvatarEdge(), 
+						humanAvatar.getEdge(), 
 						AVATAR_EDGE_MARGIN))
-					return vl.getOwner();
+					return vl.getLocationType();
 			}
 
 			return "noLocation";
@@ -397,11 +415,11 @@ public class VirtualMapFragment extends Fragment {
 		public String locationToRightExists() {
 
 			for(VirtualLocation vl : virtualLocations) { 
-				if(vl.isLocationOnRight(humanAvatar.getPositionX(),
+				if(vl.isObjectOnRightFrom(humanAvatar.getPositionX(),
 						humanAvatar.getPositionY(), 
-						humanAvatar.getAvatarEdge(), 
+						humanAvatar.getEdge(), 
 						AVATAR_EDGE_MARGIN))
-					return vl.getOwner();
+					return vl.getLocationType();
 			}
 
 			return "noLocation";
@@ -426,7 +444,7 @@ public class VirtualMapFragment extends Fragment {
 
 	public class GetLocationsAsyncTask extends AsyncTask<Void, Void, Void> {
 
-		String username, owner;
+		String username, locationType;
 		int locationX, locationY;
 
 		protected Void doInBackground(Void... params) {
@@ -451,12 +469,16 @@ public class VirtualMapFragment extends Fragment {
 					for(int i = 0; i < jArray.length(); ++i){
 						JSONObject json_data = jArray.getJSONObject(i);
 
+						//TODO get image from remote
+						int image = 0;
 						//Get an output to the screen
-						owner = json_data.getString("Username");
+						username = json_data.getString("Username");
+						locationType = json_data.getString("Job");
+						Log.d("Character job", "" + locationType);
 						locationX = Integer.parseInt(json_data.getString("LocationX"));
 						locationY = Integer.parseInt(json_data.getString("LocationY"));
 
-						virtualLocations.add(new VirtualLocation(owner, locationX, locationY, LOCATION_EDGE));
+						virtualLocations.add(new VirtualLocation(username, locationType, locationX, locationY, image, LOCATION_EDGE, true));
 					}
 
 					populateMap(getLocationsArray());
@@ -538,6 +560,6 @@ public class VirtualMapFragment extends Fragment {
 	}
 
 	public interface OnLocationSelectedListener {
-		public void onLocationSelected(int fragment);
+		public void onLocationSelected(String location);
 	}
 }

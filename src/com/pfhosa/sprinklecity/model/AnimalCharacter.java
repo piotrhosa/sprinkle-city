@@ -3,25 +3,18 @@ package com.pfhosa.sprinklecity.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class AnimalCharacter implements Parcelable {
-
-	String mName;
-	int mAvatar;
+public class AnimalCharacter extends Character implements Parcelable {
+	
 	int mSleep;
 	int mFitness;
 
 	public AnimalCharacter(String name, int avatar, int sleep, int fitness) {
-		mName = name;
-		mAvatar = avatar;
+		super(name, avatar);
 		mSleep = sleep;
 		mFitness = fitness;		
 	}
 
 	// Accessors
-
-	public String getName() {return mName;}
-
-	public int getAvatar() {return mAvatar;}
 
 	public int getSleep() {return mSleep;}
 
@@ -49,8 +42,7 @@ public class AnimalCharacter implements Parcelable {
 	};
 
 	private AnimalCharacter(Parcel in) {
-		mName = in.readString();
-		mAvatar = in.readInt();
+		super(in);
 		mSleep = in.readInt();
 		mFitness = in.readInt();
 	}

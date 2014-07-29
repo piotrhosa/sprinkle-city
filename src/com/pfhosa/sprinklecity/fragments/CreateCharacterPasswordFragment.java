@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.Database;
@@ -31,9 +32,6 @@ public class CreateCharacterPasswordFragment extends Fragment {
 
 	Database db;
 
-	// Use WeakReference so that AsyncTasks can be garbage collected
-	private WeakReference<WriteToRemoteAsyncTask> newUserWeakReference, newAvatarWeakReference;
-
 	LinearLayout linearLayout;
 	TextView descriptionTextView;
 	EditText characterNameEditText, passwordEditText, animalNameEditText;
@@ -43,7 +41,9 @@ public class CreateCharacterPasswordFragment extends Fragment {
 	AnimalCharacter animalCharacter;
 	User globalUser;
 
-	WriteToRemoteAsyncTask newUserAsyncTask, newAvatarAsyncTask;
+	// Use WeakReference so that AsyncTasks can be garbage collected
+	private WeakReference<WriteToRemoteAsyncTask> newUserWeakReference, newAvatarWeakReference, humanCharacterWeakReference, animalCharacterWeakReference;
+	WriteToRemoteAsyncTask newUserAsyncTask, newAvatarAsyncTask, humanCharacterAsyncTask, animalCharacterAsyncTask;
 
 	boolean usernameIsAvailable;
 
@@ -78,21 +78,34 @@ public class CreateCharacterPasswordFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 
-				User newUser = new User(
-						characterNameEditText.getText().toString(),
-						passwordEditText.getText().toString(),
-						animalNameEditText.getText().toString());
+				if(passwordEditText.getText().toString().length() > 3) {
+					User newUser = new User(
+							characterNameEditText.getText().toString(),
+							passwordEditText.getText().toString(),
+							animalNameEditText.getText().toString());
 
-				globalUser = newUser;
+					globalUser = newUser;
 
-				if(!isNewUserAsyncTaskRunning())
-					startNewUserAsyncTask();	
-				
-				if(!isNewAvatarAsyncTaskRunning())
-					startNewAvatarAsyncTask();
-				
-				startActivity(new Intent(getActivity(), HomeActivity.class));
-				
+					// Insert into remote 
+					if(!isNewUserAsyncTaskRunning())
+						startNewUserAsyncTask();	
+
+					if(!isNewAvatarAsyncTaskRunning())
+						startNewAvatarAsyncTask();
+
+					if(!isHumanCharacterAsyncTaskRunning())
+						startNewHumanCharacterAsyncTask();
+
+					if(!isAnimalCharacterAsyncTaskRunning())
+						startNewAnimalCharacterAsyncTask();
+
+					startActivity(new Intent(getActivity(), HomeActivity.class));
+
+				}
+				else {
+					Toast.makeText(getActivity(), "Your assword must be loner.", Toast.LENGTH_SHORT).show();
+				}
+
 			}
 		});
 	}
@@ -104,25 +117,60 @@ public class CreateCharacterPasswordFragment extends Fragment {
 		postParametersUser.add(new BasicNameValuePair("Username", globalUser.getCharacterName()));
 		postParametersUser.add(new BasicNameValuePair("Password", globalUser.getPassword()));
 		postParametersUser.add(new BasicNameValuePair("Animal", globalUser.getAnimalName()));
-		
+
 		newUserAsyncTask = new WriteToRemoteAsyncTask(urlUser, postParametersUser, getActivity());
 		newUserWeakReference = new WeakReference<WriteToRemoteAsyncTask>(newUserAsyncTask);
-		
+
 		newUserAsyncTask.execute();	
 	}
-	
+
+	public void startNewHumanCharacterAsyncTask() {
+		String url = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/insertHumanCharacter.php";
+
+		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();	
+		postParameters.add(new BasicNameValuePair("Username", humanCharacter.getName()));
+		postParameters.add(new BasicNameValuePair("Avatar", Integer.toString(humanCharacter.getAvatar())));
+		postParameters.add(new BasicNameValuePair("Job", humanCharacter.getJob()));
+		postParameters.add(new BasicNameValuePair("Social", Integer.toString(humanCharacter.getSocialTrait())));
+		postParameters.add(new BasicNameValuePair("Animal", Integer.toString(humanCharacter.getAnimalTrait())));
+		postParameters.add(new BasicNameValuePair("Business", Integer.toString(humanCharacter.getBusinessTrait())));
+
+		humanCharacterAsyncTask = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
+
+		humanCharacterWeakReference = new WeakReference<WriteToRemoteAsyncTask>(humanCharacterAsyncTask);
+		humanCharacterAsyncTask.execute();	
+	}
+
+	public void startNewAnimalCharacterAsyncTask() {
+
+		String url = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/insertAnimalCharacter.php";
+
+		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();	
+		postParameters.add(new BasicNameValuePair("Animal", animalCharacter.getName()));
+		postParameters.add(new BasicNameValuePair("AnimalAvatar", Integer.toString(animalCharacter.getAvatar())));
+		postParameters.add(new BasicNameValuePair("Sleep", Integer.toString(animalCharacter.getSleep())));
+		postParameters.add(new BasicNameValuePair("Fitness", Integer.toString(animalCharacter.getFitness())));
+
+		animalCharacterAsyncTask = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
+
+		@SuppressWarnings("unused")
+		WeakReference<WriteToRemoteAsyncTask> animalCharacterWeakReference = new WeakReference<WriteToRemoteAsyncTask>(animalCharacterAsyncTask);
+		animalCharacterAsyncTask.execute();	
+
+	}
+
 	public void startNewAvatarAsyncTask() {
 		String urlAvatar = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/insertHumanAvatar.php";
-		
+
 		ArrayList<NameValuePair> postParametersAvatar = new ArrayList<NameValuePair>();	
 		postParametersAvatar.add(new BasicNameValuePair("Username", globalUser.getCharacterName()));
 		postParametersAvatar.add(new BasicNameValuePair("PositionX", Integer.toString(0)));
 		postParametersAvatar.add(new BasicNameValuePair("PositionY", Integer.toString(0)));	
 		postParametersAvatar.add(new BasicNameValuePair("Direction", Integer.toString(-1)));
-		
+
 		newAvatarAsyncTask = new WriteToRemoteAsyncTask(urlAvatar, postParametersAvatar, getActivity());
 		newAvatarWeakReference = new WeakReference<WriteToRemoteAsyncTask>(newAvatarAsyncTask);
-		
+
 		newAvatarAsyncTask.execute();		
 	}
 
@@ -131,10 +179,23 @@ public class CreateCharacterPasswordFragment extends Fragment {
 				this.newUserWeakReference.get() != null && 
 				!this.newUserWeakReference.get().getStatus().equals(Status.FINISHED);
 	}
-	
+
+	private boolean isHumanCharacterAsyncTaskRunning() {
+		return 	this.humanCharacterWeakReference != null &&
+				this.humanCharacterWeakReference.get() != null && 
+				!this.humanCharacterWeakReference.get().getStatus().equals(Status.FINISHED);
+	}
+
+	private boolean isAnimalCharacterAsyncTaskRunning() {
+		return 	this.animalCharacterWeakReference != null &&
+				this.animalCharacterWeakReference.get() != null && 
+				!this.animalCharacterWeakReference.get().getStatus().equals(Status.FINISHED);
+	}
+
 	private boolean isNewAvatarAsyncTaskRunning() {
 		return 	this.newAvatarWeakReference != null &&
 				this.newAvatarWeakReference.get() != null && 
 				!this.newAvatarWeakReference.get().getStatus().equals(Status.FINISHED);
 	}
+
 }

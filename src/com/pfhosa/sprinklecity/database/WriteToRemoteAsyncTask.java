@@ -37,4 +37,5 @@ public class WriteToRemoteAsyncTask extends AsyncTask<Void, Void, Void> {
 	}
 
 	protected void onPostExecute(Void result) {}
+	
 }

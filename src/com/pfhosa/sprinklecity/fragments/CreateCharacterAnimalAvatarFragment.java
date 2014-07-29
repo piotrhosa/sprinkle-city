@@ -48,7 +48,7 @@ public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onAnimalAvatarSelected(characterName, 0);
+				advanceListener.onAnimalAvatarSelected(characterName, R.drawable.character_animal_0);
 			}
 		});
 
@@ -56,7 +56,7 @@ public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onAnimalAvatarSelected(characterName, 1);
+				advanceListener.onAnimalAvatarSelected(characterName, R.drawable.character_animal_1);
 			}
 		});
 
@@ -64,7 +64,7 @@ public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onAnimalAvatarSelected(characterName, 2);
+				advanceListener.onAnimalAvatarSelected(characterName, R.drawable.character_animal_2);
 			}
 		});
 
@@ -72,7 +72,7 @@ public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onAnimalAvatarSelected(characterName, 3);
+				advanceListener.onAnimalAvatarSelected(characterName, R.drawable.character_animal_3);
 			}
 		});
 	}	

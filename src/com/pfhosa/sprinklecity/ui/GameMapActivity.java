@@ -52,9 +52,9 @@ OnLocationSelectedListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_map);
-		
+
 		// Get Extras
-		characterData = getIntent().getExtras();		
+		characterData = getIntent().getExtras();
 
 		// Record location
 		mPrefs = getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE);		
@@ -242,22 +242,51 @@ OnLocationSelectedListener {
 		}
 	}
 
-	public void openFarmFragment() {
+	public void virtualLocationSelector(String location) {
+		Intent openLocation = new Intent(this, GameLocationActivity.class);
+		openLocation.putExtra("Fragment", location);
+		openLocation.putExtra("Username", characterData.getString("Username"));
+		startActivity(openLocation);	
+		/*
+		switch(location) {
+		case "farmer": openFarmLocation(location);
+		case "baker": openFarmLocation();
+		}
+		/*
+		Intent openLocation = new Intent(this, GameLocationActivity.class);
+		openLocation.putExtra("Fragment", "fragment");
+		openLocation.putExtra("Username", characterData.getString("Username"));
+		startActivity(openLocation);	
+
+		
 		LocationFarmFragment farmFragment = new LocationFarmFragment();
+
+		farmFragment.setArguments(characterData);
 
 		getSupportFragmentManager().beginTransaction()
 		.replace(R.id.fragment_container_game_map, farmFragment)
 		.addToBackStack("farmFragment")
 		.commit();
+		 */
+	}
+	
+	private void openFarmLocation() {
+
+		/*
+		LocationFarmFragment farmFragment = new LocationFarmFragment();
+
+		farmFragment.setArguments(characterData);
+
+		getSupportFragmentManager().beginTransaction()
+		.replace(R.id.fragment_container_game_map, farmFragment)
+		.addToBackStack("farmFragment")
+		.commit();
+		*/
 	}
 
 	@Override
-	public void onLocationSelected(int fragment) {
-		switch(fragment) {
-		case 1: openFarmFragment(); break;
-		default: break;
-		}
-
+	public void onLocationSelected(String location) {
+		virtualLocationSelector(location);
 	}
 
 }

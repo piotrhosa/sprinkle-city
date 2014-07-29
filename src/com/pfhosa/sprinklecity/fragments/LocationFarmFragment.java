@@ -1,5 +1,11 @@
 package com.pfhosa.sprinklecity.fragments;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -17,12 +23,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.pfhosa.sprinklecity.R;
+import com.pfhosa.sprinklecity.database.WriteToRemoteAsyncTask;
+import com.pfhosa.sprinklecity.model.InventoryItem;
 
 public class LocationFarmFragment extends Fragment implements SensorEventListener {
 
 	LinearLayout linearLayout;
 	ProgressBar pickingProgressBar;
 	TextView progressTextView;
+
+	String username;
+	int counter = 0;
+	boolean itemCreated = false;
 
 	Thread thread;
 	Handler handler = new Handler();
@@ -39,6 +51,8 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		if(getArguments() != null) 
+			username = getArguments().getString("Username");
 
 		linearLayout = (LinearLayout)inflater.inflate(R.layout.fragment_virtual_location, container, false);
 
@@ -68,8 +82,7 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 	}
 
 	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-	}
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {}
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {	
@@ -84,51 +97,43 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 
 			float deltaY = Math.abs(mLastY - y);
 			if (deltaY < NOISE) deltaY = (float)0.0;
-			mLastY = y;
+			else {
+				++counter;
+				mLastY = y;
 
-			if(progressStatus < 100)
-				progressStatus = (progressStatus + (int)(deltaY*0.2));
-			else
-				progressStatus = 100;
-			
-			pickingProgressBar.setProgress(progressStatus);
-			progressTextView.setText(progressStatus + "/" + pickingProgressBar.getMax());
-			
-			if(progressStatus >= 100) {
-				getActivity().onBackPressed();
-				Log.d("Pop back", "jasjdjd");
+				if(progressStatus < 100)
+					progressStatus = (progressStatus + (int)(deltaY*0.2));
+				else
+					progressStatus = 100;
+
+				pickingProgressBar.setProgress(progressStatus);
+				progressTextView.setText(progressStatus + "/" + pickingProgressBar.getMax());
+
+				if(progressStatus >= 100 && !itemCreated) {
+					getActivity().onBackPressed();
+					InventoryItem apple = new InventoryItem("apple" + Integer.toString(counter));
+					insertItemInRemote(apple);
+					itemCreated = true;
+				}
 			}
 		}
 	}
 
-	/**
-	public void runProgressThread(int progressStat) {
-		
-		final int progress = progressStat;
-		thread = new Thread(new Runnable() {
-			public void run() {
+	private void insertItemInRemote(InventoryItem item) {
+		String url = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/insertInventoryItem.php";
 
-				//while(progressStatus < 100) {
-					try {
-						// Sleep for 200 milliseconds just to display the progress slowly.
-						Thread.sleep(200);
-					} 
-					catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();	
+		postParameters.add(new BasicNameValuePair("Username", username));
+		postParameters.add(new BasicNameValuePair("Item", item.getItem()));
+		postParameters.add(new BasicNameValuePair("TimeCreated", Long.toString(item.getTimeCollected())));
+		Log.d("Username", username);
+		Log.d("Item", item.getItem());
+		Log.d("Time", Long.toString(item.getTimeCollected()));
 
-					handler.post(new Runnable() {
-						public void run() {
-							pickingProgressBar.setProgress(progressStatus);
-							progressTextView.setText(progress + "/" + pickingProgressBar.getMax());
-						}
-					});
-				//}
-			}
-		});
+		WriteToRemoteAsyncTask insertInventoryAsyncTask = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
+		@SuppressWarnings("unused")
+		WeakReference<WriteToRemoteAsyncTask>insertInventoryWeakReference = new WeakReference<WriteToRemoteAsyncTask>(insertInventoryAsyncTask);
 
-		thread.run();
-
+		insertInventoryAsyncTask.execute();	
 	}
-	*/
 }
