@@ -127,9 +127,12 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 		postParameters.add(new BasicNameValuePair("Item", item.getItem()));
 		postParameters.add(new BasicNameValuePair("Value", Integer.toString(item.getValue())));
 		postParameters.add(new BasicNameValuePair("TimeCreated", Long.toString(item.getTimeCollected())));
+		postParameters.add(new BasicNameValuePair("Usable", item.getUsable() ? "1" : "0"));
+		
 		Log.d("Username", username);
 		Log.d("Item", item.getItem());
 		Log.d("Time", Long.toString(item.getTimeCollected()));
+		Log.d("Usable", Boolean.toString(item.getUsable()));
 
 		WriteToRemoteAsyncTask insertInventoryAsyncTask = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
 		@SuppressWarnings("unused")

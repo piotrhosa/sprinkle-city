@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.CustomHttpClient;
+import com.pfhosa.sprinklecity.database.InventoryLoader;
 import com.pfhosa.sprinklecity.database.WriteToRemoteAsyncTask;
 import com.pfhosa.sprinklecity.model.DrawableObject;
 import com.pfhosa.sprinklecity.model.HumanAvatar;
@@ -229,6 +230,7 @@ public class VirtualMapFragment extends Fragment {
 				}
 				if(inventory.isTouchOnObject(touchX, touchY)) {
 					//TODO open new activity
+					InventoryLoader loader = new InventoryLoader(humanAvatar.getUsername());
 					Toast.makeText(getActivity(), "Inventory", Toast.LENGTH_SHORT).show();
 				}
 			}

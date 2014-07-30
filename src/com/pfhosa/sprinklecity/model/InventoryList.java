@@ -9,10 +9,16 @@ public class InventoryList {
 	ArrayList<ArrayList<InventoryItem>> mInventory = new ArrayList<ArrayList<InventoryItem>>();
 	
 	ArrayList<InventoryItem> mApples = new ArrayList<InventoryItem>();
+	ArrayList<InventoryItem> mCoins = new ArrayList<InventoryItem>();
 	
+	/**
+	 * 
+	 * @param username
+	 */
 	public InventoryList(String username) {
 		mUsername = username;
 		mInventory.add(mApples);
+		mInventory.add(mCoins);
 	}
 	
 	// Acessors
@@ -27,7 +33,8 @@ public class InventoryList {
 	
 	public ArrayList<InventoryItem> listFinder(String listName) {
 		switch(listName) {
-		case "apples": return mApples;
+		case "apple": return mApples;
+		case "coin": return mCoins;
 		default: return null;
 		}
 	}
