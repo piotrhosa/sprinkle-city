@@ -346,6 +346,8 @@ containing a value of this type.
         public static final int common_signin_btn_text_dark=0x7f06001a;
         public static final int common_signin_btn_text_light=0x7f06001b;
         public static final int disabled=0x7f060019;
+        /**  Colors 
+         */
         public static final int main_background=0x7f060017;
         public static final int wallet_bright_foreground_disabled_holo_light=0x7f06000f;
         /** 
@@ -446,85 +448,87 @@ containing a value of this type.
         public static final int yellow_progress_bar=0x7f02003f;
     }
     public static final class id {
-        public static final int action_settings=0x7f07004f;
+        public static final int action_settings=0x7f070051;
         public static final int book_now=0x7f070010;
-        public static final int button_create_animal_character_next=0x7f07004e;
+        public static final int button_create_animal_character_next=0x7f070050;
         public static final int button_create_character=0x7f070017;
-        public static final int button_create_character_confirm_password=0x7f07003d;
-        public static final int button_create_character_next=0x7f070038;
+        public static final int button_create_character_confirm_password=0x7f07003e;
+        public static final int button_create_character_next=0x7f070039;
         public static final int button_login=0x7f070019;
         public static final int button_login_final=0x7f07001e;
         public static final int buyButton=0x7f07000a;
         public static final int buy_now=0x7f07000f;
         public static final int buy_with_google=0x7f07000e;
         public static final int classic=0x7f070011;
-        public static final int edit_animal_character_name=0x7f070045;
-        public static final int edit_animal_name_pass=0x7f07003b;
+        public static final int edit_animal_character_name=0x7f070047;
+        public static final int edit_animal_name_pass=0x7f07003c;
         public static final int edit_character_name=0x7f07001c;
-        public static final int edit_character_name_pass=0x7f07003a;
-        public static final int edit_character_password=0x7f07003c;
+        public static final int edit_character_name_pass=0x7f07003b;
+        public static final int edit_character_password=0x7f07003d;
         public static final int edit_password=0x7f07001d;
         public static final int fragment_container_create_character=0x7f070014;
         public static final int fragment_container_game_location=0x7f070015;
         public static final int fragment_container_game_map=0x7f070016;
         public static final int fragment_container_inventory=0x7f07001a;
-        public static final int fragment_create_character_animal_avatar=0x7f07001f;
-        public static final int fragment_create_character_animal_details=0x7f070044;
-        public static final int fragment_create_character_bottom_left=0x7f070024;
+        public static final int fragment_create_character_animal_avatar=0x7f070020;
+        public static final int fragment_create_character_animal_details=0x7f070046;
+        public static final int fragment_create_character_bottom_left=0x7f070025;
         public static final int grayscale=0x7f070012;
         public static final int holo_dark=0x7f070005;
         public static final int holo_light=0x7f070006;
         public static final int hybrid=0x7f070004;
-        public static final int image_character_animal_0=0x7f070020;
-        public static final int image_character_animal_1=0x7f070021;
-        public static final int image_character_animal_2=0x7f070022;
-        public static final int image_character_animal_3=0x7f070023;
-        public static final int image_character_human_0=0x7f070025;
-        public static final int image_character_human_1=0x7f070026;
-        public static final int image_character_human_2=0x7f070027;
-        public static final int image_cupcake_0=0x7f07003e;
-        public static final int image_cupcake_1=0x7f07003f;
-        public static final int image_cupcake_2=0x7f070040;
-        public static final int image_job_baker=0x7f070029;
-        public static final int image_job_farmer=0x7f07002b;
-        public static final int image_job_postman=0x7f07002a;
-        public static final int layout_job=0x7f070028;
-        public static final int layout_rating_animal_friendly=0x7f07002f;
-        public static final int layout_rating_business=0x7f070032;
-        public static final int layout_rating_fitness=0x7f070049;
-        public static final int layout_rating_left_stars=0x7f070035;
-        public static final int layout_rating_sleep=0x7f070046;
-        public static final int layout_rating_social=0x7f07002c;
+        public static final int image_character_animal_0=0x7f070021;
+        public static final int image_character_animal_1=0x7f070022;
+        public static final int image_character_animal_2=0x7f070023;
+        public static final int image_character_animal_3=0x7f070024;
+        public static final int image_character_human_0=0x7f070026;
+        public static final int image_character_human_1=0x7f070027;
+        public static final int image_character_human_2=0x7f070028;
+        public static final int image_cupcake_0=0x7f070040;
+        public static final int image_cupcake_1=0x7f070041;
+        public static final int image_cupcake_2=0x7f070042;
+        public static final int image_job_baker=0x7f07002a;
+        public static final int image_job_farmer=0x7f07002c;
+        public static final int image_job_postman=0x7f07002b;
+        public static final int layout_job=0x7f070029;
+        public static final int layout_rating_animal_friendly=0x7f070030;
+        public static final int layout_rating_business=0x7f070033;
+        public static final int layout_rating_fitness=0x7f07004b;
+        public static final int layout_rating_left_stars=0x7f070036;
+        public static final int layout_rating_sleep=0x7f070048;
+        public static final int layout_rating_social=0x7f07002d;
+        public static final int listview=0x7f07003f;
         public static final int match_parent=0x7f07000c;
         public static final int monochrome=0x7f070013;
         public static final int none=0x7f070000;
         public static final int normal=0x7f070001;
         public static final int production=0x7f070007;
-        public static final int progress_virtual_location=0x7f070043;
-        public static final int rating_animal_friendly=0x7f070031;
-        public static final int rating_business=0x7f070034;
-        public static final int rating_fitness=0x7f07004b;
-        public static final int rating_single_star=0x7f070037;
-        public static final int rating_single_star_animal=0x7f07004d;
-        public static final int rating_sleep=0x7f070048;
-        public static final int rating_social=0x7f07002e;
+        public static final int progress_virtual_location=0x7f070045;
+        public static final int rating_animal_friendly=0x7f070032;
+        public static final int rating_business=0x7f070035;
+        public static final int rating_fitness=0x7f07004d;
+        public static final int rating_single_star=0x7f070038;
+        public static final int rating_single_star_animal=0x7f07004f;
+        public static final int rating_sleep=0x7f07004a;
+        public static final int rating_social=0x7f07002f;
         public static final int sandbox=0x7f070008;
         public static final int satellite=0x7f070002;
         public static final int selectionDetails=0x7f07000b;
         public static final int strict_sandbox=0x7f070009;
         public static final int terrain=0x7f070003;
-        public static final int text_character_password=0x7f070039;
+        public static final int text_character_password=0x7f07003a;
+        public static final int text_item_name=0x7f07001f;
         public static final int text_login=0x7f07001b;
         public static final int text_or_home=0x7f070018;
-        public static final int text_rating_animal_friendly=0x7f070030;
-        public static final int text_rating_business=0x7f070033;
-        public static final int text_rating_fitness=0x7f07004a;
-        public static final int text_rating_signle_star=0x7f070036;
-        public static final int text_rating_signle_star_animal=0x7f07004c;
-        public static final int text_rating_sleep=0x7f070047;
-        public static final int text_rating_social=0x7f07002d;
-        public static final int text_virtual_location=0x7f070041;
-        public static final int text_virtual_location_accelerometer=0x7f070042;
+        public static final int text_rating_animal_friendly=0x7f070031;
+        public static final int text_rating_business=0x7f070034;
+        public static final int text_rating_fitness=0x7f07004c;
+        public static final int text_rating_signle_star=0x7f070037;
+        public static final int text_rating_signle_star_animal=0x7f07004e;
+        public static final int text_rating_sleep=0x7f070049;
+        public static final int text_rating_social=0x7f07002e;
+        public static final int text_virtual_location=0x7f070043;
+        public static final int text_virtual_location_accelerometer=0x7f070044;
         public static final int wrap_content=0x7f07000d;
     }
     public static final class integer {
@@ -537,24 +541,34 @@ containing a value of this type.
         public static final int activity_home_screen=0x7f030003;
         public static final int activity_inventory=0x7f030004;
         public static final int activity_login=0x7f030005;
-        public static final int fragment_create_character_animal_avatar=0x7f030006;
-        public static final int fragment_create_character_human_avatar=0x7f030007;
-        public static final int fragment_create_character_human_details=0x7f030008;
-        public static final int fragment_create_character_password=0x7f030009;
-        public static final int fragment_location_bakery=0x7f03000a;
-        public static final int fragment_location_farm=0x7f03000b;
-        public static final int fragment_location_park=0x7f03000c;
-        public static final int fragment_virtual_map=0x7f03000d;
-        public static final int fragmnet_create_character_animal_details=0x7f03000e;
+        public static final int array_adapter_inventory_row=0x7f030006;
+        public static final int fragment_create_character_animal_avatar=0x7f030007;
+        public static final int fragment_create_character_human_avatar=0x7f030008;
+        public static final int fragment_create_character_human_details=0x7f030009;
+        public static final int fragment_create_character_password=0x7f03000a;
+        public static final int fragment_inventory_list=0x7f03000b;
+        public static final int fragment_location_bakery=0x7f03000c;
+        public static final int fragment_location_farm=0x7f03000d;
+        public static final int fragment_location_park=0x7f03000e;
+        public static final int fragment_virtual_map=0x7f03000f;
+        public static final int fragmnet_create_character_animal_details=0x7f030010;
     }
     public static final class menu {
         public static final int home_screen=0x7f0b0000;
     }
     public static final class string {
         public static final int action_settings=0x7f050021;
+        /**  CreateCharacterActivity 
+         */
         public static final int activity_create_character_name=0x7f05002c;
+        /**  GameMapActivity 
+         */
         public static final int activity_game_map=0x7f05003f;
+        /**  LoginActivity 
+         */
         public static final int activity_login_name=0x7f050026;
+        /**  App 
+         */
         public static final int app_name=0x7f050020;
         public static final int auth_client_needs_enabling_title=0x7f050001;
         public static final int auth_client_needs_installation_title=0x7f050002;
@@ -661,6 +675,8 @@ containing a value of this type.
         public static final int edit_blank_hint=0x7f05003d;
         public static final int edit_character_name_hint=0x7f05002e;
         public static final int edit_password_hint=0x7f050028;
+        /**  HomeActivity 
+         */
         public static final int home_screen=0x7f050022;
         public static final int image_character_animal=0x7f050030;
         public static final int image_character_human=0x7f05002f;
@@ -669,6 +685,9 @@ containing a value of this type.
         public static final int image_job_postman=0x7f050035;
         public static final int text_character_password=0x7f05003c;
         public static final int text_create_character=0x7f05002d;
+        /**  InventoryActivity 
+         */
+        public static final int text_item_name=0x7f050043;
         public static final int text_login=0x7f050027;
         public static final int text_login_details=0x7f05002b;
         public static final int text_login_return=0x7f05002a;
@@ -679,6 +698,8 @@ containing a value of this type.
         public static final int text_rating_signle_star=0x7f050037;
         public static final int text_rating_sleep=0x7f05003a;
         public static final int text_rating_social=0x7f050031;
+        /**  GameLocationActivity 
+         */
         public static final int text_virtual_location_accelerometer=0x7f050041;
         public static final int text_virtual_map_distance=0x7f050040;
         /**  Text on a placeholder buy button when Google Play services is not

@@ -1,14 +1,18 @@
 package com.pfhosa.sprinklecity.database;
 
-import com.pfhosa.sprinklecity.model.AnimalCharacter;
-import com.pfhosa.sprinklecity.model.HumanCharacter;
-import com.pfhosa.sprinklecity.model.User;
+import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.pfhosa.sprinklecity.model.AnimalCharacter;
+import com.pfhosa.sprinklecity.model.HumanCharacter;
+import com.pfhosa.sprinklecity.model.InventoryItem;
+import com.pfhosa.sprinklecity.model.InventoryList;
+import com.pfhosa.sprinklecity.model.User;
 
 public class Database extends SQLiteOpenHelper {
 
@@ -22,6 +26,7 @@ public class Database extends SQLiteOpenHelper {
 	private static final String TABLE_USER = "table_user";
 	private static final String TABLE_HUMAN_CHARACTER = "table_human_character";
 	private static final String TABLE_ANIMAL_CHARACTER = "table_animal_character";
+	private static final String TABLE_INVENTORY = "table_inventory";
 
 	// Common column names
 	private static final String KEY_ID = "id";
@@ -29,7 +34,7 @@ public class Database extends SQLiteOpenHelper {
 
 	// 	Character Table Columns
 	private static final String PASSWORD = "password";
-	
+
 	private static final String HUMAN_AVATAR = "human_avatar";
 	private static final String HUMAN_NAME = "human_name";
 	private static final String HUMAN_JOB = "human_job";
@@ -41,7 +46,15 @@ public class Database extends SQLiteOpenHelper {
 	private static final String ANIMAL_AVATAR = "animal_avatar";
 	private static final String ANIMAL_SLEEP = "animal_sleep";
 	private static final String ANIMAL_FITNESS = "animal_fitness";
-	
+
+	private static final String USERNAME = "Username";
+	private static final String ITEM = "Item";
+	private static final String VALUE = "Value";
+	private static final String TIME_COLLECTED = "TimeCollected";
+	private static final String USABLE= "Usable";
+
+
+
 	private static final String CREATE_TABLE_USER = "CREATE TABLE " + TABLE_USER +
 			" ( " + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
 			HUMAN_NAME + " STRING, " +
@@ -64,6 +77,20 @@ public class Database extends SQLiteOpenHelper {
 			ANIMAL_SLEEP + " INTEGER, " + 
 			ANIMAL_FITNESS + " INTEGER " + ")";
 
+	private static final String CREATE_TABLE_INVENTORY = "CREATE TABLE " + TABLE_INVENTORY + 
+			" ( " + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
+			USERNAME + " STRING, " +
+			ITEM + " STRING, " + 
+			VALUE + " INTEGER, " + 
+			TIME_COLLECTED + " LONG, " + 
+			USABLE + " TINYINT " + ")";
+
+	private static Database mInstance = null;
+	
+	public static Database getInstance(Context context) {
+		if (mInstance == null) mInstance = new Database(context.getApplicationContext());
+		return mInstance;
+	}
 
 	public Database(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -75,6 +102,7 @@ public class Database extends SQLiteOpenHelper {
 		db.execSQL(CREATE_TABLE_USER);
 		db.execSQL(CREATE_TABLE_HUMAN_CHARACTER);
 		db.execSQL(CREATE_TABLE_ANIMAL_CHARACTER);
+		db.execSQL(CREATE_TABLE_INVENTORY);
 	}
 
 	@Override
@@ -83,12 +111,13 @@ public class Database extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_HUMAN_CHARACTER);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANIMAL_CHARACTER);
+		db.execSQL("DROP TABLE IF EXISTS " + CREATE_TABLE_INVENTORY);
 
 		onCreate(db);
 	}
 
 	// Populate tables
-	
+
 	public void newUser(User newUser) {
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -97,7 +126,7 @@ public class Database extends SQLiteOpenHelper {
 		values.put(HUMAN_NAME, newUser.getCharacterName());
 		values.put(PASSWORD, newUser.getPassword());
 		values.put(ANIMAL_NAME, newUser.getAnimalName());
-		
+
 		// Insert row
 		db.insert(TABLE_USER, null, values);
 	}
@@ -133,7 +162,53 @@ public class Database extends SQLiteOpenHelper {
 		// Insert row
 		db.insert(TABLE_ANIMAL_CHARACTER, null, values);
 	}
+
+	public void loadInventoryToLocal(InventoryList inventory) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		int index = 0;
+
+		ContentValues values = new ContentValues();
+		for(int i = 0; i < inventory.size(); ++i) {
+			//InventoryItem compressedItem = new InventoryItem();
+			//ArrayList<InventoryItem> current = inventory.get(index);
+			for(InventoryItem ii: inventory.get(index)) {
+
+				values.put(USERNAME, ii.getCreator());
+				values.put(ITEM, ii.getItem());
+				values.put(VALUE, ii.getValue());
+				values.put(TIME_COLLECTED, ii.getTimeCollected());
+				values.put(USABLE, ii.getUsable() ? "1" : "0");
+				db.insert(TABLE_USER, null, values);
+			}
+			++index;
+		}
+
+		// Insert row
+		db.insert(TABLE_USER, null, values);	
+	}
 	
+	public ArrayList<InventoryItem> getCompressedInventory(String creator) {
+		SQLiteDatabase db = this.getReadableDatabase();
+		String[] d = {};
+		InventoryList inventory = new InventoryList(creator);
+
+		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_INVENTORY + " WHERE " + USABLE + " = ' 1 '" + " AND " + USERNAME + " = ' " + creator + " '", d);
+
+		if(cursor.moveToFirst()) {
+			while(cursor != null) {
+				InventoryItem item = new InventoryItem(cursor.getString(1),
+						cursor.getString(2),
+						Integer.parseInt(cursor.getString(3)),
+						Long.parseLong(cursor.getString(4)),
+						"1".equals(cursor.getString(5))
+						);
+				inventory.addItem(item.getItem(), item);
+			}
+		}
+				
+		return inventory.compressInventory();
+	}
+
 	public String getHumanCharacter() {
 
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -160,7 +235,7 @@ public class Database extends SQLiteOpenHelper {
 		else
 			return true;
 	}
-	
+
 	public boolean uniqueAnimalCharacter(String name) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		String[] d = {};

@@ -45,6 +45,8 @@
         </activity>
         <activity android:name="com.pfhosa.sprinklecity.ui.GameLocationActivity" >
         </activity>
+        <activity android:name="com.pfhosa.sprinklecity.ui.InventoryActivity" >
+        </activity>
     </application>
 
 </manifest>

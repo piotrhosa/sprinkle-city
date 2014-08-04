@@ -8,16 +8,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.pfhosa.sprinklecity.model.InventoryItem;
-import com.pfhosa.sprinklecity.model.InventoryList;
-
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.pfhosa.sprinklecity.model.InventoryItem;
+import com.pfhosa.sprinklecity.model.InventoryList;
 
 public class InventoryLoader {
 	String mUsername;	
 	boolean mInventoryAccessible;
 	InventoryList mInventory;
+	OnInventoryLoadedListener mInventoryLoaded;
 
 	public InventoryLoader(String username) {
 		mUsername = username;
@@ -26,11 +27,15 @@ public class InventoryLoader {
 		
 		new InventoryLoaderAsyncTask().execute();
 	}
+	
+	public boolean getInvetnoryAvailable() {return mInventoryAccessible;}
 
 	public InventoryList getInventory() {
 		if(mInventoryAccessible) return mInventory;
 		else return null;
 	}
+	
+	public ArrayList<InventoryItem> getCompressedInventory() {return getInventory().compressInventory();}
 
 	public class InventoryLoaderAsyncTask extends AsyncTask<Void, Void, Void> {
 
@@ -42,7 +47,7 @@ public class InventoryLoader {
 
 			// define the parameter
 			postParameters.add(new BasicNameValuePair("Username", mUsername));
-			String response = null, item = null;
+			String response = null, item = null, creator = null;
 			int value = 0;
 			long timeCreated = 0;
 			boolean usable;
@@ -60,12 +65,13 @@ public class InventoryLoader {
 
 					for(int i = 0; i < jArray.length(); ++i) {
 						JSONObject json_data = jArray.getJSONObject(i);
+						creator = json_data.getString("Username");
 						item = json_data.getString("Item");
 						value = Integer.parseInt(json_data.getString("Value"));
 						timeCreated = Long.parseLong(json_data.getString("TimeCreated"));
-						usable = "1".equals(json_data.getString("Usable").toString());
+						usable = "1".equals(json_data.getString("Usable").toString()	);
 
-						InventoryItem inventoryItem = new InventoryItem(item, value, timeCreated, usable);
+						InventoryItem inventoryItem = new InventoryItem(creator, item, value, timeCreated, usable);
 						mInventory.addItem(item, inventoryItem);
 
 					}
@@ -86,6 +92,13 @@ public class InventoryLoader {
 
 		protected void onPostExecute(Void result) {
 			mInventoryAccessible = true;
+			//mInventoryLoaded.onInventoryLoaded(mInventory);
+			//Database db = Database.getInstance();
+			
 		}
+	}
+	
+	public interface OnInventoryLoadedListener {
+		public void onInventoryLoaded(InventoryList inventory);
 	}
 }

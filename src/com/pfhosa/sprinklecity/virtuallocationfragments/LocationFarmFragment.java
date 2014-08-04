@@ -111,7 +111,7 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 
 				if(progressStatus >= 100 && !itemCreated) {
 					getActivity().onBackPressed();
-					InventoryItem apple = new InventoryItem("apple" + Integer.toString(counter), 1);
+					InventoryItem apple = new InventoryItem(username, "apple" + Integer.toString(counter), 1);
 					insertItemInRemote(apple);
 					itemCreated = true;
 				}

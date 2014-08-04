@@ -250,6 +250,12 @@ OnLocationSelectedListener {
 
 	@Override
 	public void onLocationSelected(String location) {
+		if(location.equals("inventory")) {
+			Intent openInventory = new Intent(this, InventoryActivity.class);
+			openInventory.putExtra("Username", characterData.getString("Username"));
+			startActivity(openInventory);
+		}
+		else
 		virtualLocationSelector(location);
 	}
 

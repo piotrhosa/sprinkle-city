@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
+    <!-- Colors -->
     <color name="main_background">#62FFD1</color>
     <color name="yellow">#FFFD64</color>
     <color name="disabled">#CCCCCC</color>
 
+    <!-- App -->
     <string name="app_name">Sprinkle City</string>
     <string name="action_settings">Settings</string>
     
+    <!-- HomeActivity -->
 	<string name="home_screen">Welcome to Sprinke City</string>
 	<string name="button_create_character">Create your character</string>
 	<string name="button_login">Sign in</string>
 	<string name="text_or_home">or</string>
 	
+	<!-- LoginActivity -->
 	<string name="activity_login_name">Sign in</string>
 	<string name="text_login">Start the game!</string>
 	<string name="edit_password_hint">Password</string>
@@ -20,6 +24,7 @@
 	<string name="text_login_return">Connection feedback</string>
 	<string name="text_login_details">Details</string>
 	
+	<!-- CreateCharacterActivity -->
 	<string name="activity_create_character_name">Create your character</string>
 	<string name="text_create_character"></string>
 	<string name="edit_character_name_hint">Name</string>
@@ -40,11 +45,15 @@
 	<string name="edit_blank_hint"></string>
 	<string name="button_create_character_confirm_password">Confirm password</string>
 	
+	<!-- GameMapActivity -->
 	<string name="activity_game_map">Game main</string>
 	<string name="text_virtual_map_distance">distance: 0</string>
 	
-	<string name="text_virtual_location_accelerometer">0.0</string>
-	
+	<!-- GameLocationActivity -->
+	<string name="text_virtual_location_accelerometer">0.0</string>	
 	<string name="cupcake">cupcake</string>
+	
+	<!-- InventoryActivity -->
+	<string name="text_item_name">item</string>
 	
 </resources>

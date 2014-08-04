@@ -30,7 +30,6 @@ public class LoginActivity extends Activity {
 	TextView loginReturn, loginDetails;
 	String nameLoginString, passwordLoginString;
 
-
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
@@ -81,6 +80,9 @@ public class LoginActivity extends Activity {
 	}
 
 	public class ConnectAsyncTask extends AsyncTask<Void, Void, Void> {
+		String username = null;
+		int avatar = 0;
+		
 		@SuppressWarnings("unused")
 		protected Void doInBackground(Void... params) {
 			// declare parameters that are passed to PHP script i.e. the name "birthyear" and its value submitted by user   
@@ -95,8 +97,7 @@ public class LoginActivity extends Activity {
 			postParametersData.add(new BasicNameValuePair("Username", nameLoginString));
 			String response = null;
 			String responseData = null;
-			String username = null;
-			int avatar = 0;
+
 
 			// call executeHttpPost method passing necessary parameters 
 			try {
@@ -144,7 +145,6 @@ public class LoginActivity extends Activity {
 		}
 
 		protected void onPostExecute(Void result) {
-
 		}
 	}
 

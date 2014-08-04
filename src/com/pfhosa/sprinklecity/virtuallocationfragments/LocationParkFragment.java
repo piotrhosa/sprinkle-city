@@ -109,7 +109,7 @@ public class LocationParkFragment extends Fragment implements SensorEventListene
 
 				if(progressStatus >= 100 && !itemCreated) {
 					getActivity().onBackPressed();
-					InventoryItem fetch = new InventoryItem("fetch" + Integer.toString(counter), 1);
+					InventoryItem fetch = new InventoryItem(username, "fetch" + Integer.toString(counter), 1);
 					insertItemInRemote(fetch);
 					itemCreated = true;
 				}
