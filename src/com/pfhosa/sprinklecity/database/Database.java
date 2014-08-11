@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.pfhosa.sprinklecity.model.AnimalCharacter;
 import com.pfhosa.sprinklecity.model.HumanCharacter;
@@ -86,7 +87,7 @@ public class Database extends SQLiteOpenHelper {
 			USABLE + " TINYINT " + ")";
 
 	private static Database mInstance = null;
-	
+
 	public static Database getInstance(Context context) {
 		if (mInstance == null) mInstance = new Database(context.getApplicationContext());
 		return mInstance;
@@ -111,7 +112,7 @@ public class Database extends SQLiteOpenHelper {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_HUMAN_CHARACTER);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_ANIMAL_CHARACTER);
-		db.execSQL("DROP TABLE IF EXISTS " + CREATE_TABLE_INVENTORY);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_INVENTORY);
 
 		onCreate(db);
 	}
@@ -164,29 +165,29 @@ public class Database extends SQLiteOpenHelper {
 	}
 
 	public void loadInventoryToLocal(InventoryList inventory) {
-		SQLiteDatabase db = this.getWritableDatabase();
-		int index = 0;
-
+		SQLiteDatabase db = this.getWritableDatabase();		
+		db.execSQL("DELETE FROM " + TABLE_INVENTORY);		
 		ContentValues values = new ContentValues();
-		for(int i = 0; i < inventory.size(); ++i) {
-			//InventoryItem compressedItem = new InventoryItem();
-			//ArrayList<InventoryItem> current = inventory.get(index);
-			for(InventoryItem ii: inventory.get(index)) {
 
-				values.put(USERNAME, ii.getCreator());
-				values.put(ITEM, ii.getItem());
-				values.put(VALUE, ii.getValue());
-				values.put(TIME_COLLECTED, ii.getTimeCollected());
-				values.put(USABLE, ii.getUsable() ? "1" : "0");
-				db.insert(TABLE_USER, null, values);
+		for(int i = 0; i < inventory.getSize(); ++i) {
+			ArrayList<InventoryItem> subList = inventory.getList(i);
+			
+			for(int j = 0; j < subList.size(); ++j) {
+				InventoryItem ii= subList.get(j);
+
+				if(ii.getItem() != "") {	
+					Log.d("Current put in", "" + ii.getItem());
+					values.put(USERNAME, ii.getCreator());
+					values.put(ITEM, ii.getItem());
+					values.put(VALUE, ii.getValue());
+					values.put(TIME_COLLECTED, ii.getTimeCollected());
+					values.put(USABLE, ii.getUsable() ? "1" : "0");
+					db.insert(TABLE_INVENTORY, null, values);
+				}
 			}
-			++index;
-		}
-
-		// Insert row
-		db.insert(TABLE_USER, null, values);	
+		}		
 	}
-	
+
 	public ArrayList<InventoryItem> getCompressedInventory(String creator) {
 		SQLiteDatabase db = this.getReadableDatabase();
 		String[] d = {};
@@ -205,7 +206,7 @@ public class Database extends SQLiteOpenHelper {
 				inventory.addItem(item.getItem(), item);
 			}
 		}
-				
+
 		return inventory.compressInventory();
 	}
 

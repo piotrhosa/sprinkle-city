@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class InventoryItem implements Parcelable {
-	
+
 	String mCreator;
 	String mItem;
 	int mValue;
@@ -23,7 +23,7 @@ public class InventoryItem implements Parcelable {
 		mTimeCollected = System.currentTimeMillis() / 1000L;
 		mUsable = true;
 	}
-	
+
 	/**
 	 * 
 	 * @param item
@@ -40,35 +40,35 @@ public class InventoryItem implements Parcelable {
 	}
 	
 	public InventoryItem () {
-		mCreator = null;
-		mItem = null;
+		mCreator = "void";
+		mItem = "void";
 		mValue = 0;
 		mTimeCollected = 0;
 		mUsable = false;
 	}
-	
+
 	// Acessors
-	
+
 	public String getCreator() {return mCreator;}
-	
+
 	public String getItem() {return mItem;}
-	
+
 	public int getValue() {return mValue;}
-	
+
 	public long getTimeCollected() {return mTimeCollected;}
-	
+
 	public boolean getUsable() {return mUsable;}
-	
+
 	public void setItem(String item ) {mItem = item;}
-	
+
 	public void setValue(int value) {mValue = value;}
-	
+
 	public void setTimeCollected() {mTimeCollected = 0;}
-	
+
 	public void setUnusable() {mUsable = false;}
-	
+
 	public void setUsable() {mUsable = true;}
-	
+
 	// Parcelable implementation
 
 	public int describeContents() {return 0;}
@@ -80,7 +80,7 @@ public class InventoryItem implements Parcelable {
 		out.writeLong(mTimeCollected);
 		out.writeByte(mUsable ? (byte)1 : (byte)0);
 	}
-	
+
 	protected InventoryItem(Parcel in) {
 		mCreator = in.readString();
 		mItem = in.readString();
@@ -98,9 +98,9 @@ public class InventoryItem implements Parcelable {
 			return new InventoryItem[size];
 		}
 	};
-	
+
 	public String toString() {
-		return "lama";
+			return mItem.toString() + " " + Integer.toString(mValue);
 	}
-	
+
 }

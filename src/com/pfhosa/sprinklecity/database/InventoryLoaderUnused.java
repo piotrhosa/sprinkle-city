@@ -14,13 +14,13 @@ import android.util.Log;
 import com.pfhosa.sprinklecity.model.InventoryItem;
 import com.pfhosa.sprinklecity.model.InventoryList;
 
-public class InventoryLoader {
+public class InventoryLoaderUnused {
 	String mUsername;	
 	boolean mInventoryAccessible;
 	InventoryList mInventory;
 	OnInventoryLoadedListener mInventoryLoaded;
 
-	public InventoryLoader(String username) {
+	public InventoryLoaderUnused(String username) {
 		mUsername = username;
 		mInventoryAccessible = false;
 		mInventory = new InventoryList(mUsername);
@@ -69,7 +69,9 @@ public class InventoryLoader {
 						item = json_data.getString("Item");
 						value = Integer.parseInt(json_data.getString("Value"));
 						timeCreated = Long.parseLong(json_data.getString("TimeCreated"));
-						usable = "1".equals(json_data.getString("Usable").toString()	);
+						usable = "1".equals(json_data.getString("Usable").toString());
+						
+						Log.d("Username", "" + creator);
 
 						InventoryItem inventoryItem = new InventoryItem(creator, item, value, timeCreated, usable);
 						mInventory.addItem(item, inventoryItem);
