@@ -2,8 +2,8 @@ package com.pfhosa.sprinklecity.model;
 
 public class HumanAvatar extends DrawableObject {
 	
-	String mUsername;
-	int mDirection;
+	private String mUsername;
+	private int mDirection;
 	
 	public HumanAvatar(String username, int avatarImage, int avatarEdge, int positionX, int positionY, int direction, boolean visibility) {
 		super(positionX, positionY, avatarImage, avatarEdge, visibility);

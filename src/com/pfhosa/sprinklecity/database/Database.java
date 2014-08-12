@@ -31,7 +31,6 @@ public class Database extends SQLiteOpenHelper {
 
 	// Common column names
 	private static final String KEY_ID = "id";
-	//private static final String USER_ID = "user_id";
 
 	// 	Character Table Columns
 	private static final String PASSWORD = "password";
@@ -171,7 +170,7 @@ public class Database extends SQLiteOpenHelper {
 
 		for(int i = 0; i < inventory.getSize(); ++i) {
 			ArrayList<InventoryItem> subList = inventory.getList(i);
-			
+
 			for(int j = 0; j < subList.size(); ++j) {
 				InventoryItem ii= subList.get(j);
 
@@ -206,7 +205,6 @@ public class Database extends SQLiteOpenHelper {
 				inventory.addItem(item.getItem(), item);
 			}
 		}
-
 		return inventory.compressInventory();
 	}
 
@@ -217,10 +215,9 @@ public class Database extends SQLiteOpenHelper {
 		String retString = "";
 		Cursor cursor = db.rawQuery("SELECT " + HUMAN_NAME +  " FROM " + TABLE_HUMAN_CHARACTER, d);
 
-		if(cursor.moveToLast()) {
+		if(cursor.moveToLast())
 			retString = cursor.getString(0);
-		}
-
+		
 		return retString;		
 	}
 
@@ -231,10 +228,8 @@ public class Database extends SQLiteOpenHelper {
 
 		Cursor cursor = db.rawQuery("SELECT " + HUMAN_NAME +  " FROM " + TABLE_HUMAN_CHARACTER + " WHERE " + HUMAN_NAME + " = '" + name + "'", d);
 
-		if(cursor.moveToFirst())
-			return false;
-		else
-			return true;
+		if(cursor.moveToFirst()) return false;
+		else return true;
 	}
 
 	public boolean uniqueAnimalCharacter(String name) {
@@ -243,9 +238,7 @@ public class Database extends SQLiteOpenHelper {
 
 		Cursor cursor = db.rawQuery("SELECT " + ANIMAL_NAME +  " FROM " + TABLE_ANIMAL_CHARACTER + " WHERE " + ANIMAL_NAME + " = '" + name + "'", d);
 
-		if(cursor.moveToFirst())
-			return false;
-		else
-			return true;
+		if(cursor.moveToFirst()) return false;
+		else return true;
 	}
 }

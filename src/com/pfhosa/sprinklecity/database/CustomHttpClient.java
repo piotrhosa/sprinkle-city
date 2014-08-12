@@ -39,25 +39,18 @@ public class CustomHttpClient {
 		if (mHttpClient == null) {
 
 			mHttpClient = new DefaultHttpClient();
-
 			final HttpParams params = mHttpClient.getParams();
-
+			
 			HttpConnectionParams.setConnectionTimeout(params, HTTP_TIMEOUT);
-
 			HttpConnectionParams.setSoTimeout(params, HTTP_TIMEOUT);
-
 			ConnManagerParams.setTimeout(params, HTTP_TIMEOUT);
-
 		}
-
 		return mHttpClient;
-
 	}
 
 	public static String executeHttpPostInsert(String url, ArrayList<NameValuePair> postParameters) throws Exception {	 
 
 		HttpClient client = getHttpClient();
-
 		HttpPost request = new HttpPost(url);
 
 		UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(postParameters);
@@ -66,9 +59,8 @@ public class CustomHttpClient {
 
 		@SuppressWarnings("unused")
 		HttpResponse response = client.execute(request);
-		
-		return url;
 
+		return url;
 	}
 
 
@@ -91,21 +83,16 @@ public class CustomHttpClient {
 		try {
 
 			HttpClient client = getHttpClient();
-
 			HttpPost request = new HttpPost(url);
-
 			UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(postParameters);
 
 			request.setEntity(formEntity);
 
 			HttpResponse response = client.execute(request);
-
 			in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
 			StringBuffer sb = new StringBuffer("");
-
 			String line = "";
-
 			String NL = System.getProperty("line.separator");
 
 			while ((line = in.readLine()) != null) {
@@ -117,31 +104,21 @@ public class CustomHttpClient {
 
 			in.close();
 
-			String result = sb.toString();
-			return result;
+			return sb.toString();
 
 		} 
 		finally {
 
 			if(in != null) {
 
-				try {
-					
-					in.close();
-					
-				} catch (IOException e) {
-
+				try {in.close();} 
+				catch (IOException e) {
 					Log.e("log_tag", "Error converting result "+e.toString()); 
-
 					e.printStackTrace();
 				}
-
 			}
-
 		}
-
 	}
-
 
 	/**
 	 * Performs an HTTP GET request to the specified url.
@@ -157,54 +134,34 @@ public class CustomHttpClient {
 		BufferedReader in = null;
 
 		try {
-
 			HttpClient client = getHttpClient();
-
 			HttpGet request = new HttpGet();
 
 			request.setURI(new URI(url));
-
 			HttpResponse response = client.execute(request);
 
 			in = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
 			StringBuffer sb = new StringBuffer("");
-
 			String line = "";
-
 			String NL = System.getProperty("line.separator");
 
-			while ((line = in.readLine()) != null) {
-
-				sb.append(line + NL);
-
-			}
-
+			while ((line = in.readLine()) != null) sb.append(line + NL);
 			in.close();
 
-			String result = sb.toString();
-
-			return result;
-
-		} finally {
+			return sb.toString();
+		} 
+		finally {
 
 			if(in != null) {
 
-				try {
-
-					in.close();
-				} 
+				try {in.close();} 
 				catch (IOException e) {
 
 					Log.e("log_tag", "Error converting result "+e.toString()); 
-
 					e.printStackTrace();
 				}
-
 			}
-
 		}
-
 	}
-
 }

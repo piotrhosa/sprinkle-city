@@ -5,11 +5,10 @@ import android.os.Parcelable;
 
 public class InventoryItem implements Parcelable {
 
-	String mCreator;
-	String mItem;
-	int mValue;
-	long mTimeCollected;
-	boolean mUsable;
+	private String mCreator, mItem;
+	private int mValue;
+	private long mTimeCollected;
+	private boolean mUsable;
 
 	/**
 	 * 

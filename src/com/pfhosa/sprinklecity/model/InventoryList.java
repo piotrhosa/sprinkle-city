@@ -1,27 +1,18 @@
 package com.pfhosa.sprinklecity.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-import android.util.Log;
+public class InventoryList extends ArrayList<ArrayList<InventoryItem>> {
 
-public class InventoryList extends ArrayList<ArrayList<InventoryItem>> implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -3203110440170398902L;
-
-	String mUsername;
+	private static final long serialVersionUID = 1L;
+	private String mUsername;
+	private ArrayList<ArrayList<InventoryItem>> mInventory = new ArrayList<ArrayList<InventoryItem>>();
+	private ArrayList<InventoryItem> mApple = new ArrayList<InventoryItem>();
+	private ArrayList<InventoryItem> mCoin = new ArrayList<InventoryItem>();
+	private ArrayList<InventoryItem> mFetch = new ArrayList<InventoryItem>();
+	private ArrayList<InventoryItem> mCupcake = new ArrayList<InventoryItem>();
 	
-	String[] mNameArray = {"apple", "coin", "fetch", "cupcake"};
-
-	ArrayList<ArrayList<InventoryItem>> mInventory = new ArrayList<ArrayList<InventoryItem>>();
-
-	ArrayList<InventoryItem> mApple = new ArrayList<InventoryItem>();
-	ArrayList<InventoryItem> mCoin = new ArrayList<InventoryItem>();
-	ArrayList<InventoryItem> mFetch = new ArrayList<InventoryItem>();
-	ArrayList<InventoryItem> mCupcake = new ArrayList<InventoryItem>();
+	private String[] mNameArray = {"apple", "coin", "fetch", "cupcake"};
 
 	/**
 	 * 
@@ -41,8 +32,10 @@ public class InventoryList extends ArrayList<ArrayList<InventoryItem>> implement
 	}
 
 	// Acessors
+	
+	public String getUsername() {return mUsername;}
 
-	public ArrayList<ArrayList<InventoryItem>> geWholetInventory() {return mInventory;}
+	public ArrayList<ArrayList<InventoryItem>> geWholeInventory() {return mInventory;}
 
 	public ArrayList<InventoryItem> getItemList(String listName) {return listFinder(listName);}
 
@@ -73,15 +66,13 @@ public class InventoryList extends ArrayList<ArrayList<InventoryItem>> implement
 			InventoryItem compressedItem = new InventoryItem();
 			
 			for(InventoryItem ii: al) {
-				
-				Log.d("Value only", Integer.toString(ii.getValue()));
+
 				compressedItem.setItem(mNameArray[mInventory.indexOf(al)]);
 				compressedItem.setValue(compressedItem.getValue() + ii.getValue());
 				compressedItem.setTimeCollected();
 				compressedItem.setUsable();
 			}
 			compressedInventory.add(compressedItem);
-			Log.d("Item and value", Integer.toString(compressedItem.getValue()));
 		}
 		return compressedInventory;
 	}

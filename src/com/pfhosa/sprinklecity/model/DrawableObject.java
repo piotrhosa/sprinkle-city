@@ -4,8 +4,8 @@ import android.util.Log;
 
 public class DrawableObject {
 	
-	int mPositionX, mPositionY, mImage, mEdge;
-	boolean mVisible;
+	private int mPositionX, mPositionY, mImage, mEdge;
+	private boolean mVisible;
 	
 	/**
 	 * 

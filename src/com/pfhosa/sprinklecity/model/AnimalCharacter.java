@@ -5,8 +5,7 @@ import android.os.Parcelable;
 
 public class AnimalCharacter extends Character implements Parcelable {
 	
-	int mSleep;
-	int mFitness;
+	private int mSleep, mFitness;
 
 	public AnimalCharacter(String name, int avatar, int sleep, int fitness) {
 		super(name, avatar);

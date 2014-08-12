@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 public class HumanCharacter extends Character implements Parcelable {
 
-	String mJob;
-	int mSocial, mAnimal, mBusiness;
+	private String mJob;
+	private int mSocial, mAnimal, mBusiness;
 
 	public HumanCharacter(String username, int avatar, String job, int social, int animal, int business) {
 		super(username, avatar);

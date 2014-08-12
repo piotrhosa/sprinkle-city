@@ -2,9 +2,7 @@ package com.pfhosa.sprinklecity.model;
 
 public class User {
 	
-	String mUsername;
-	String mPassword;
-	String mAnimalName;
+	private String mUsername, mPassword, mAnimalName;
 	
 	public User(String username, String password, String animalName) {
 		mUsername = username;

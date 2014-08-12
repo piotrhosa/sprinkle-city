@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Character implements Parcelable {
-	String mName;
-	int mAvatar;
+	private String mName;
+	private int mAvatar;
 	
 	/**
 	 * 

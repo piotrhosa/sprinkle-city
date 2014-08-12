@@ -11,12 +11,10 @@ import android.widget.ListView;
 
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.Database;
-import com.pfhosa.sprinklecity.database.InventoryLoaderUnused;
 import com.pfhosa.sprinklecity.model.InventoryItem;
 
 public class InventoryListFragment extends ListFragment {
 
-	InventoryLoaderUnused loader;
 	String username;
 
 	@Override
