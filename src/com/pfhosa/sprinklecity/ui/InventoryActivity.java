@@ -90,19 +90,11 @@ public class InventoryActivity extends FragmentActivity {
 					Log.d("Loaded inventory to Object", "true");
 
 				} 
-				catch (JSONException e){
-					Log.e("log_tag", "Error parsing data "+ e.toString());
-					//makeToastWrongData();
-				}   
-
-			} 
-			catch (Exception e) {
-				Log.e("log_tag","Error in http connection!!" + e.toString());
-
-			}  
+				catch (JSONException e){Log.e("log_tag", "Error parsing data "+ e.toString());} 
+			} catch (Exception e) {Log.e("log_tag","Error in http connection!!" + e.toString());}  
+			
 			return null;
 		}
-
 		protected void onPostExecute(Void result) {inventoryLoader();}
 	}
 	

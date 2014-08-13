@@ -96,22 +96,20 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 		else {
 
 			float deltaY = Math.abs(mLastY - y);
-			if (deltaY < NOISE) deltaY = (float)0.0;
+			if (deltaY < NOISE) deltaY = 0.0f;
 			else {
 				++counter;
 				mLastY = y;
 
-				if(progressStatus < 100)
-					progressStatus = (progressStatus + (int)(deltaY*0.2));
-				else
-					progressStatus = 100;
+				if(progressStatus < 100) progressStatus = (progressStatus + (int)(deltaY*0.2));
+				else progressStatus = 100;
 
 				pickingProgressBar.setProgress(progressStatus);
 				progressTextView.setText(progressStatus + "/" + pickingProgressBar.getMax());
 
 				if(progressStatus >= 100 && !itemCreated) {
 					getActivity().onBackPressed();
-					InventoryItem apple = new InventoryItem(username, "apple" + Integer.toString(counter), 1);
+					InventoryItem apple = new InventoryItem(username, "apple", 1);
 					insertItemInRemote(apple);
 					itemCreated = true;
 				}

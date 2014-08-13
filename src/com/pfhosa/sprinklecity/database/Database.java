@@ -192,16 +192,21 @@ public class Database extends SQLiteOpenHelper {
 		String[] d = {};
 		InventoryList inventory = new InventoryList(creator);
 
-		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_INVENTORY + " WHERE " + USABLE + " = ' 1 '" + " AND " + USERNAME + " = ' " + creator + " '", d);
+		Log.d("Getting compressed inventory", "true");
+		
+		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_INVENTORY + " WHERE " + USABLE + " = ' 1 '" + " AND " + USERNAME + " = '" + creator + "'", d);
 
+		int rows = cursor.getCount();
 		if(cursor.moveToFirst()) {
-			while(cursor != null) {
+			Log.d("Entries exist", "true");
+			for(int i = 0; i < rows; ++i) {
 				InventoryItem item = new InventoryItem(cursor.getString(1),
 						cursor.getString(2),
 						Integer.parseInt(cursor.getString(3)),
 						Long.parseLong(cursor.getString(4)),
 						"1".equals(cursor.getString(5))
 						);
+				Log.e("Item from db", "" + item.getItem().toString());
 				inventory.addItem(item.getItem(), item);
 			}
 		}

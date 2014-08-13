@@ -26,19 +26,18 @@ public class InventoryListFragment extends ListFragment {
 		
 		if(getArguments() != null) {
 			username = getArguments().getString("Username");
-			//loader = new InventoryLoader(username);
 			Log.d("Username", "" + username);
 		}
 		
 		loadedList = db.getCompressedInventory(username);
 		
 		ArrayAdapter<InventoryItem> adapter = new ArrayAdapter<InventoryItem>(getActivity(),
-				R.layout.array_adapter_inventory_row, R.id.text_item_name, loadedList);
+				R.layout.array_adapter_inventory_row, 
+				R.id.text_item_name, 
+				loadedList);
 		setListAdapter(adapter);
 	}
 
 	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		// do something with the data
-	}
+	public void onListItemClick(ListView l, View v, int position, long id) {}
 }
