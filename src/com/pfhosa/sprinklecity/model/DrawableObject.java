@@ -1,10 +1,9 @@
 package com.pfhosa.sprinklecity.model;
 
-import android.util.Log;
-
 public class DrawableObject {
-	
-	private int mPositionX, mPositionY, mImage, mEdge;
+
+	private float mPositionX, mPositionY, mEdge;
+	private int mImage;
 	private boolean mVisible;
 	
 	/**
@@ -15,7 +14,7 @@ public class DrawableObject {
 	 * @param edge
 	 * @param visible
 	 */
-	public DrawableObject(int positionX, int positionY, int image, int edge, boolean visible) {
+	public DrawableObject(float positionX, float positionY, int image, float edge, boolean visible) {
 		mPositionX = positionX;
 		mPositionY = positionY;
 		mImage = image;
@@ -23,24 +22,23 @@ public class DrawableObject {
 		mVisible = visible;
 	}
 	
-	public int getPositionX() {return mPositionX;}
+	public float getPositionX() {return mPositionX;}
 	
-	public int getPositionY() {return mPositionY;}
+	public float getPositionY() {return mPositionY;}
 	
 	public int getImage() {return mImage;}
 	
-	public int getEdge() {return mEdge;}
+	public float getEdge() {return mEdge;}
 	
 	public boolean getVisibility() {return mVisible;}
 	
-	public void setPositionX(int positionX) {mPositionX = positionX;}
+	public void setPositionX(float positionX) {mPositionX = positionX;}
 	
-	public void setPositionY(int positionY) {mPositionY = positionY;}
+	public void setPositionY(float positionY) {mPositionY = positionY;}
 	
-	public void setPosition(int positionX, int positionY) {
+	public void setPosition(float positionX, float positionY) {
 		mPositionX = positionX;
 		mPositionY = positionY;
-		Log.d("Position set", Integer.toString(mPositionY));
 	}
 	
 	public void setImage(int image) {mImage = image;}
@@ -51,7 +49,7 @@ public class DrawableObject {
 
 	// Methods
 	
-	public boolean isTouchOnObject(int touchX, int touchY) {
+	public boolean isTouchOnObject(float touchX, float touchY) {
 		
 		return 	(touchX > mPositionX) &&
 				(touchX < mPositionX + mEdge) &&
@@ -59,41 +57,41 @@ public class DrawableObject {
 				(touchY < mPositionY + mEdge);	
 	}
 	
-	public boolean swipeArrowUp(int touchX, int touchY) {
+	public boolean swipeArrowUp(float touchX, float touchY) {
 
 		return 	(touchX > mPositionX) &&
 				(touchX < mPositionX + mEdge) &&
 				(touchY < mPositionY);
 	}
 
-	public boolean swipeArrowDown(int touchX, int touchY) {
+	public boolean swipeArrowDown(float touchX, float touchY) {
 
 		return 	(touchX > mPositionX) &&
 				(touchX < mPositionX + mEdge) &&
 				(touchY > mPositionY + mEdge);
 	}
 
-	public boolean swipeArrowLeft(int touchX, int touchY) {
+	public boolean swipeArrowLeft(float touchX, float touchY) {
 
 		return 	(touchX < mPositionX) &&
 				(touchY > mPositionY) &&
 				(touchY < mPositionY + mEdge); 
 	}
 
-	public boolean swipeArrowRight(int touchX, int touchY) {
+	public boolean swipeArrowRight(float touchX, float touchY) {
 
 		return	(touchX > mPositionX + mEdge) &&
 				(touchY > mPositionY) &&
 				(touchY < mPositionY + mEdge);
 	}
 	
-	public boolean isObjectOnLeftFrom(int avatarX, int avatarY, int avatarEdge, int avatarEdgeMargin) {
+	public boolean isObjectOnLeftFrom(float avatarX, float avatarY, float avatarEdge, float avatarEdgeMargin) {
 		return	(mPositionX < avatarX + avatarEdge / 2) &&
 				(mPositionY + mEdge / 2 > avatarY + avatarEdgeMargin) &&
 				(mPositionY + mEdge / 2 < avatarY + avatarEdge - avatarEdgeMargin);
 	}
 	
-	public boolean isObjectOnRightFrom(int avatarX, int avatarY, int avatarEdge, int avatarEdgeMargin) {
+	public boolean isObjectOnRightFrom(float avatarX, float avatarY, float avatarEdge, float avatarEdgeMargin) {
 		return	(mPositionX > avatarX + avatarEdge / 2) &&
 				(mPositionY + mEdge / 2 > avatarY + avatarEdgeMargin) &&
 				(mPositionY + mEdge / 2 < avatarY + avatarEdge - avatarEdgeMargin);

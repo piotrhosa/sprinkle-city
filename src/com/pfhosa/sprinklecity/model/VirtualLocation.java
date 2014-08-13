@@ -4,7 +4,7 @@ public class VirtualLocation extends DrawableObject{
 
 	private String mOwner, mLocationType;
 
-	public VirtualLocation(String owner, String locationType, int locationX, int locationY, int image, int locationEdge, boolean visibility) {
+	public VirtualLocation(String owner, String locationType, float locationX, float locationY, int image, float locationEdge, boolean visibility) {
 		super(locationX, locationY, image, locationEdge, visibility);
 		mOwner = owner;
 		mLocationType = locationType;

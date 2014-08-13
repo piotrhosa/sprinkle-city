@@ -38,9 +38,6 @@ public class InventoryActivity extends FragmentActivity {
 	public void openInventoryFragment(Bundle characterData) {
 		if (findViewById(R.id.fragment_container_inventory) != null) {
 
-			//if (savedInstanceState != null)
-			//return;
-
 			InventoryListFragment inventoryListFragment = new InventoryListFragment();
 
 			inventoryListFragment.setArguments(characterData);
@@ -108,4 +105,7 @@ public class InventoryActivity extends FragmentActivity {
 
 		protected void onPostExecute(Void result) {inventoryLoader();}
 	}
+	
+	@Override
+	public void onBackPressed() {finish();}
 }

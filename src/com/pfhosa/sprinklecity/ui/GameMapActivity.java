@@ -249,14 +249,16 @@ OnLocationSelectedListener {
 	}
 
 	@Override
+	public void onBackPressed() {finish();}
+
+	@Override
 	public void onLocationSelected(String location) {
 		if(location.equals("inventory")) {
 			Intent openInventory = new Intent(this, InventoryActivity.class);
 			openInventory.putExtra("Username", characterData.getString("Username"));
 			startActivity(openInventory);
 		}
-		else
-		virtualLocationSelector(location);
+		else virtualLocationSelector(location);
 	}
 
 }
