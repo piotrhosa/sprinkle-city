@@ -74,8 +74,7 @@ OnLocationSelectedListener {
 
 		if (findViewById(R.id.fragment_container_game_map) != null) {
 
-			if (savedInstanceState != null)
-				return;
+			if (savedInstanceState != null) return;
 
 			VirtualMapFragment virtualMapFragment = new VirtualMapFragment();
 
@@ -92,7 +91,6 @@ OnLocationSelectedListener {
 	@Override
 	protected void onStart() {
 		super.onStart();
-
 		mLocationClient.connect();
 	}
 
@@ -104,9 +102,7 @@ OnLocationSelectedListener {
 		 * Get any previous setting for location updates
 		 * Gets "false" if an error occurs
 		 */
-		if (mPrefs.contains("KEY_UPDATES_ON")) {
-			mUpdatesRequested = mPrefs.getBoolean("KEY_UPDATES_ON", false);
-		} 
+		if (mPrefs.contains("KEY_UPDATES_ON")) mUpdatesRequested = mPrefs.getBoolean("KEY_UPDATES_ON", false); 
 		else {
 			mEditor.putBoolean("KEY_UPDATES_ON", false);
 			mEditor.commit();
@@ -125,10 +121,7 @@ OnLocationSelectedListener {
 	protected void onStop() {
 		super.onStop();
 
-		if (mLocationClient.isConnected()) {
-			mLocationClient.removeLocationUpdates(this);
-		}
-
+		if(mLocationClient.isConnected()) mLocationClient.removeLocationUpdates(this);
 		mLocationClient.disconnect();
 	}
 
@@ -141,19 +134,13 @@ OnLocationSelectedListener {
 			mDialog = null;
 		}
 		// Set the dialog to display
-		public void setDialog(Dialog dialog) {
-			mDialog = dialog;
-		}
+		public void setDialog(Dialog dialog) {mDialog = dialog;}
 		// Return a Dialog to the DialogFragment.
 		@Override
-		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			return mDialog;
-		}
+		public Dialog onCreateDialog(Bundle savedInstanceState) {return mDialog;}
 	}
 
-	public void showErrorDialog(int errorCode) {
-		//TODO
-	}
+	public void showErrorDialog(int errorCode) {/*TODO*/}
 
 	private boolean servicesConnected() {
 		// Check that Google Play services is available
@@ -196,10 +183,7 @@ OnLocationSelectedListener {
 	}
 
 	@Override
-	public void onDisconnected() {
-		Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();
-
-	}
+	public void onDisconnected() {Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();}
 
 	@Override
 	public void onLocationChanged(Location location) {
@@ -227,12 +211,8 @@ OnLocationSelectedListener {
 				 * Thrown if Google Play services canceled the original
 				 * PendingIntent
 				 */
-			} 
-			catch (IntentSender.SendIntentException e) {
-				e.printStackTrace();
-			}
-		} 
-		else {
+			} catch (IntentSender.SendIntentException e) {e.printStackTrace();}
+		} else {
 			/*
 			 * If no resolution is available, display a dialog to the
 			 * user with the error.

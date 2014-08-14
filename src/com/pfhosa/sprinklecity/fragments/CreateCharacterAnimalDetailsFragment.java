@@ -23,33 +23,33 @@ import com.pfhosa.sprinklecity.model.AnimalCharacter;
 
 public class CreateCharacterAnimalDetailsFragment extends Fragment {
 
-	LinearLayout linearLayout;
-	TextView overallTextView;
-	OnAnimalCharacterCreatedListener advanceListener;
-	Database db;
+	LinearLayout mLinearLayout;
+	TextView mOverallTextView;
+	OnAnimalCharacterCreatedListener mAdvanceListener;
+	Database mDb;
 
-	String characterName, name, owner;
-	int avatar, sleep, fitness, maxRating;
-	int overallStarsLimit = 7;
+	String mCharacterName, mName, mOwner;
+	int mAvatar, mSleep, mFitness, mMaxRating;
+	static final int OVERALL_STARS_LIMIT = 7;
 
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
-		advanceListener = (OnAnimalCharacterCreatedListener) activity;
+		mAdvanceListener = (OnAnimalCharacterCreatedListener) activity;
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		if(getArguments() != null) {
-			characterName = getArguments().getString("characterName", characterName);
-			avatar = getArguments().getInt("avatar", avatar);
+			mCharacterName = getArguments().getString("mCharacterName", mCharacterName);
+			mAvatar = getArguments().getInt("avatar", mAvatar);
 			
-			setOwner(characterName);
+			mOwner = mCharacterName;
 		}
 
-		db = new Database(getActivity());
+		mDb = new Database(getActivity());
 
-		linearLayout = (LinearLayout) inflater.inflate(R.layout.fragmnet_create_character_animal_details, container, false);		
+		mLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragmnet_create_character_animal_details, container, false);		
 
 		activateCharacterName();
 		activateSleepRatingListener();
@@ -57,43 +57,38 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 		activateOverallStarsUpdate();
 		activateNextButtonListener();
 		
-		return linearLayout;
+		return mLinearLayout;
 	}
 
 	public void activateCharacterName() {
-		final EditText characterName = (EditText) linearLayout.findViewById(R.id.edit_animal_character_name);
+		final EditText characterName = (EditText) mLinearLayout.findViewById(R.id.edit_animal_character_name);
 
 		characterName.addTextChangedListener(new TextWatcher() {
 
-			public void afterTextChanged(Editable s) {
-			}
+			public void afterTextChanged(Editable s) {}
 
-			public void beforeTextChanged(CharSequence s, int start, 
-					int count, int after) {
-			}
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-			public void onTextChanged(CharSequence s, int start, 
-					int before, int count) {
-				setName(characterName.getText().toString());
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				mName = characterName.getText().toString();
 			}
 		});
 	}
 
 	public void activateSleepRatingListener() {
-		final RatingBar sleepRatingBar = (RatingBar) linearLayout.findViewById(R.id.rating_sleep);
+		final RatingBar sleepRatingBar = (RatingBar) mLinearLayout.findViewById(R.id.rating_sleep);
 
 		sleepRatingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
 
 			@Override
 			public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 
-				maxRating = overallStarsLimit - getFitness();
+				mMaxRating = OVERALL_STARS_LIMIT - mFitness;
 
-				if((int)sleepRatingBar.getRating() <= maxRating)
-					setSleep((int)sleepRatingBar.getRating());
-				if((int)sleepRatingBar.getRating() > maxRating) {
-					sleepRatingBar.setRating(maxRating);
-					setSleep(maxRating);
+				if((int)sleepRatingBar.getRating() <= mMaxRating) mSleep = (int)sleepRatingBar.getRating();
+				if((int)sleepRatingBar.getRating() > mMaxRating) {
+					sleepRatingBar.setRating(mMaxRating);
+					mSleep = mMaxRating;
 				}
 
 				updateOverallStarTextView();
@@ -103,20 +98,19 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 	}
 
 	public void activateFitnessRatingListener() {
-		final RatingBar fitnessRatingBar = (RatingBar) linearLayout.findViewById(R.id.rating_fitness);
+		final RatingBar fitnessRatingBar = (RatingBar) mLinearLayout.findViewById(R.id.rating_fitness);
 
 		fitnessRatingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
 
 			@Override
 			public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 
-				maxRating = overallStarsLimit - getSleep();
+				mMaxRating = OVERALL_STARS_LIMIT - mSleep;
 
-				if((int)fitnessRatingBar.getRating() <= maxRating)
-					setFitness((int)fitnessRatingBar.getRating());
-				if((int)fitnessRatingBar.getRating() > maxRating) {
-					fitnessRatingBar.setRating(maxRating);
-					setFitness(maxRating);
+				if((int)fitnessRatingBar.getRating() <= mMaxRating) mFitness = (int)fitnessRatingBar.getRating();
+				if((int)fitnessRatingBar.getRating() > mMaxRating) {
+					fitnessRatingBar.setRating(mMaxRating);
+					mFitness = mMaxRating;
 				}
 
 				updateOverallStarTextView();
@@ -126,13 +120,13 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 	}
 
 	public void activateOverallStarsUpdate() {
-		overallTextView = (TextView) linearLayout.findViewById(R.id.text_rating_signle_star_animal);
+		mOverallTextView = (TextView) mLinearLayout.findViewById(R.id.text_rating_signle_star_animal);
 
 		updateOverallStarTextView();		
 	}
 
 	public void activateNextButtonListener() {
-		Button nextButton = (Button) linearLayout.findViewById(R.id.button_create_animal_character_next);
+		Button nextButton = (Button) mLinearLayout.findViewById(R.id.button_create_animal_character_next);
 
 		nextButton.setOnClickListener(new OnClickListener() {
 
@@ -140,22 +134,22 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 
-				if(getOverallStars() < overallStarsLimit)
+				if(getOverallStars() < OVERALL_STARS_LIMIT)
 					Toast.makeText(getActivity(), "There are still stars left!", Toast.LENGTH_SHORT).show();
 
-				if(db.uniqueAnimalCharacter(getName()) 
-						&& getName() != "" 
-						&& getOverallStars() == overallStarsLimit) {
+				if(mDb.uniqueAnimalCharacter(mName) 
+						&& mName != "" 
+						&& getOverallStars() == OVERALL_STARS_LIMIT) {
 
 					AnimalCharacter newAnimal = new AnimalCharacter(
-							getName(),
-							getAvatar(),
-							getSleep(),
-							getFitness()
+							mName,
+							mAvatar,
+							mSleep,
+							mFitness
 							);			
 					
-					//db.newAnimalCharacter(newAnimal);
-					advanceListener.onAnimalCharacterCreated(newAnimal);
+					//mDb.newAnimalCharacter(newAnimal);
+					mAdvanceListener.onAnimalCharacterCreated(newAnimal);
 				}
 			}
 
@@ -167,56 +161,16 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 	public void updateOverallStarTextView() {
 		int overall = getOverallStars();
 
-		String overallStars = overall + "/" + overallStarsLimit;
+		String overallStars = overall + "/" + OVERALL_STARS_LIMIT;
 
-		overallTextView.setText(overallStars);	
+		mOverallTextView.setText(overallStars);	
 
 	}
 	
 	// Acessors
 	
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public void setOwner(String owner) {
-		this.owner = owner;
-	}
-	
-	public void setAvatar(int avatar) {
-		this.avatar = avatar;
-	}
-	
-	public void setSleep(int sleep) {
-		this.sleep = sleep;
-	}
-	
-	public void setFitness(int fitness) {
-		this.fitness = fitness;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public String getOwner() {
-		return owner;
-	}
-	
-	public int getAvatar() {
-		return avatar;
-	}
-	
-	public int getSleep() {
-		return sleep;
-	}
-	
-	public int getFitness() {
-		return fitness;
-	}
-	
 	public int getOverallStars() {
-		return getSleep() + getFitness();
+		return mSleep + mFitness;
 	}
 
 	public interface OnAnimalCharacterCreatedListener {

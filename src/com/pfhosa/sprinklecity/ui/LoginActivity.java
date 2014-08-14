@@ -26,19 +26,17 @@ import com.pfhosa.sprinklecity.database.CustomHttpClient;
 
 public class LoginActivity extends Activity {	
 
-	EditText nameLogin, passwordLogin;
-	TextView loginReturn, loginDetails;
-	String nameLoginString, passwordLoginString;
+	EditText mNameLogin, mPasswordLogin;
+	TextView mLoginReturn, mLoginDetails;
+	String mNameLoginString, mPasswordLoginString;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 
-		nameLogin = (EditText)findViewById(R.id.edit_character_name);
-		passwordLogin = (EditText)findViewById(R.id.edit_password);
-		//loginReturn = (TextView)findViewById(R.id.text_login_return);
-		//loginDetails = (TextView)findViewById(R.id.text_login_details);
-
+		mNameLogin = (EditText)findViewById(R.id.edit_character_name);
+		mPasswordLogin = (EditText)findViewById(R.id.edit_password);
+		
 		activateLoginButtonListener();
 	}	
 
@@ -50,10 +48,8 @@ public class LoginActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 
-				nameLoginString = nameLogin.getText().toString();
-				passwordLoginString = passwordLogin.getText().toString();
-
-				//loginDetails.setText(nameLoginString + " " + passwordLoginString);
+				mNameLoginString = mNameLogin.getText().toString();
+				mPasswordLoginString = mPasswordLogin.getText().toString();
 
 				new ConnectAsyncTask().execute();
 			}
@@ -85,38 +81,27 @@ public class LoginActivity extends Activity {
 		
 		@SuppressWarnings("unused")
 		protected Void doInBackground(Void... params) {
-			// declare parameters that are passed to PHP script i.e. the name "birthyear" and its value submitted by user   
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 			ArrayList<NameValuePair> postParametersData = new ArrayList<NameValuePair>();
 
-			//Looper.prepare();
-
-			// define the parameter
-			postParameters.add(new BasicNameValuePair("Username", nameLoginString));
-			postParameters.add(new BasicNameValuePair("Password", passwordLoginString));
-			postParametersData.add(new BasicNameValuePair("Username", nameLoginString));
+			postParameters.add(new BasicNameValuePair("Username", mNameLoginString));
+			postParameters.add(new BasicNameValuePair("Password", mPasswordLoginString));
+			postParametersData.add(new BasicNameValuePair("Username", mNameLoginString));
 			String response = null;
 			String responseData = null;
 
-
-			// call executeHttpPost method passing necessary parameters 
 			try {
 				response = CustomHttpClient.executeHttpPost("http://www2.macs.hw.ac.uk/~ph109/DBConnect/connect.php", postParameters);
 				responseData = CustomHttpClient.executeHttpPost("http://www2.macs.hw.ac.uk/~ph109/DBConnect/getHumanCharacter.php", postParametersData);
 
-				// store the result returned by PHP script that runs MySQL query
 				String result = response.toString();  
 				String resultData = responseData.toString();
 
-				//parse json data
 				try{
 					JSONArray jArray = new JSONArray(result);		
 
 					for(int i = 0; i < jArray.length(); ++i) {
 						JSONObject json_data = jArray.getJSONObject(i);
-						//username = json_data.getString("Username");
-						//avatar = json_data.getString("Avatar");
-
 					}
 					
 					JSONArray jArrayData = new JSONArray(resultData);		
@@ -125,27 +110,19 @@ public class LoginActivity extends Activity {
 						JSONObject json_data = jArrayData.getJSONObject(i);
 						username = json_data.getString("Username");
 						avatar = Integer.parseInt(json_data.getString("Avatar"));
-
 					}
 
 					openMapFragment(username, avatar);
 
-				} 
-				catch (JSONException e){
+				} catch (JSONException e){
 					Log.e("log_tag", "Error parsing data "+ e.toString());
 					makeToastWrongData();
 				}   
-
-			} 
-			catch (Exception e) {
-				Log.e("log_tag","Error in http connection!!" + e.toString());
-
-			}  
+			} catch (Exception e) {Log.e("log_tag","Error in http connection!!" + e.toString());}  
 			return null;
 		}
 
-		protected void onPostExecute(Void result) {
-		}
+		protected void onPostExecute(Void result) {}
 	}
 
 	@Override

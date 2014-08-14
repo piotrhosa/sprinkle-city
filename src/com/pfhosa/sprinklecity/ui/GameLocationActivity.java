@@ -2,7 +2,6 @@ package com.pfhosa.sprinklecity.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -25,8 +24,7 @@ public class GameLocationActivity extends FragmentActivity {
 		String fragment = data.getString("Fragment");
 
 		if (findViewById(R.id.fragment_container_game_location) != null) {
-			if (savedInstanceState != null) return;			
-
+			if (savedInstanceState != null) return;	
 			fragmentSelector(fragment, data);
 		}
 	}
@@ -37,7 +35,6 @@ public class GameLocationActivity extends FragmentActivity {
 		case "baker": openBakery(data); break;
 		case "park": openPark(data); break;
 		}
-		Log.d("Fragment", "" + fragment);
 	}
 	
 	private void openFarm(Bundle data) {

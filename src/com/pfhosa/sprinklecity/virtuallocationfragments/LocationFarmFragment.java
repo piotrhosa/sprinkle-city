@@ -12,7 +12,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,16 +27,12 @@ import com.pfhosa.sprinklecity.model.InventoryItem;
 
 public class LocationFarmFragment extends Fragment implements SensorEventListener {
 
-	LinearLayout linearLayout;
-	ProgressBar pickingProgressBar;
-	TextView progressTextView;
+	LinearLayout mLinearLayout;
+	ProgressBar mPickingProgressBar;
+	TextView mProgressTextView;
 
-	String username;
-	int counter = 0;
-	boolean itemCreated = false;
-
-	Thread thread;
-	Handler handler = new Handler();
+	String mUsername;
+	boolean mItemCreated = false;
 
 	private float mLastY;
 	private boolean mInitialized;
@@ -51,10 +46,9 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		if(getArguments() != null) 
-			username = getArguments().getString("Username");
+		if(getArguments() != null) mUsername = getArguments().getString("Username");
 
-		linearLayout = (LinearLayout)inflater.inflate(R.layout.fragment_location_farm, container, false);
+		mLinearLayout = (LinearLayout)inflater.inflate(R.layout.fragment_location_farm, container, false);
 
 		progressStatus = 0;
 
@@ -63,12 +57,12 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 		mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);		
 
-		progressTextView = (TextView)linearLayout.findViewById(R.id.text_virtual_location_accelerometer);
-		pickingProgressBar = (ProgressBar)linearLayout.findViewById(R.id.progress_virtual_location);
+		mProgressTextView = (TextView)mLinearLayout.findViewById(R.id.text_virtual_location_accelerometer);
+		mPickingProgressBar = (ProgressBar)mLinearLayout.findViewById(R.id.progress_virtual_location);
 
 		Log.d("Fragment initialized", "yes");
 
-		return linearLayout;
+		return mLinearLayout;
 	}
 
 	public void onResume() {
@@ -92,26 +86,24 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 			mLastY = y;
 
 			mInitialized = true;
-		} 
-		else {
+		} else {
 
 			float deltaY = Math.abs(mLastY - y);
 			if (deltaY < NOISE) deltaY = 0.0f;
 			else {
-				++counter;
 				mLastY = y;
 
 				if(progressStatus < 100) progressStatus = (progressStatus + (int)(deltaY*0.2));
 				else progressStatus = 100;
 
-				pickingProgressBar.setProgress(progressStatus);
-				progressTextView.setText(progressStatus + "/" + pickingProgressBar.getMax());
+				mPickingProgressBar.setProgress(progressStatus);
+				mProgressTextView.setText(progressStatus + "/" + mPickingProgressBar.getMax());
 
-				if(progressStatus >= 100 && !itemCreated) {
+				if(progressStatus >= 100 && !mItemCreated) {
 					getActivity().onBackPressed();
-					InventoryItem apple = new InventoryItem(username, "apple", 1);
+					InventoryItem apple = new InventoryItem(mUsername, "apple", 1);
 					insertItemInRemote(apple);
-					itemCreated = true;
+					mItemCreated = true;
 				}
 			}
 		}
@@ -121,13 +113,13 @@ public class LocationFarmFragment extends Fragment implements SensorEventListene
 		String url = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/insertInventoryItem.php";
 
 		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();	
-		postParameters.add(new BasicNameValuePair("Username", username));
+		postParameters.add(new BasicNameValuePair("Username", mUsername));
 		postParameters.add(new BasicNameValuePair("Item", item.getItem()));
 		postParameters.add(new BasicNameValuePair("Value", Integer.toString(item.getValue())));
 		postParameters.add(new BasicNameValuePair("TimeCreated", Long.toString(item.getTimeCollected())));
 		postParameters.add(new BasicNameValuePair("Usable", item.getUsable() ? "1" : "0"));
 		
-		Log.d("Username", username);
+		Log.d("Username", mUsername);
 		Log.d("Item", item.getItem());
 		Log.d("Time", Long.toString(item.getTimeCollected()));
 		Log.d("Usable", Boolean.toString(item.getUsable()));

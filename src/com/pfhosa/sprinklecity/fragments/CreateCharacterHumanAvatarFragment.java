@@ -14,36 +14,34 @@ import com.pfhosa.sprinklecity.R;
 
 public class CreateCharacterHumanAvatarFragment extends Fragment {
 
-	HorizontalScrollView horizontalScrollView;
-	OnHumanAvatarSelectedListener advanceListener;
-
-	int avatar;
+	HorizontalScrollView mHorizontalScrollView;
+	OnHumanAvatarSelectedListener mAdvanceListener;
 
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
-		advanceListener = (OnHumanAvatarSelectedListener) activity;
+		mAdvanceListener = (OnHumanAvatarSelectedListener) activity;
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-		horizontalScrollView = (HorizontalScrollView) inflater.inflate(R.layout.fragment_create_character_human_avatar, container, false);
+		mHorizontalScrollView = (HorizontalScrollView) inflater.inflate(R.layout.fragment_create_character_human_avatar, container, false);
 
 		activateHumanCharacterGallery();
 
-		return horizontalScrollView ;
+		return mHorizontalScrollView ;
 	}
 
 	public void activateHumanCharacterGallery() {
-		ImageButton character0Button = (ImageButton) horizontalScrollView.findViewById(R.id.image_character_human_0);
-		ImageButton character1Button = (ImageButton) horizontalScrollView.findViewById(R.id.image_character_human_1);
-		ImageButton character2Button = (ImageButton) horizontalScrollView.findViewById(R.id.image_character_human_2);
+		ImageButton character0Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_human_0);
+		ImageButton character1Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_human_1);
+		ImageButton character2Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_human_2);
 
 		character0Button.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onHumanAvatarSelected(R.drawable.character_human_0);
+				mAdvanceListener.onHumanAvatarSelected(R.drawable.character_human_0);
 			}
 		});
 
@@ -51,7 +49,7 @@ public class CreateCharacterHumanAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onHumanAvatarSelected(R.drawable.character_human_1);
+				mAdvanceListener.onHumanAvatarSelected(R.drawable.character_human_1);
 			}
 		});
 
@@ -59,15 +57,13 @@ public class CreateCharacterHumanAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onHumanAvatarSelected(R.drawable.character_human_2);
+				mAdvanceListener.onHumanAvatarSelected(R.drawable.character_human_2);
 			}
 		});
 	}	
 
 	// Interface to pass avatar to Activity
 
-	public interface OnHumanAvatarSelectedListener {
-		public void onHumanAvatarSelected(int avatar);
-	}
+	public interface OnHumanAvatarSelectedListener {public void onHumanAvatarSelected(int avatar);}
 
 }

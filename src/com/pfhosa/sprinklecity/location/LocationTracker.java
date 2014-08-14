@@ -15,12 +15,10 @@ public class LocationTracker extends Service implements LocationListener {
 	private static final long LOCATION_UPDATE_PERIOD = 5000; //ms
 	private static final long LOCATION_UPDATE_DISTANCE = 2; //m
 
-	boolean isLocationEnabled, isNetworkEnabled, canLocalize;
-
-	protected LocationManager locationManager;
-
-	Location currentLocation, previousLocation;
-	double latitude, longitude;
+	boolean mIsLocationEnabled, mIsNetworkEnabled, mCanLocalize;
+	protected LocationManager mLocationManager;
+	Location mCurrentLocation, mPreviousLocation;
+	double mLatitude, mLongitude;
 
 	Context mContext;
 
@@ -31,102 +29,79 @@ public class LocationTracker extends Service implements LocationListener {
 
 	public Location getInitialLocation() {
 		try {
-			locationManager = (LocationManager)mContext.getSystemService(LOCATION_SERVICE);
-			isLocationEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-			isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+			mLocationManager = (LocationManager)mContext.getSystemService(LOCATION_SERVICE);
+			mIsLocationEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+			mIsNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-			if(isLocationEnabled || isNetworkEnabled) {
+			if(mIsLocationEnabled || mIsNetworkEnabled) {
 				/**
-				if (isNetworkEnabled) {
-					locationManager.requestLocationUpdates(
+				if (mIsNetworkEnabled) {
+					mLocationManager.requestLocationUpdates(
 							LocationManager.NETWORK_PROVIDER,
 							LOCATION_UPDATE_PERIOD,
 							LOCATION_UPDATE_DISTANCE, this);
 
 					Log.d("Network", "Network");
 
-					if (locationManager != null) {
-						currentLocation = locationManager
+					if (mLocationManager != null) {
+						mCurrentLocation = mLocationManager
 								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-						if (currentLocation != null) {
-							latitude = currentLocation.getLatitude();
-							longitude = currentLocation.getLongitude();
+						if (mCurrentLocation != null) {
+							mLatitude = mCurrentLocation.getLatitude();
+							mLongitude = mCurrentLocation.getLongitude();
 						}
 					}
 				}*/
 				// if GPS Enabled get lat/long using GPS Services
-				if (isLocationEnabled) {
-					if (currentLocation == null) {
-						locationManager.requestLocationUpdates(
+				if (mIsLocationEnabled) {
+					if (mCurrentLocation == null) {
+						mLocationManager.requestLocationUpdates(
 								LocationManager.GPS_PROVIDER,
 								LOCATION_UPDATE_PERIOD,
 								LOCATION_UPDATE_DISTANCE, this);
 						Log.d("GPS Enabled", "GPS Enabled");
-						if (locationManager != null) {
-							currentLocation = locationManager
+						if (mLocationManager != null) {
+							mCurrentLocation = mLocationManager
 									.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-							if (currentLocation != null) {
-								latitude = currentLocation.getLatitude();
-								longitude = currentLocation.getLongitude();
+							if (mCurrentLocation != null) {
+								mLatitude = mCurrentLocation.getLatitude();
+								mLongitude = mCurrentLocation.getLongitude();
 							}
 						}
 					}
 				}
 			}
+		} catch(Exception e) {e.printStackTrace();}
 
-
-		} catch(Exception e) {
-			e.printStackTrace();
-		}
-
-		return currentLocation;
+		return mCurrentLocation;
 	}
 
 	public Location getUpdatedLocation() {
 
-		if (locationManager != null) 
-			currentLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);		
+		if (mLocationManager != null) mCurrentLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);		
 
-		return currentLocation;
+		return mCurrentLocation;
 	}
 
 	@Override
 	public void onLocationChanged(Location location) {
-		//previousLocation = currentLocation;
-		currentLocation = getUpdatedLocation();
-		
-		Log.e("location", "changed");
-
-		//float distance = previousLocation.distanceTo(currentLocation);
+		mCurrentLocation = getUpdatedLocation();
 
 		Intent locationUpdate = new Intent("locationUpdater");
-		locationUpdate.putExtra("distance", currentLocation);
+		locationUpdate.putExtra("distance", mCurrentLocation);
 		sendBroadcast(locationUpdate);
-
 	}
 
 	@Override
-	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onStatusChanged(String provider, int status, Bundle extras) {}
 
 	@Override
-	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onProviderEnabled(String provider) {}
 
 	@Override
-	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onProviderDisabled(String provider) {}
 
 	@Override
-	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public IBinder onBind(Intent intent) {return null;}
 
 }

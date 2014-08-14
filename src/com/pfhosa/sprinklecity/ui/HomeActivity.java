@@ -19,7 +19,6 @@ public class HomeActivity extends Activity {
 		setContentView(R.layout.activity_home_screen);
 		
 		activateButtonMenu();
-
 	}
 
 	public void activateButtonMenu() {

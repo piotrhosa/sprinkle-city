@@ -5,7 +5,7 @@ public class HumanAvatar extends DrawableObject {
 	private String mUsername;
 	private int mDirection;
 	
-	public HumanAvatar(String username, int avatarImage, float avatarEdge, int positionX, int positionY, int direction, boolean visibility) {
+	public HumanAvatar(String username, int avatarImage, float avatarEdge, float positionX, float positionY, int direction, boolean visibility) {
 		super(positionX, positionY, avatarImage, avatarEdge, visibility);
 		mUsername = username;
 		mDirection = direction;

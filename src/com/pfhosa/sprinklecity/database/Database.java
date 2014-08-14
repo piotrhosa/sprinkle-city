@@ -92,9 +92,7 @@ public class Database extends SQLiteOpenHelper {
 		return mInstance;
 	}
 
-	public Database(Context context) {
-		super(context, DATABASE_NAME, null, DATABASE_VERSION);
-	}    
+	public Database(Context context) {super(context, DATABASE_NAME, null, DATABASE_VERSION);}    
 
 	@Override
 	public void onCreate(SQLiteDatabase db) { 

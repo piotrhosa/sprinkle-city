@@ -21,18 +21,9 @@ import android.util.Log;
 
 public class CustomHttpClient {
 
-	/** The time it takes for our client to timeout */
-
 	public static final int HTTP_TIMEOUT = 30 * 1000; // milliseconds
-
-	/** Single instance of our HttpClient */
-
+	
 	private static HttpClient mHttpClient;
-
-	/**
-	 * Get our single instance of our HttpClient object.
-	 * @return an HttpClient object with connection parameters set
-	 */
 
 	private static HttpClient getHttpClient() {
 
@@ -106,8 +97,7 @@ public class CustomHttpClient {
 
 			return sb.toString();
 
-		} 
-		finally {
+		} finally {
 
 			if(in != null) {
 

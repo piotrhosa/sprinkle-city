@@ -22,37 +22,37 @@ import com.pfhosa.sprinklecity.model.InventoryList;
 
 public class InventoryActivity extends FragmentActivity {
 
-	Bundle characterData;
-	InventoryList inventory;
+	Bundle mCharacterData;
+	InventoryList mInventory;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_inventory);	
 
-		characterData = getIntent().getExtras();
+		mCharacterData = getIntent().getExtras();
 
-		inventory = new InventoryList(characterData.getString("Username"));
+		mInventory = new InventoryList(mCharacterData.getString("Username"));
 		new InventoryLoaderAsyncTask().execute();
 	}
 
-	public void openInventoryFragment(Bundle characterData) {
+	public void openInventoryFragment(Bundle mCharacterData) {
 		if (findViewById(R.id.fragment_container_inventory) != null) {
 
-			InventoryListFragment inventoryListFragment = new InventoryListFragment();
+			InventoryListFragment mInventoryListFragment = new InventoryListFragment();
 
-			inventoryListFragment.setArguments(characterData);
+			mInventoryListFragment.setArguments(mCharacterData);
 
 			getSupportFragmentManager().beginTransaction()
-			.add(R.id.fragment_container_inventory,inventoryListFragment)
-			.addToBackStack("inventoryListFragment")
+			.add(R.id.fragment_container_inventory, mInventoryListFragment)
+			.addToBackStack("mInventoryListFragment")
 			.commit();
 		}
 	}
 
-	public void inventoryLoader() {
+	public void mInventoryLoader() {
 		Database db = Database.getInstance(this);
-		db.loadInventoryToLocal(inventory);		
-		openInventoryFragment(characterData);	
+		db.loadInventoryToLocal(mInventory);		
+		openInventoryFragment(mCharacterData);	
 	}
 
 	public class InventoryLoaderAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -60,7 +60,7 @@ public class InventoryActivity extends FragmentActivity {
 		protected Void doInBackground(Void... params) {
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 
-			postParameters.add(new BasicNameValuePair("Username", characterData.getString("Username")));
+			postParameters.add(new BasicNameValuePair("Username", mCharacterData.getString("Username")));
 			String response = null, item = null, creator = null;
 			int value = 0;
 			long timeCreated = 0;
@@ -84,18 +84,16 @@ public class InventoryActivity extends FragmentActivity {
 						timeCreated = Long.parseLong(json_data.getString("TimeCreated"));
 						usable = "1".equals(json_data.getString("Usable").toString());				
 
-						InventoryItem inventoryItem = new InventoryItem(creator, item, value, timeCreated, usable);
-						inventory.addItem(item, inventoryItem);
+						InventoryItem mInventoryItem = new InventoryItem(creator, item, value, timeCreated, usable);
+						mInventory.addItem(item, mInventoryItem);
 					}
-					Log.d("Loaded inventory to Object", "true");
-
 				} 
 				catch (JSONException e){Log.e("log_tag", "Error parsing data "+ e.toString());} 
 			} catch (Exception e) {Log.e("log_tag","Error in http connection!!" + e.toString());}  
 			
 			return null;
 		}
-		protected void onPostExecute(Void result) {inventoryLoader();}
+		protected void onPostExecute(Void result) {mInventoryLoader();}
 	}
 	
 	@Override

@@ -36,14 +36,14 @@ import com.pfhosa.sprinklecity.model.HumanCharacter;
 
 public class CreateCharacterHumanDetailsFragment extends Fragment {
 
-	LinearLayout linearLayout;
-	TextView overallTextView;
-	OnHumanCharacterCreatedListener advanceListener;
-	Database db;
+	LinearLayout mLinearLayout;
+	TextView mOverallTextView;
+	OnHumanCharacterCreatedListener mAdvanceListener;
+	Database mDb;
 
-	String job, name;
-	int avatar, socialTrait, animalTrait, businessTrait; 
-	int overallStarsLimit = 10, maxRating;	
+	String mJob, mName;
+	int mAvatar, mSocialTrait, mAnimalTrait, mBusinessTrait, mMaxRating;	
+	static final int OVERALL_STARS_LIMIT  = 10;
 
 	HumanCharacter newHuman;
 
@@ -53,18 +53,18 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 
-		advanceListener = (OnHumanCharacterCreatedListener) activity;
+		mAdvanceListener = (OnHumanCharacterCreatedListener) activity;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		if(getArguments() != null)
-			avatar = getArguments().getInt("avatar", avatar);
+			mAvatar = getArguments().getInt("avatar", mAvatar);
 
-		linearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_create_character_human_details, container, false);		
+		mLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_create_character_human_details, container, false);		
 
-		db = new Database(getActivity());
+		mDb = new Database(getActivity());
 
 		activateCharacterName();
 		activateBakerButtonListener();
@@ -76,84 +76,71 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		activateOverallStarsUpdate();
 		activateNextButtonListener();
 
-		return linearLayout;
+		return mLinearLayout;
 	}
 
 	public void activateCharacterName() {
-		final EditText characterName = (EditText) linearLayout.findViewById(R.id.edit_character_name);
+		final EditText characterName = (EditText) mLinearLayout.findViewById(R.id.edit_character_name);
 
 		characterName.addTextChangedListener(new TextWatcher() {
 
-			public void afterTextChanged(Editable s) {
-			}
+			public void afterTextChanged(Editable s) {}
 
-			public void beforeTextChanged(CharSequence s, int start, 
-					int count, int after) {
-			}
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
-			public void onTextChanged(CharSequence s, int start, 
-					int before, int count) {
-				setCharacterName(characterName.getText().toString());
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				mName = characterName.getText().toString();
 			}
 		});
 	}
 	public void activateBakerButtonListener() {
-		final ImageButton bakerButton = (ImageButton) linearLayout.findViewById(R.id.image_job_baker);
+		final ImageButton bakerButton = (ImageButton) mLinearLayout.findViewById(R.id.image_job_baker);
 
 		bakerButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-				setJob("baker");
-			}
+			public void onClick(View v) {mJob = "baker";}
 
 		});
 
 	}
 
 	public void activatePostmanButtonListener() {
-		ImageButton postmanButton = (ImageButton) linearLayout.findViewById(R.id.image_job_postman);		
+		ImageButton postmanButton = (ImageButton) mLinearLayout.findViewById(R.id.image_job_postman);		
 
 		postmanButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-
-				setJob("postman");
-			}
+			public void onClick(View v) {mJob = "postman";}
 
 		});
 	}
 
 	public void activateFarmerButtonListener() {
-		ImageButton farmerButton = (ImageButton) linearLayout.findViewById(R.id.image_job_farmer);
+		ImageButton farmerButton = (ImageButton) mLinearLayout.findViewById(R.id.image_job_farmer);
 
 		farmerButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {
-
-				setJob("farmer");
-			}
+			public void onClick(View v) {mJob = "farmer";}
 
 		});
 	}
 
 	public void activateSocialRatingListener() {
-		final RatingBar socialRatingBar = (RatingBar) linearLayout.findViewById(R.id.rating_social);
+		final RatingBar socialRatingBar = (RatingBar) mLinearLayout.findViewById(R.id.rating_social);
 
 		socialRatingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
 
 			@Override
 			public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 
-				maxRating = overallStarsLimit - getAnimalTrait() - getBusinessTrait();
+				mMaxRating = OVERALL_STARS_LIMIT - mAnimalTrait - mBusinessTrait;
 
-				if((int)socialRatingBar.getRating() <= maxRating)
-					setSocialTrait((int)socialRatingBar.getRating());
-				if((int)socialRatingBar.getRating() > maxRating) {
-					socialRatingBar.setRating(maxRating);
-					setSocialTrait(maxRating);
+				if((int)socialRatingBar.getRating() <= mMaxRating) mSocialTrait = (int)socialRatingBar.getRating();
+				if((int)socialRatingBar.getRating() > mMaxRating) {
+					socialRatingBar.setRating(mMaxRating);
+					mSocialTrait = mMaxRating;
 				}
 
 				updateOverallStarTextView();
@@ -163,20 +150,19 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	}
 
 	public void activateAnimalRatingListener() {
-		final RatingBar animalRatingBar = (RatingBar) linearLayout.findViewById(R.id.rating_animal_friendly);
+		final RatingBar animalRatingBar = (RatingBar) mLinearLayout.findViewById(R.id.rating_animal_friendly);
 
 		animalRatingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
 
 			@Override
 			public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 
-				maxRating = overallStarsLimit - getSocialTrait() - getBusinessTrait();
+				mMaxRating = OVERALL_STARS_LIMIT - mSocialTrait - mBusinessTrait;
 
-				if((int)animalRatingBar.getRating() <= maxRating)
-					setAnimalTrait((int)animalRatingBar.getRating());
-				if((int)animalRatingBar.getRating() > maxRating) {
-					animalRatingBar.setRating(maxRating);
-					setAnimalTrait(maxRating);
+				if((int)animalRatingBar.getRating() <= mMaxRating) mAnimalTrait = (int)animalRatingBar.getRating();
+				if((int)animalRatingBar.getRating() > mMaxRating) {
+					animalRatingBar.setRating(mMaxRating);
+					mAnimalTrait = mMaxRating;
 				}
 
 				updateOverallStarTextView();
@@ -185,20 +171,19 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	}
 
 	public void activateBusinessRatingListener() {
-		final RatingBar businessRatingBar = (RatingBar) linearLayout.findViewById(R.id.rating_business);
+		final RatingBar businessRatingBar = (RatingBar) mLinearLayout.findViewById(R.id.rating_business);
 
 		businessRatingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
 
 			@Override
 			public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 
-				maxRating = overallStarsLimit - getAnimalTrait() - getSocialTrait();
+				mMaxRating = OVERALL_STARS_LIMIT - mAnimalTrait - mSocialTrait;
 
-				if((int)businessRatingBar.getRating() <= maxRating)
-					setBusinessTrait((int)businessRatingBar.getRating());
-				if((int)businessRatingBar.getRating() > maxRating) {
-					businessRatingBar.setRating(maxRating);
-					setBusinessTrait(maxRating);
+				if((int)businessRatingBar.getRating() <= mMaxRating) mBusinessTrait = (int)businessRatingBar.getRating();
+				if((int)businessRatingBar.getRating() > mMaxRating) {
+					businessRatingBar.setRating(mMaxRating);
+					mBusinessTrait = mMaxRating;
 				}
 
 				updateOverallStarTextView();
@@ -207,13 +192,13 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	}
 
 	public void activateOverallStarsUpdate() {
-		overallTextView = (TextView) linearLayout.findViewById(R.id.text_rating_signle_star);
+		mOverallTextView = (TextView) mLinearLayout.findViewById(R.id.text_rating_signle_star);
 
 		updateOverallStarTextView();		
 	}
 
 	public void activateNextButtonListener() {
-		Button nextButton = (Button) linearLayout.findViewById(R.id.button_create_character_next);
+		Button nextButton = (Button) mLinearLayout.findViewById(R.id.button_create_character_next);
 
 		nextButton.setOnClickListener(new OnClickListener() {
 
@@ -221,22 +206,22 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 
-				if(getOverallStars() < overallStarsLimit)
+				if(getOverallStars() < OVERALL_STARS_LIMIT)
 					Toast.makeText(getActivity(), "There are still stars left!", Toast.LENGTH_SHORT).show();
 
-				if(db.uniqueHumanCharacter(getCharacterName()) 
-						&& getJob() != "" 
-						&& getOverallStars() == overallStarsLimit) {
+				if(mDb.uniqueHumanCharacter(mName) 
+						&& mJob != "" 
+						&& getOverallStars() == OVERALL_STARS_LIMIT) {
 
 					newHuman = new HumanCharacter(				
-							getCharacterName(),
-							getAvatar(),
-							getJob(),
-							getSocialTrait(),
-							getAnimalTrait(),
-							getBusinessTrait());
+							mName,
+							mAvatar,
+							mJob,
+							mSocialTrait,
+							mAnimalTrait,
+							mBusinessTrait);
 
-					//db.newHumanCharacter(newHuman);	
+					//mDb.newHumanCharacter(newHuman);	
 
 					startNewUserAsyncTask(newHuman);
 
@@ -252,11 +237,7 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		checkUsernameAT.execute();		
 	}
 
-	public void usernameIsAvailable() {
-		Log.d("Username", "available");
-
-		advanceListener.onHumanCharacterCreated(newHuman);
-	}
+	public void usernameIsAvailable() {mAdvanceListener.onHumanCharacterCreated(newHuman);}
 
 	public void usernameIsNOTAvailable() {
 		getActivity().runOnUiThread(new Runnable() {
@@ -272,28 +253,20 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	public class CheckUsernameAvailabilityAsyncTask extends AsyncTask<Void, Void, Void> {
 		String name;
 
-		public CheckUsernameAvailabilityAsyncTask(String name) {
-			this.name = name;
-		}
+		public CheckUsernameAvailabilityAsyncTask(String name) {this.name = name;}
+		
 		@SuppressWarnings("unused")
 		protected Void doInBackground(Void... params) {
-			// declare parameters that are passed to PHP script i.e. the name "birthyear" and its value submitted by user   
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 
-			//Looper.prepare();
-
-			// define the parameter
 			postParameters.add(new BasicNameValuePair("Username", name));
 			String response = null;
 
-			// call executeHttpPost method passing necessary parameters 
 			try {
 				response = CustomHttpClient.executeHttpPost("http://www2.macs.hw.ac.uk/~ph109/DBConnect/checkUsernameAvailability.php", postParameters);
 
-				// store the result returned by PHP script that runs MySQL query
 				String result = response.toString();  
 
-				//parse json data
 				try{
 					JSONArray jArray = new JSONArray(result);		
 
@@ -303,23 +276,15 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 					usernameIsNOTAvailable();
 					Log.d("Username toast called", "yes");
 
-				} 
-				catch(JSONException e){
+				} catch(JSONException e){
 					Log.e("log_tag", "Error parsing data "+ e.toString());
 					usernameIsAvailable();
 				}   
-
-			} 
-			catch (Exception e) {
-				Log.e("log_tag","Error in http connection!!" + e.toString());
-
-			}  
+			} catch (Exception e) {Log.e("log_tag","Error in http connection!!" + e.toString());}  
 			return null;
 		}
 
-		protected void onPostExecute(Void result) {
-			this.cancel(true);
-		}
+		protected void onPostExecute(Void result) {this.cancel(true);}
 	}
 
 	// Other methods
@@ -327,61 +292,15 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	public void updateOverallStarTextView() {
 		int overall = getOverallStars();
 
-		String overallStars = overall + "/" + overallStarsLimit;
+		String overallStars = overall + "/" + OVERALL_STARS_LIMIT;
 
-		overallTextView.setText(overallStars);	
+		mOverallTextView.setText(overallStars);	
 
 	}
 
 	// Accessors
 
-	public void setCharacterName(String name) {
-		this.name = name;
-	}
-
-	public void setJob(String job) {
-		this.job = job;
-	}
-
-	public void setSocialTrait(int socialTrait) {
-		this.socialTrait = socialTrait;
-	}
-
-	public void setAnimalTrait(int animalTrait) {
-		this.animalTrait = animalTrait;
-	}
-
-	public void setBusinessTrait(int businessTrait) {
-		this.businessTrait = businessTrait;
-	}
-
-	public int getAvatar() {
-		return avatar;
-	}
-
-	public String getCharacterName() {
-		return name;
-	}
-
-	public String getJob() {
-		return job;
-	}
-
-	public int getSocialTrait() {
-		return socialTrait;
-	}
-
-	public int getAnimalTrait() {
-		return animalTrait;
-	}
-
-	public int getBusinessTrait() {
-		return businessTrait;
-	}
-
-	public int getOverallStars() {
-		return getSocialTrait() + getAnimalTrait() + getBusinessTrait();
-	}
+	public int getOverallStars() {return mSocialTrait + mAnimalTrait + mBusinessTrait;}
 
 	// Interface that initializes replace in Transaction in CreateCharacterActivity
 	public interface OnHumanCharacterCreatedListener {

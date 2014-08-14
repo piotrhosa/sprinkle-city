@@ -10,21 +10,19 @@ import android.util.Log;
 
 public class WriteToRemoteAsyncTask extends AsyncTask<Void, Void, Void> {
 
-	String response = null;
+	String mResponse = null, mUrl = null;
+	ArrayList<NameValuePair> mPostParameters = new ArrayList<NameValuePair>();
+	Activity mFeedbackActivity;
 
-	String url = null;
-	ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-	Activity feedbackActivity;
-
-	public WriteToRemoteAsyncTask(String url, ArrayList<NameValuePair> postParameters, Activity feedbackActivity) {		
-		this.url = url;
-		this.postParameters = postParameters;
-		this.feedbackActivity = feedbackActivity;
+	public WriteToRemoteAsyncTask(String mUrl, ArrayList<NameValuePair> mPostParameters, Activity mFeedbackActivity) {		
+		this.mUrl = mUrl;
+		this.mPostParameters = mPostParameters;
+		this.mFeedbackActivity = mFeedbackActivity;
 	}
 
 	protected Void doInBackground(Void... params) {
 
-		try {CustomHttpClient.executeHttpPostInsert(url, postParameters);} 
+		try {CustomHttpClient.executeHttpPostInsert(mUrl, mPostParameters);} 
 		catch (Exception e) {Log.e("log_tag","Error in http connection. " + e.toString());}  
 		return null;
 	}

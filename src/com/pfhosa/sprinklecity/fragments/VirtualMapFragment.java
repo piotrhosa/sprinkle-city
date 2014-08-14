@@ -51,44 +51,44 @@ public class VirtualMapFragment extends Fragment {
 	public static final float CORNER_EDGE = 300f / DEFAULT_SCREEN_HEIGHT;
 
 	// Location
-	static float distance;
-	static Location previousLocation;
-	LocationReceiver locationReceiver;
+	static float mDistance;
+	static Location mPreviousLocation;
+	LocationReceiver mLocationReceiver;
 
 	// View
+	float mRefHeight, mRefWidth;
 	private MapSurfaceView mapSurfaceView;
-	HumanAvatar humanAvatar;
-	DrawableObject arrows, home, inventory;
-	ArrayList<VirtualLocation> virtualLocations= new ArrayList<VirtualLocation>();
+	HumanAvatar mHumanAvatar;
+	DrawableObject mArrows, mHome, mInventory;
+	ArrayList<VirtualLocation> mVirtualLocations= new ArrayList<VirtualLocation>();
 
 	// Open new Fragment listener
-	OnLocationSelectedListener locationSelectedListener;
+	OnLocationSelectedListener mLocationSelected;
 
-	String username;
-
-	float height = 10;
+	String mUsername;
 
 	public void onAttach (Activity activity) {
 		super.onAttach(activity);
-		locationSelectedListener = (OnLocationSelectedListener) activity;
+		mLocationSelected = (OnLocationSelectedListener) activity;
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {		
 		DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
-		height = displayMetrics.heightPixels;
+		mRefHeight = displayMetrics.heightPixels;
+		mRefWidth = displayMetrics.widthPixels;
 
 		if(getArguments() != null) {
-			username = getArguments().getString("Username");
+			mUsername = getArguments().getString("Username");
 			int avatar = getArguments().getInt("Avatar");
 
-			makeNewAvatar(username, avatar);
+			makeNewAvatar(mUsername, avatar);
 		}
 
 		if(mapSurfaceView == null) mapSurfaceView = new MapSurfaceView(getActivity());
 
-		LocationReceiver locationReceiver = new LocationReceiver();
-		getActivity().registerReceiver(locationReceiver, new IntentFilter("newLocationIntent"));
+		LocationReceiver mLocationReceiver = new LocationReceiver();
+		getActivity().registerReceiver(mLocationReceiver, new IntentFilter("newLocationIntent"));
 
 		new GetAvatarAsyncTask().execute();
 		new GetLocationsAsyncTask().execute();
@@ -111,9 +111,9 @@ public class VirtualMapFragment extends Fragment {
 			mapSurfaceView.surfaceDestroyed(mapSurfaceView.getHolder());
 		}
 
-		if(locationReceiver != null) {
-			getActivity().unregisterReceiver(locationReceiver);
-			locationReceiver = null;
+		if(mLocationReceiver != null) {
+			getActivity().unregisterReceiver(mLocationReceiver);
+			mLocationReceiver = null;
 		}
 		updateAvatar();
 	}
@@ -137,33 +137,31 @@ public class VirtualMapFragment extends Fragment {
 
 				setNewDistance(currentLocation);
 
-			} catch(NullPointerException e) {
-				e.printStackTrace();
-			}	
+			} catch(NullPointerException e) {e.printStackTrace();}	
 		}
 	}
 
 	public void makeNewAvatar(String username, int avatar) {
-		humanAvatar = new HumanAvatar(username, avatar, AVATAR_EDGE, 0, 0, -1, true);
+		mHumanAvatar = new HumanAvatar(username, avatar, AVATAR_EDGE, 0, 0, -1, true);	
 	}
 
 	public void setNewDistance(Location currentLocation) {
 
-		if(previousLocation == null) distance = 0;
-		else distance = previousLocation.distanceTo(currentLocation);		
+		if(mPreviousLocation == null) mDistance = 0;
+		else mDistance = mPreviousLocation.distanceTo(currentLocation);		
 
-		Log.d("New distance", Float.toString(distance));
+		Log.d("New mDistance", Float.toString(mDistance));
 		
-		previousLocation = currentLocation;
+		mPreviousLocation = currentLocation;
 
 		DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
 		float pxHeight = displayMetrics.heightPixels;
 
-		if(0 < humanAvatar.getPositionY() + (float)(PIXELS_PER_METER * distance * humanAvatar.getDirection() / DEFAULT_SCREEN_HEIGHT) &&
-				(pxHeight - humanAvatar.getEdge() * height) / DEFAULT_SCREEN_HEIGHT > humanAvatar.getPositionY() + (float)(PIXELS_PER_METER * distance * humanAvatar.getDirection() / DEFAULT_SCREEN_HEIGHT) &&
-				distance < 20) {
+		if(0 < mHumanAvatar.getPositionY() + (float)(PIXELS_PER_METER * mDistance * mHumanAvatar.getDirection() / DEFAULT_SCREEN_HEIGHT) &&
+				(pxHeight - mHumanAvatar.getEdge() * mRefHeight) / DEFAULT_SCREEN_HEIGHT > mHumanAvatar.getPositionY() + (float)(PIXELS_PER_METER * mDistance * mHumanAvatar.getDirection() / DEFAULT_SCREEN_HEIGHT) &&
+				mDistance < 20) {
 
-			humanAvatar.setPositionY(humanAvatar.getPositionY() + (float)(PIXELS_PER_METER * distance * humanAvatar.getDirection() / DEFAULT_SCREEN_HEIGHT));
+			mHumanAvatar.setPositionY(mHumanAvatar.getPositionY() + (float)(PIXELS_PER_METER * mDistance * mHumanAvatar.getDirection() / DEFAULT_SCREEN_HEIGHT));
 		}
 
 	}
@@ -186,7 +184,7 @@ public class VirtualMapFragment extends Fragment {
 		}
 
 		@Override
-		public void surfaceChanged(SurfaceHolder holder, int format, int width,	int height) {}
+		public void surfaceChanged(SurfaceHolder holder, int format, int width,	int mRefHeight) {}
 
 		@Override
 		public void surfaceCreated(SurfaceHolder holder) {surfaceHandler.restartSurface();}
@@ -199,52 +197,52 @@ public class VirtualMapFragment extends Fragment {
 		@Override 
 		public boolean onTouchEvent(MotionEvent event){
 
-			touchX = (float)event.getX() / height;
-			touchY = (float)event.getY() / height;
+			touchX = (float)event.getX() / mRefHeight;
+			touchY = (float)event.getY() / mRefHeight;
 
 			if(event.getAction() == MotionEvent.ACTION_DOWN) {
-				if(humanAvatar.isTouchOnObject(touchX, touchY))
-					arrows.setVisibility(true);
-				if(home.isTouchOnObject(touchX, touchY)) {
+				if(mHumanAvatar.isTouchOnObject(touchX, touchY))
+					mArrows.setVisibility(true);
+				if(mHome.isTouchOnObject(touchX, touchY)) {
 					Intent openHome = new Intent(getActivity(), HomeActivity.class);
 					startActivity(openHome);
 				}
-				if(inventory.isTouchOnObject(touchX, touchY)) {
-					locationSelectedListener.onLocationSelected("inventory");
+				if(mInventory.isTouchOnObject(touchX, touchY)) {
+					mLocationSelected.onLocationSelected("inventory");
 					Toast.makeText(getActivity(), "Inventory", Toast.LENGTH_SHORT).show();
 				}
 			}
 
 			if(event.getAction() == MotionEvent.ACTION_UP) {
 
-				if(humanAvatar.isTouchOnObject(touchX, touchY))
-					arrows.setVisibility(false);
+				if(mHumanAvatar.isTouchOnObject(touchX, touchY))
+					mArrows.setVisibility(false);
 
-				if(humanAvatar.swipeArrowUp(touchX, touchY)) {
-					arrows.setVisibility(false);
-					humanAvatar.setDirection(-1);
+				if(mHumanAvatar.swipeArrowUp(touchX, touchY)) {
+					mArrows.setVisibility(false);
+					mHumanAvatar.setDirection(-1);
 					Toast.makeText(getActivity(), "Up", Toast.LENGTH_SHORT).show();
 				}
 
-				if(humanAvatar.swipeArrowDown(touchX, touchY)) {
-					arrows.setVisibility(false);
-					humanAvatar.setDirection(1);
+				if(mHumanAvatar.swipeArrowDown(touchX, touchY)) {
+					mArrows.setVisibility(false);
+					mHumanAvatar.setDirection(1);
 					Toast.makeText(getActivity(), "Down", Toast.LENGTH_SHORT).show();
 				}
 
-				if(humanAvatar.swipeArrowLeft(touchX, touchY)) {
-					arrows.setVisibility(false);
+				if(mHumanAvatar.swipeArrowLeft(touchX, touchY)) {
+					mArrows.setVisibility(false);
 					Toast.makeText(getActivity(), "Left", Toast.LENGTH_SHORT).show();
 					if("noLocation" != surfaceHandler.locationToLeftExists()){
-						locationSelectedListener.onLocationSelected(surfaceHandler.locationToLeftExists());
+						mLocationSelected.onLocationSelected(surfaceHandler.locationToLeftExists());
 					}
 				}
 
-				if(humanAvatar.swipeArrowRight(touchX, touchY)) {
-					arrows.setVisibility(false);
+				if(mHumanAvatar.swipeArrowRight(touchX, touchY)) {
+					mArrows.setVisibility(false);
 					Toast.makeText(getActivity(), "Right", Toast.LENGTH_SHORT).show();
 					if("noLocation" != surfaceHandler.locationToRightExists()){
-						locationSelectedListener.onLocationSelected(surfaceHandler.locationToRightExists());						
+						mLocationSelected.onLocationSelected(surfaceHandler.locationToRightExists());						
 					}
 				}
 			}
@@ -260,7 +258,7 @@ public class VirtualMapFragment extends Fragment {
 		private final Handler mHandler;			
 
 		// View
-		Bitmap backgroundBitmap, characterBitmap, arrowsBitmap, inventoryBitmap, homeBitmap;
+		Bitmap backgroundBitmap, characterBitmap, mArrowsBitmap, inventoryBitmap, homeBitmap;
 		Bitmap farmBitmap, bakeryBitmap, postOfficeBitmap, parkBitmap, locationBitmap;
 		Bitmap scaledBackgroundBitmap, scaledCharacterBitmap, scaledArrowsBitmap, scaledInventoryBitmap, scaledHomeBitmap;
 		Bitmap scaledFarmBitmap, scaledBakeryBitmap, scaledPostOfficeBitmap, scaledParkBitmap, scaledLocationBitmap;
@@ -302,15 +300,15 @@ public class VirtualMapFragment extends Fragment {
 				float pxHeight = displayMetrics.heightPixels;
 				float pxWidth = displayMetrics.widthPixels;
 
-				arrows = new DrawableObject(0, 0, R.drawable.arrows, ARROWS_EDGE, false);
-				inventory = new DrawableObject((float)(pxWidth / height - LOCATION_EDGE), 0, R.drawable.button_inventory, LOCATION_EDGE, true);
-				home = new DrawableObject(0, 0, R.drawable.button_home, LOCATION_EDGE, true);
+				mArrows = new DrawableObject(0, 0, R.drawable.arrows, ARROWS_EDGE, false);
+				mInventory = new DrawableObject((float)(pxWidth / mRefHeight - LOCATION_EDGE), 0, R.drawable.button_inventory, LOCATION_EDGE, true);
+				mHome = new DrawableObject(0, 0, R.drawable.button_home, LOCATION_EDGE, true);
 
 				backgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.street_view);
-				characterBitmap = BitmapFactory.decodeResource(getResources(), humanAvatar.getImage());
-				arrowsBitmap = BitmapFactory.decodeResource(getResources(), arrows.getImage());
-				inventoryBitmap = BitmapFactory.decodeResource(getResources(), inventory.getImage());
-				homeBitmap = BitmapFactory.decodeResource(getResources(), home.getImage());
+				characterBitmap = BitmapFactory.decodeResource(getResources(), mHumanAvatar.getImage());
+				mArrowsBitmap = BitmapFactory.decodeResource(getResources(), mArrows.getImage());
+				inventoryBitmap = BitmapFactory.decodeResource(getResources(), mInventory.getImage());
+				homeBitmap = BitmapFactory.decodeResource(getResources(), mHome.getImage());
 
 				farmBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_farm);
 				bakeryBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.location_shop);
@@ -325,20 +323,20 @@ public class VirtualMapFragment extends Fragment {
 				newWidth = Math.round(backgroundBitmap.getWidth()/scaleWidth);
 
 				scaledBackgroundBitmap = Bitmap.createScaledBitmap(backgroundBitmap, newWidth, newHeight, true);
-				scaledCharacterBitmap = Bitmap.createScaledBitmap(characterBitmap, (int)(humanAvatar.getEdge() * height), (int)(humanAvatar.getEdge()* height), true);
-				scaledArrowsBitmap = Bitmap.createScaledBitmap(arrowsBitmap, (int)(ARROWS_EDGE * height), (int)(ARROWS_EDGE * height), true);
-				scaledInventoryBitmap = Bitmap.createScaledBitmap(inventoryBitmap, (int)(inventory.getEdge() * height), (int)(inventory.getEdge() * height), true);
-				scaledHomeBitmap = Bitmap.createScaledBitmap(homeBitmap, (int)(home.getEdge() * height), (int)(home.getEdge() * height), true);
+				scaledCharacterBitmap = Bitmap.createScaledBitmap(characterBitmap, (int)(mHumanAvatar.getEdge() * mRefHeight), (int)(mHumanAvatar.getEdge()* mRefHeight), true);
+				scaledArrowsBitmap = Bitmap.createScaledBitmap(mArrowsBitmap, (int)(ARROWS_EDGE * mRefHeight), (int)(ARROWS_EDGE * mRefHeight), true);
+				scaledInventoryBitmap = Bitmap.createScaledBitmap(inventoryBitmap, (int)(mInventory.getEdge() * mRefHeight), (int)(mInventory.getEdge() * mRefHeight), true);
+				scaledHomeBitmap = Bitmap.createScaledBitmap(homeBitmap, (int)(mHome.getEdge() * mRefHeight), (int)(mHome.getEdge() * mRefHeight), true);
 
-				int adjustedEdge = (int)(LOCATION_EDGE * height);
+				int adjustedEdge = (int)(LOCATION_EDGE * mRefHeight);
 				scaledFarmBitmap = Bitmap.createScaledBitmap(farmBitmap, adjustedEdge, adjustedEdge, true);
 				scaledBakeryBitmap = Bitmap.createScaledBitmap(bakeryBitmap, adjustedEdge, adjustedEdge, true);
 				scaledPostOfficeBitmap = Bitmap.createScaledBitmap(postOfficeBitmap, adjustedEdge, adjustedEdge, true);
 				scaledParkBitmap = Bitmap.createScaledBitmap(parkBitmap, adjustedEdge, adjustedEdge, true);
 				scaledLocationBitmap = Bitmap.createScaledBitmap(locationBitmap, adjustedEdge, adjustedEdge, true);
 
-				if(humanAvatar.getPositionX() == 0 && humanAvatar.getPositionY() == 0)
-					humanAvatar.setPosition(0.5f - AVATAR_EDGE_MARGIN, 0.8f);		
+				if(mHumanAvatar.getPositionX() == 0 && mHumanAvatar.getPositionY() == 0)
+					mHumanAvatar.setPosition(0.5f - AVATAR_EDGE_MARGIN, 0.8f);		
 			}
 		}
 
@@ -359,24 +357,24 @@ public class VirtualMapFragment extends Fragment {
 
 			canvas.drawBitmap(scaledBackgroundBitmap, 0,  0, null);
 
-			for(VirtualLocation vl : virtualLocations) 
-				canvas.drawBitmap(getLocationBitmap(vl.getLocationType()), vl.getPositionX() * height, vl.getPositionY() * height, null);			
+			for(VirtualLocation vl : mVirtualLocations) 
+				canvas.drawBitmap(getLocationBitmap(vl.getLocationType()), vl.getPositionX() * mRefHeight, vl.getPositionY() * mRefHeight, null);			
 
-			canvas.drawBitmap(scaledHomeBitmap, home.getPositionX() * height, home.getPositionY() * height, null);
-			canvas.drawBitmap(scaledInventoryBitmap, inventory.getPositionX() * height, inventory.getPositionY() * height, null);
-			canvas.drawBitmap(scaledCharacterBitmap, humanAvatar.getPositionX() * height, humanAvatar.getPositionY() * height, null);
+			canvas.drawBitmap(scaledHomeBitmap, mHome.getPositionX() * mRefHeight, mHome.getPositionY() * mRefHeight, null);
+			canvas.drawBitmap(scaledInventoryBitmap, mInventory.getPositionX() * mRefHeight, mInventory.getPositionY() * mRefHeight, null);
+			canvas.drawBitmap(scaledCharacterBitmap, mHumanAvatar.getPositionX() * mRefHeight, mHumanAvatar.getPositionY() * mRefHeight, null);
 
-			if(arrows.getVisibility())
-				canvas.drawBitmap(scaledArrowsBitmap, (humanAvatar.getPositionX() - 150 / DEFAULT_SCREEN_HEIGHT) * height, (humanAvatar.getPositionY() - 200 / DEFAULT_SCREEN_HEIGHT) * height, null);
+			if(mArrows.getVisibility())
+				canvas.drawBitmap(scaledArrowsBitmap, (mHumanAvatar.getPositionX() - 150 / DEFAULT_SCREEN_HEIGHT) * mRefHeight, (mHumanAvatar.getPositionY() - 200 / DEFAULT_SCREEN_HEIGHT) * mRefHeight, null);
 
 		}
 
 		public String locationToLeftExists() {
 
-			for(VirtualLocation vl : virtualLocations) { 
-				if(vl.isObjectOnLeftFrom(humanAvatar.getPositionX(),
-						humanAvatar.getPositionY(), 
-						humanAvatar.getEdge(), 
+			for(VirtualLocation vl : mVirtualLocations) { 
+				if(vl.isObjectOnLeftFrom(mHumanAvatar.getPositionX(),
+						mHumanAvatar.getPositionY(), 
+						mHumanAvatar.getEdge(), 
 						AVATAR_EDGE_MARGIN))
 					return vl.getLocationType();
 			}
@@ -385,10 +383,10 @@ public class VirtualMapFragment extends Fragment {
 
 		public String locationToRightExists() {
 
-			for(VirtualLocation vl : virtualLocations) { 
-				if(vl.isObjectOnRightFrom(humanAvatar.getPositionX(),
-						humanAvatar.getPositionY(), 
-						humanAvatar.getEdge(), 
+			for(VirtualLocation vl : mVirtualLocations) { 
+				if(vl.isObjectOnRightFrom(mHumanAvatar.getPositionX(),
+						mHumanAvatar.getPositionY(), 
+						mHumanAvatar.getEdge(), 
 						AVATAR_EDGE_MARGIN))
 					return vl.getLocationType();
 			}
@@ -401,10 +399,10 @@ public class VirtualMapFragment extends Fragment {
 		String url = "http://www2.macs.hw.ac.uk/~ph109/DBConnect/updateHumanAvatar.php";
 		ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
 		
-		postParameters.add(new BasicNameValuePair("Username", humanAvatar.getUsername()));
-		postParameters.add(new BasicNameValuePair("PositionX", Float.toString(humanAvatar.getPositionX())));
-		postParameters.add(new BasicNameValuePair("PositionY", Float.toString(humanAvatar.getPositionY())));
-		postParameters.add(new BasicNameValuePair("Direction", Integer.toString(humanAvatar.getDirection())));
+		postParameters.add(new BasicNameValuePair("Username", mHumanAvatar.getUsername()));
+		postParameters.add(new BasicNameValuePair("PositionX", Float.toString(mHumanAvatar.getPositionX())));
+		postParameters.add(new BasicNameValuePair("PositionY", Float.toString(mHumanAvatar.getPositionY())));
+		postParameters.add(new BasicNameValuePair("Direction", Integer.toString(mHumanAvatar.getDirection())));
 
 		WriteToRemoteAsyncTask updateHumanAvatar = new WriteToRemoteAsyncTask(url, postParameters, getActivity());
 
@@ -439,7 +437,7 @@ public class VirtualMapFragment extends Fragment {
 						locationX = Float.parseFloat(json_data.getString("LocationX"));
 						locationY = Float.parseFloat(json_data.getString("LocationY"));
 
-						virtualLocations.add(new VirtualLocation(username, locationType, locationX, locationY, image, LOCATION_EDGE, true));
+						mVirtualLocations.add(new VirtualLocation(username, locationType, locationX, locationY, image, LOCATION_EDGE, true));
 					}
 				} 
 				catch(JSONException e){Log.e("log_tag", "Error parsing data "+ e.toString());}   
@@ -448,9 +446,9 @@ public class VirtualMapFragment extends Fragment {
 			return null;
 		}
 
-		public void setLocationsArray(ArrayList<VirtualLocation> vl) {virtualLocations = vl;}
+		public void setLocationsArray(ArrayList<VirtualLocation> vl) {mVirtualLocations = vl;}
 
-		public ArrayList<VirtualLocation> getLocationsArray() {return virtualLocations;}
+		public ArrayList<VirtualLocation> getLocationsArray() {return mVirtualLocations;}
 	}
 
 	public class GetAvatarAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -461,7 +459,7 @@ public class VirtualMapFragment extends Fragment {
 
 		protected Void doInBackground(Void... params) {
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
-			postParameters.add(new BasicNameValuePair("Username", humanAvatar.getUsername()));
+			postParameters.add(new BasicNameValuePair("Username", mHumanAvatar.getUsername()));
 
 			String response = null;
 
@@ -480,8 +478,9 @@ public class VirtualMapFragment extends Fragment {
 						positionY = Float.parseFloat(json_data.getString("PositionY"));
 						direction = Integer.parseInt(json_data.getString("Direction"));
 
-						humanAvatar.setPosition(positionX, positionY);
-						humanAvatar.setDirection(direction);
+						if(positionX != 0 && positionY != 0) mHumanAvatar.setPosition(positionX, positionY);
+						else mHumanAvatar.setPosition(0.2f, 0.7f);
+						mHumanAvatar.setDirection(direction);
 					}
 				} catch(JSONException e){Log.e("log_tag", "Error parsing data "+ e.toString());}   
 			} catch (Exception e) {Log.e("log_tag","Error in http connection!!" + e.toString());}  

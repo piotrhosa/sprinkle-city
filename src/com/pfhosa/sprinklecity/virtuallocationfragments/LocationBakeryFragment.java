@@ -13,24 +13,23 @@ import com.pfhosa.sprinklecity.R;
 
 public class LocationBakeryFragment extends Fragment {
 
-	LinearLayout linearLayout;
-	String username;
+	LinearLayout mLinearLayout;
+	String mUsername;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		if(getArguments() != null) 
-			username = getArguments().getString("Username");
+		if(getArguments() != null) mUsername = getArguments().getString("Username");
 
-		linearLayout = (LinearLayout)inflater.inflate(R.layout.fragment_location_bakery, container, false);
+		mLinearLayout = (LinearLayout)inflater.inflate(R.layout.fragment_location_bakery, container, false);
 
 		initializeButtons();
 		
-		return linearLayout;
+		return mLinearLayout;
 	}
 	
 	private void initializeButtons() {
-		ImageButton cupcake0 = (ImageButton) linearLayout.findViewById(R.id.image_cupcake_0);
-		ImageButton cupcake1 = (ImageButton) linearLayout.findViewById(R.id.image_cupcake_1);
-		ImageButton cupcake2 = (ImageButton) linearLayout.findViewById(R.id.image_cupcake_2);
+		ImageButton cupcake0 = (ImageButton) mLinearLayout.findViewById(R.id.image_cupcake_0);
+		ImageButton cupcake1 = (ImageButton) mLinearLayout.findViewById(R.id.image_cupcake_1);
+		ImageButton cupcake2 = (ImageButton) mLinearLayout.findViewById(R.id.image_cupcake_2);
 		
 		cupcake0.setOnClickListener(new OnClickListener() {
 			@Override

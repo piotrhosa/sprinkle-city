@@ -22,7 +22,7 @@ public class CreateCharacterActivity extends FragmentActivity implements
 OnHumanAvatarSelectedListener, OnHumanCharacterCreatedListener,
 OnAnimalAvatarSelectedListener, OnAnimalCharacterCreatedListener {
 	
-	HumanCharacter humanCharacter;
+	HumanCharacter mHumanCharacter;
 	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,9 +30,7 @@ OnAnimalAvatarSelectedListener, OnAnimalCharacterCreatedListener {
 
 		if (findViewById(R.id.fragment_container_create_character) != null) {
 
-			if (savedInstanceState != null) {
-				return;
-			}
+			if (savedInstanceState != null) return;
 
 			CreateCharacterHumanAvatarFragment humanAvatarFragment = new CreateCharacterHumanAvatarFragment();
 
@@ -69,16 +67,16 @@ OnAnimalAvatarSelectedListener, OnAnimalCharacterCreatedListener {
 	}
 
 	@Override
-	public void onHumanCharacterCreated(HumanCharacter humanCharacter) {
+	public void onHumanCharacterCreated(HumanCharacter mHumanCharacter) {
 		CreateCharacterAnimalAvatarFragment animalAvatarFragment = new CreateCharacterAnimalAvatarFragment();
 		
-		this.humanCharacter = humanCharacter;
+		this.mHumanCharacter = mHumanCharacter;
 
-		Intent humanCharacterIntent = new Intent();
-		humanCharacterIntent.putExtra("humanCharacter", humanCharacter);
+		Intent mHumanCharacterIntent = new Intent();
+		mHumanCharacterIntent.putExtra("mHumanCharacter", mHumanCharacter);
 		
 		Bundle characterNameBundle = new Bundle();
-		characterNameBundle = humanCharacterIntent.getExtras();
+		characterNameBundle = mHumanCharacterIntent.getExtras();
 		animalAvatarFragment.setArguments(characterNameBundle);
 
 		getSupportFragmentManager().beginTransaction()
@@ -114,7 +112,7 @@ OnAnimalAvatarSelectedListener, OnAnimalCharacterCreatedListener {
 		 */
 		Intent passwordIntent = new Intent();
 		passwordIntent.putExtra("animalCharacter", animalCharacter);
-		passwordIntent.putExtra("humanCharacter", humanCharacter);
+		passwordIntent.putExtra("humanCharacter", mHumanCharacter);
 
 		Bundle passwordBundle = new Bundle();
 		passwordBundle = passwordIntent.getExtras();

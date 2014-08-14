@@ -14,41 +14,41 @@ import android.widget.ImageButton;
 
 public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
-	HorizontalScrollView horizontalScrollView;
-	OnAnimalAvatarSelectedListener advanceListener;
+	int mAvatar;
+	String mCharacterName;
 	
-	int avatar;
-	String characterName;
+	HorizontalScrollView mHorizontalScrollView;
+	OnAnimalAvatarSelectedListener mAdvanceListener;
 
 	public void onAttach (Activity activity) {
 		super.onAttach(activity);
 
-		advanceListener = (OnAnimalAvatarSelectedListener) activity;
+		mAdvanceListener = (OnAnimalAvatarSelectedListener) activity;
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
 		if(getArguments() != null)
-			characterName = getArguments().getString("characterName", characterName);
+			mCharacterName = getArguments().getString("mCharacterName", mCharacterName);
 
-		horizontalScrollView = (HorizontalScrollView) inflater.inflate(R.layout.fragment_create_character_animal_avatar, container, false);
+		mHorizontalScrollView = (HorizontalScrollView) inflater.inflate(R.layout.fragment_create_character_animal_avatar, container, false);
 
 		activateAnimalCharacterGallery();
 
-		return horizontalScrollView ;
+		return mHorizontalScrollView ;
 	}
 
 	public void activateAnimalCharacterGallery() {
-		ImageButton character0Button = (ImageButton) horizontalScrollView.findViewById(R.id.image_character_animal_0);
-		ImageButton character1Button = (ImageButton) horizontalScrollView.findViewById(R.id.image_character_animal_1);
-		ImageButton character2Button = (ImageButton) horizontalScrollView.findViewById(R.id.image_character_animal_2);
-		ImageButton character3Button = (ImageButton) horizontalScrollView.findViewById(R.id.image_character_animal_3);
+		ImageButton character0Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_animal_0);
+		ImageButton character1Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_animal_1);
+		ImageButton character2Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_animal_2);
+		ImageButton character3Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_animal_3);
 
 		character0Button.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onAnimalAvatarSelected(characterName, R.drawable.character_animal_0);
+				mAdvanceListener.onAnimalAvatarSelected(mCharacterName, R.drawable.character_animal_0);
 			}
 		});
 
@@ -56,7 +56,7 @@ public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onAnimalAvatarSelected(characterName, R.drawable.character_animal_1);
+				mAdvanceListener.onAnimalAvatarSelected(mCharacterName, R.drawable.character_animal_1);
 			}
 		});
 
@@ -64,7 +64,7 @@ public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onAnimalAvatarSelected(characterName, R.drawable.character_animal_2);
+				mAdvanceListener.onAnimalAvatarSelected(mCharacterName, R.drawable.character_animal_2);
 			}
 		});
 
@@ -72,12 +72,10 @@ public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
-				advanceListener.onAnimalAvatarSelected(characterName, R.drawable.character_animal_3);
+				mAdvanceListener.onAnimalAvatarSelected(mCharacterName, R.drawable.character_animal_3);
 			}
 		});
 	}	
 	
-	public interface OnAnimalAvatarSelectedListener {
-		public void onAnimalAvatarSelected(String characterName, int avatar);
-	}
+	public interface OnAnimalAvatarSelectedListener {public void onAnimalAvatarSelected(String mCharacterName, int mAvatar);}
 }
