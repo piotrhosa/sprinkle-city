@@ -69,10 +69,8 @@ public class InventoryActivity extends FragmentActivity {
 			try {
 				response = CustomHttpClient.executeHttpPost("http://www2.macs.hw.ac.uk/~ph109/DBConnect/getInventory.php", postParameters);
 
-				// store the result returned by PHP script that runs MySQL query
 				String result = response.toString();  
 
-				//parse json data
 				try{
 					JSONArray jArray = new JSONArray(result);		
 
@@ -82,7 +80,7 @@ public class InventoryActivity extends FragmentActivity {
 						item = json_data.getString("Item");
 						value = Integer.parseInt(json_data.getString("Value"));
 						timeCreated = Long.parseLong(json_data.getString("TimeCreated"));
-						usable = "1".equals(json_data.getString("Usable").toString());				
+						usable = "1".equals(json_data.getString("Usable").toString());	
 
 						InventoryItem mInventoryItem = new InventoryItem(creator, item, value, timeCreated, usable);
 						mInventory.addItem(item, mInventoryItem);

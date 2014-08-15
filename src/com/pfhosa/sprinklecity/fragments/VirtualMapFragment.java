@@ -99,17 +99,14 @@ public class VirtualMapFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (mapSurfaceView != null){
-			mapSurfaceView.surfaceRestart();
-		}
+		if(mapSurfaceView != null) mapSurfaceView.surfaceRestart();
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		if (mapSurfaceView != null){
-			mapSurfaceView.surfaceDestroyed(mapSurfaceView.getHolder());
-		}
+		
+		if (mapSurfaceView != null)mapSurfaceView.surfaceDestroyed(mapSurfaceView.getHolder());
 
 		if(mLocationReceiver != null) {
 			getActivity().unregisterReceiver(mLocationReceiver);

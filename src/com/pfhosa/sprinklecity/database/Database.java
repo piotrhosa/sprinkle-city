@@ -173,7 +173,6 @@ public class Database extends SQLiteOpenHelper {
 				InventoryItem ii= subList.get(j);
 
 				if(ii.getItem() != "") {	
-					Log.d("Current put in", "" + ii.getItem());
 					values.put(USERNAME, ii.getCreator());
 					values.put(ITEM, ii.getItem());
 					values.put(VALUE, ii.getValue());
@@ -189,14 +188,11 @@ public class Database extends SQLiteOpenHelper {
 		SQLiteDatabase db = this.getReadableDatabase();
 		String[] d = {};
 		InventoryList inventory = new InventoryList(creator);
-
-		Log.d("Getting compressed inventory", "true");
 		
-		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_INVENTORY + " WHERE " + USABLE + " = ' 1 '" + " AND " + USERNAME + " = '" + creator + "'", d);
+		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_INVENTORY + " WHERE " + USABLE + " = '1'" + " AND " + USERNAME + " = '" + creator + "'", d);
 
 		int rows = cursor.getCount();
 		if(cursor.moveToFirst()) {
-			Log.d("Entries exist", "true");
 			for(int i = 0; i < rows; ++i) {
 				InventoryItem item = new InventoryItem(cursor.getString(1),
 						cursor.getString(2),
@@ -204,8 +200,8 @@ public class Database extends SQLiteOpenHelper {
 						Long.parseLong(cursor.getString(4)),
 						"1".equals(cursor.getString(5))
 						);
-				Log.e("Item from db", "" + item.getItem().toString());
 				inventory.addItem(item.getItem(), item);
+				cursor.moveToNext();
 			}
 		}
 		return inventory.compressInventory();

@@ -179,7 +179,7 @@ OnLocationSelectedListener {
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		mLocationClient.requestLocationUpdates(mLocationRequest, this);
-		Toast.makeText(this, "Connected", Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -205,20 +205,10 @@ OnLocationSelectedListener {
 	public void onConnectionFailed(ConnectionResult connectionResult) {
 		if (connectionResult.hasResolution()) {
 			try {
-				// Start an Activity that tries to resolve the error
+				
 				connectionResult.startResolutionForResult(this,	CONNECTION_FAILURE_RESOLUTION_REQUEST);
-				/*
-				 * Thrown if Google Play services canceled the original
-				 * PendingIntent
-				 */
 			} catch (IntentSender.SendIntentException e) {e.printStackTrace();}
-		} else {
-			/*
-			 * If no resolution is available, display a dialog to the
-			 * user with the error.
-			 */
-			showErrorDialog(connectionResult.getErrorCode());
-		}
+		} else 	showErrorDialog(connectionResult.getErrorCode());
 	}
 
 	public void virtualLocationSelector(String location) {

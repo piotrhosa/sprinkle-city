@@ -2,8 +2,6 @@ package com.pfhosa.sprinklecity.model;
 
 import java.util.ArrayList;
 
-import android.util.Log;
-
 public class InventoryList extends ArrayList<ArrayList<InventoryItem>> {
 
 	private static final long serialVersionUID = 1L;
@@ -70,11 +68,10 @@ public class InventoryList extends ArrayList<ArrayList<InventoryItem>> {
 			for(InventoryItem ii: al) {
 
 				compressedItem.setItem(mNameArray[mInventory.indexOf(al)]);
-				Log.d("Single item value", "" + Integer.toString(ii.getValue()));
+				//Log.d("Item", ii.getItem() + " " + Integer.toString(ii.getValue()));
 				compressedItem.setValue(compressedItem.getValue() + ii.getValue());
 				compressedItem.setTimeCollected();
 				compressedItem.setUsable();
-				Log.d("Usability", "" + Boolean.toString(compressedItem.getUsable()));
 			}
 			compressedInventory.add(compressedItem);
 		}
