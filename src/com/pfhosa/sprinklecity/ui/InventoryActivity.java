@@ -8,25 +8,33 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.CustomHttpClient;
 import com.pfhosa.sprinklecity.database.Database;
 import com.pfhosa.sprinklecity.fragments.InventoryDetailFragment;
+import com.pfhosa.sprinklecity.fragments.InventoryDetailFragment.OnInventoryExchangeListener;
+import com.pfhosa.sprinklecity.fragments.InventoryExchangeFragment;
+import com.pfhosa.sprinklecity.fragments.InventoryExchangeFragment.OnNfcNeededListener;
 import com.pfhosa.sprinklecity.fragments.InventoryListFragment;
 import com.pfhosa.sprinklecity.fragments.InventoryListFragment.OnInventoryItemSelectedListener;
 import com.pfhosa.sprinklecity.model.InventoryItem;
 import com.pfhosa.sprinklecity.model.InventoryList;
 
-public class InventoryActivity extends FragmentActivity implements OnInventoryItemSelectedListener {
+public class InventoryActivity extends FragmentActivity implements OnInventoryItemSelectedListener, 
+OnNfcNeededListener, OnInventoryExchangeListener {
 
 	Bundle mCharacterData;
 	InventoryList mInventory;
-	InventoryListFragment mInventoryListFragment;
+	InventoryListFragment mInventoryListFragment;	
+	
+	NfcAdapter mNfcAdapter;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -99,8 +107,8 @@ public class InventoryActivity extends FragmentActivity implements OnInventoryIt
 	
 	@Override
 	public void onBackPressed() {
-		if (mInventoryListFragment.isVisible()) {Log.e("First frag", "true");finish();return;}
-		openInventoryFragment();
+		if (mInventoryListFragment.isVisible()) finish();
+		else openInventoryFragment();
 	}
 
 	@Override
@@ -113,6 +121,35 @@ public class InventoryActivity extends FragmentActivity implements OnInventoryIt
 
 			getSupportFragmentManager().beginTransaction()
 			.replace(R.id.fragment_container_inventory, inventoryDetailFragment)
+			.addToBackStack("inventoryDetailFragment")
+			.commit();
+		}
+	}
+
+	@Override
+	public void nfcNeeded() {
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        
+        if (mNfcAdapter == null) {
+           Toast.makeText(getApplicationContext(), "This phone is not NFC enabled.", Toast.LENGTH_LONG).show();
+           return;
+        }
+        Toast.makeText(getApplicationContext(), "NFC is on.", Toast.LENGTH_LONG).show();
+        
+
+		
+	}
+
+	@Override
+	public void exchangeSelected() {
+		if (findViewById(R.id.fragment_container_inventory) != null) {
+
+			InventoryExchangeFragment inventoryExchangeFragment = new InventoryExchangeFragment();
+
+			inventoryExchangeFragment.setArguments(mCharacterData);
+
+			getSupportFragmentManager().beginTransaction()
+			.replace(R.id.fragment_container_inventory, inventoryExchangeFragment)
 			.addToBackStack("inventoryDetailFragment")
 			.commit();
 		}

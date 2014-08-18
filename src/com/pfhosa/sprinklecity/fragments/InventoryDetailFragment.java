@@ -2,9 +2,14 @@ package com.pfhosa.sprinklecity.fragments;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.Database;
@@ -12,10 +17,15 @@ import com.pfhosa.sprinklecity.model.InventoryItem;
 
 public class InventoryDetailFragment extends ListFragment {
 	
-	Database mDb = Database.getInstance(getActivity());		
+	Database mDb = Database.getInstance(getActivity());	
 	ArrayList<InventoryItem> mLoadedList = new ArrayList<InventoryItem>();
 	String[] list = {"dog", "cat"};
-	
+	OnInventoryExchangeListener mExchangeListener;
+
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		mExchangeListener = (OnInventoryExchangeListener)activity;
+	}
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -23,6 +33,7 @@ public class InventoryDetailFragment extends ListFragment {
 		//if(getArguments() != null) mUsername = getArguments().getString("Username");
 		
 		//loadedList = db.getCompressedInventory(mUsername);
+       
 		
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
 				R.layout.array_adapter_inventory_row, 
@@ -30,6 +41,13 @@ public class InventoryDetailFragment extends ListFragment {
 				list);
 		
 		setListAdapter(adapter);
+	}
+	
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {mExchangeListener.exchangeSelected();}
+	
+	public interface OnInventoryExchangeListener {
+		public void exchangeSelected();
 	}
 
 }

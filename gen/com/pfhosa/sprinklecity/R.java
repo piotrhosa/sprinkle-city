@@ -546,12 +546,13 @@ containing a value of this type.
         public static final int fragment_create_character_human_avatar=0x7f030008;
         public static final int fragment_create_character_human_details=0x7f030009;
         public static final int fragment_create_character_password=0x7f03000a;
-        public static final int fragment_inventory_list=0x7f03000b;
-        public static final int fragment_location_bakery=0x7f03000c;
-        public static final int fragment_location_farm=0x7f03000d;
-        public static final int fragment_location_park=0x7f03000e;
-        public static final int fragment_virtual_map=0x7f03000f;
-        public static final int fragmnet_create_character_animal_details=0x7f030010;
+        public static final int fragment_inventory_exchange=0x7f03000b;
+        public static final int fragment_inventory_list=0x7f03000c;
+        public static final int fragment_location_bakery=0x7f03000d;
+        public static final int fragment_location_farm=0x7f03000e;
+        public static final int fragment_location_park=0x7f03000f;
+        public static final int fragment_virtual_map=0x7f030010;
+        public static final int fragmnet_create_character_animal_details=0x7f030011;
     }
     public static final class menu {
         public static final int home_screen=0x7f0b0000;
