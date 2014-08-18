@@ -2,8 +2,10 @@ package com.pfhosa.sprinklecity.fragments;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -15,6 +17,12 @@ import com.pfhosa.sprinklecity.model.InventoryItem;
 public class InventoryListFragment extends ListFragment {
 
 	String mUsername;
+	OnInventoryItemSelectedListener mInventoryItem;
+	
+	public void onAttach(Activity activity) {
+		super.onAttach(getActivity());
+		mInventoryItem = (OnInventoryItemSelectedListener)activity;
+	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -36,5 +44,10 @@ public class InventoryListFragment extends ListFragment {
 	}
 
 	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {}
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Log.d("Item selected", Integer.toString(position));
+		mInventoryItem.onItemSelected();
+	}
+	
+	public interface OnInventoryItemSelectedListener {public void onItemSelected();}
 }

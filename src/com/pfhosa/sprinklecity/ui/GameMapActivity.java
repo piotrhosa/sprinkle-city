@@ -177,10 +177,7 @@ OnLocationSelectedListener {
 	}
 
 	@Override
-	public void onConnected(Bundle connectionHint) {
-		mLocationClient.requestLocationUpdates(mLocationRequest, this);
-		Toast.makeText(this, "Welcome back!", Toast.LENGTH_SHORT).show();
-	}
+	public void onConnected(Bundle connectionHint) {mLocationClient.requestLocationUpdates(mLocationRequest, this);}
 
 	@Override
 	public void onDisconnected() {Toast.makeText(this, "Disconnected. Please re-connect.", Toast.LENGTH_SHORT).show();}

@@ -47,22 +47,27 @@ public class LocationBakeryFragment extends Fragment {
 		cupcake0Button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				InventoryItem cupcake0 = new InventoryItem(mUsername, "choc cupcake", 2);
+				InventoryItem cupcake0 = new InventoryItem(mUsername, "cupcake", 2);
 				addCupcakeAsyncTask(cupcake0);
+				getActivity().finish();
 			}
 		});
 		
 		cupcake1Button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
+				InventoryItem cupcake1 = new InventoryItem(mUsername, "cupcake", 4);
+				addCupcakeAsyncTask(cupcake1);
+				getActivity().finish();
 			}
 		});
 		
 		cupcake2Button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
+				InventoryItem cupcake2 = new InventoryItem(mUsername, "cupcake", 6);
+				addCupcakeAsyncTask(cupcake2);
+				getActivity().finish();
 			}
 		});
 	}

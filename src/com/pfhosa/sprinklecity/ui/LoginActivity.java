@@ -112,8 +112,6 @@ public class LoginActivity extends Activity {
 						avatar = Integer.parseInt(json_data.getString("Avatar"));
 					}
 
-					openMapFragment(username, avatar);
-
 				} catch (JSONException e){
 					Log.e("log_tag", "Error parsing data "+ e.toString());
 					makeToastWrongData();
@@ -122,7 +120,10 @@ public class LoginActivity extends Activity {
 			return null;
 		}
 
-		protected void onPostExecute(Void result) {}
+		protected void onPostExecute(Void result) {
+			openMapFragment(username, avatar);
+			Toast.makeText(getApplicationContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override

@@ -16,14 +16,17 @@ import android.util.Log;
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.CustomHttpClient;
 import com.pfhosa.sprinklecity.database.Database;
+import com.pfhosa.sprinklecity.fragments.InventoryDetailFragment;
 import com.pfhosa.sprinklecity.fragments.InventoryListFragment;
+import com.pfhosa.sprinklecity.fragments.InventoryListFragment.OnInventoryItemSelectedListener;
 import com.pfhosa.sprinklecity.model.InventoryItem;
 import com.pfhosa.sprinklecity.model.InventoryList;
 
-public class InventoryActivity extends FragmentActivity {
+public class InventoryActivity extends FragmentActivity implements OnInventoryItemSelectedListener {
 
 	Bundle mCharacterData;
 	InventoryList mInventory;
+	InventoryListFragment mInventoryListFragment;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -35,10 +38,10 @@ public class InventoryActivity extends FragmentActivity {
 		new InventoryLoaderAsyncTask().execute();
 	}
 
-	public void openInventoryFragment(Bundle mCharacterData) {
+	public void openInventoryFragment() {
 		if (findViewById(R.id.fragment_container_inventory) != null) {
 
-			InventoryListFragment mInventoryListFragment = new InventoryListFragment();
+			mInventoryListFragment = new InventoryListFragment();
 
 			mInventoryListFragment.setArguments(mCharacterData);
 
@@ -52,7 +55,7 @@ public class InventoryActivity extends FragmentActivity {
 	public void mInventoryLoader() {
 		Database db = Database.getInstance(this);
 		db.loadInventoryToLocal(mInventory);		
-		openInventoryFragment(mCharacterData);	
+		openInventoryFragment();	
 	}
 
 	public class InventoryLoaderAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -95,5 +98,23 @@ public class InventoryActivity extends FragmentActivity {
 	}
 	
 	@Override
-	public void onBackPressed() {finish();}
+	public void onBackPressed() {
+		if (mInventoryListFragment.isVisible()) {Log.e("First frag", "true");finish();return;}
+		openInventoryFragment();
+	}
+
+	@Override
+	public void onItemSelected() {
+		if (findViewById(R.id.fragment_container_inventory) != null) {
+
+			InventoryDetailFragment inventoryDetailFragment = new InventoryDetailFragment();
+
+			inventoryDetailFragment.setArguments(mCharacterData);
+
+			getSupportFragmentManager().beginTransaction()
+			.replace(R.id.fragment_container_inventory, inventoryDetailFragment)
+			.addToBackStack("inventoryDetailFragment")
+			.commit();
+		}
+	}
 }
