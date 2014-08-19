@@ -1,6 +1,9 @@
 package com.pfhosa.sprinklecity.ui;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -8,9 +11,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -35,6 +45,10 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 	InventoryListFragment mInventoryListFragment;	
 	
 	NfcAdapter mNfcAdapter;
+	NdefMessage mNdefMessage;
+    private PendingIntent mPendingIntent;
+    private IntentFilter[] mIntentFilters;
+    private String[][] mNFCTechLists;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -125,20 +139,93 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 			.commit();
 		}
 	}
-
+	
 	@Override
-	public void nfcNeeded() {
+	public void nfcNeeded(String in, String out) {
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         
-        if (mNfcAdapter == null) {
-           Toast.makeText(getApplicationContext(), "This phone is not NFC enabled.", Toast.LENGTH_LONG).show();
-           return;
+        if(mNfcAdapter == null) {
+        	Toast.makeText(getApplicationContext(), "This phone is not NFC enabled.", Toast.LENGTH_LONG).show();
+        	return;
         }
-        Toast.makeText(getApplicationContext(), "NFC is on.", Toast.LENGTH_LONG).show();
         
+        Toast.makeText(getApplicationContext(), "NFC is on.", Toast.LENGTH_LONG).show();
 
-		
+        mNdefMessage = new NdefMessage(
+                       new NdefRecord[] {
+                       createNewTextRecord("First sample NDEF text record", Locale.ENGLISH, true),
+                       createNewTextRecord("Second sample NDEF text record", Locale.ENGLISH, true) });
+        
+        // create an intent with tag data and deliver to this activity
+        mPendingIntent = PendingIntent.getActivity(this, 0,
+            new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+ 
+        // set an intent filter for all MIME data
+        IntentFilter ndefIntent = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        try {
+        	ndefIntent.addDataType("*/*");
+        	mIntentFilters = new IntentFilter[] { ndefIntent };
+        } catch (Exception e) {
+            Log.e("TagDispatch", e.toString());
+        }
+        
+        if (mNfcAdapter != null) {
+        	mNfcAdapter.setNdefPushMessage(mNdefMessage, this);
+        	mNfcAdapter.enableForegroundDispatch(this, mPendingIntent, mIntentFilters, mNFCTechLists);
+        }    
 	}
+	
+    public static NdefRecord createNewTextRecord(String text, Locale locale, boolean encodeInUtf8) {
+        byte[] langBytes = locale.getLanguage().getBytes(Charset.forName("US-ASCII"));
+ 
+        Charset utfEncoding = encodeInUtf8 ? Charset.forName("UTF-8") : Charset.forName("UTF-16");
+        byte[] textBytes = text.getBytes(utfEncoding);
+ 
+        int utfBit = encodeInUtf8 ? 0 : (1 << 7);
+        char status = (char)(utfBit + langBytes.length);
+ 
+        byte[] data = new byte[1 + langBytes.length + textBytes.length];
+        data[0] = (byte)status;
+        System.arraycopy(langBytes, 0, data, 1, langBytes.length);
+        System.arraycopy(textBytes, 0, data, 1 + langBytes.length, textBytes.length);
+ 
+        return new NdefRecord(NdefRecord.TNF_WELL_KNOWN, NdefRecord.RTD_TEXT, new byte[0], data);
+    }
+    
+    @Override
+    public void onNewIntent(Intent intent) {
+        String action = intent.getAction();
+        Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+ 
+        String s = action + "\n\n" + tag.toString();
+ 
+        // parse through all NDEF messages and their records and pick text type only
+        Parcelable[] data = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+        if (data != null) {
+            try {
+                for (int i = 0; i < data.length; i++) {
+                    NdefRecord [] recs = ((NdefMessage)data[i]).getRecords();
+                    for (int j = 0; j < recs.length; j++) {
+                        if (recs[j].getTnf() == NdefRecord.TNF_WELL_KNOWN &&
+                            Arrays.equals(recs[j].getType(), NdefRecord.RTD_TEXT)) {
+                            byte[] payload = recs[j].getPayload();
+                            String textEncoding = ((payload[0] & 0200) == 0) ? "UTF-8" : "UTF-16";
+                            int langCodeLen = payload[0] & 0077;
+ 
+                            s += ("\n\nNdefMessage[" + i + "], NdefRecord[" + j + "]:\n\"" +
+                                 new String(payload, langCodeLen + 1, payload.length - langCodeLen - 1,
+                                 textEncoding) + "\"");
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Log.e("TagDispatch", e.toString());
+            }
+        }
+ 
+       // mTextView.setText(s);
+        Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
+    }
 
 	@Override
 	public void exchangeSelected() {

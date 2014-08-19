@@ -25,12 +25,12 @@ public class InventoryExchangeFragment extends Fragment {
 		
 		mLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_inventory_exchange, container, false);
 
-		mNfcListener.nfcNeeded();
+		mNfcListener.nfcNeeded("in", "out");
 		
 		return mLinearLayout ;
 	}
 	
 	public interface OnNfcNeededListener {
-		public void nfcNeeded();
+		public void nfcNeeded(String in, String out);
 	}
 }

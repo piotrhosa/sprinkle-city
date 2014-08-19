@@ -18,6 +18,7 @@ public class InventoryListFragment extends ListFragment {
 
 	String mUsername;
 	OnInventoryItemSelectedListener mInventoryItem;
+	ArrayAdapter<InventoryItem> mAdapter;
 	
 	public void onAttach(Activity activity) {
 		super.onAttach(getActivity());
@@ -35,12 +36,12 @@ public class InventoryListFragment extends ListFragment {
 		
 		loadedList = db.getCompressedInventory(mUsername);
 		
-		ArrayAdapter<InventoryItem> adapter = new ArrayAdapter<InventoryItem>(getActivity(),
+		mAdapter = new ArrayAdapter<InventoryItem>(getActivity(),
 				R.layout.array_adapter_inventory_row, 
 				R.id.text_item_name, 
 				loadedList);
 		
-		setListAdapter(adapter);
+		setListAdapter(mAdapter);
 	}
 
 	@Override
