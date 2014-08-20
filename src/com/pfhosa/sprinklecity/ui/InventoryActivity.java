@@ -126,11 +126,13 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 	}
 
 	@Override
-	public void onItemSelected() {
+	public void onItemSelected(int position) {
 		if (findViewById(R.id.fragment_container_inventory) != null) {
 
 			InventoryDetailFragment inventoryDetailFragment = new InventoryDetailFragment();
 
+			Bundle extendedCharacterData = mCharacterData;
+			extendedCharacterData.putString("Item", InventoryList.listFinder(position));
 			inventoryDetailFragment.setArguments(mCharacterData);
 
 			getSupportFragmentManager().beginTransaction()
@@ -173,6 +175,8 @@ OnNfcNeededListener, OnInventoryExchangeListener {
         	mNfcAdapter.setNdefPushMessage(mNdefMessage, this);
         	mNfcAdapter.enableForegroundDispatch(this, mPendingIntent, mIntentFilters, mNFCTechLists);
         }    
+        
+        mNfcAdapter = null;
 	}
 	
     public static NdefRecord createNewTextRecord(String text, Locale locale, boolean encodeInUtf8) {

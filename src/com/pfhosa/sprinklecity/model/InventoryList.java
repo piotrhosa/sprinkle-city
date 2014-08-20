@@ -58,6 +58,16 @@ public class InventoryList extends ArrayList<ArrayList<InventoryItem>> {
 		default: return null;
 		}
 	}
+	
+	public static String listFinder(int index) {
+		switch(index) {
+		case 0: return "apple";
+		case 1: return "coin";
+		case 2: return "fetch";
+		case 3: return "cupcake";
+		default: return null;
+		}
+	}
 
 	public ArrayList<InventoryItem> compressInventory() {
 		ArrayList<InventoryItem> compressedInventory = new ArrayList<InventoryItem>();

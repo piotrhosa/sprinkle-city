@@ -17,9 +17,9 @@ public class InventoryDetailFragment extends ListFragment {
 	
 	Database mDb = Database.getInstance(getActivity());	
 	ArrayList<InventoryItem> mLoadedList = new ArrayList<InventoryItem>();
-	String[] list = {"dog", "cat"};
 	OnInventoryExchangeListener mExchangeListener;
-	ArrayAdapter<String> mAdapter;
+	ArrayAdapter<InventoryItem> mAdapter;
+	String mUsername, mItem;
 
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -29,15 +29,19 @@ public class InventoryDetailFragment extends ListFragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
-		//if(getArguments() != null) mUsername = getArguments().getString("Username");
+		if(getArguments() != null) {
+			mUsername = getArguments().getString("Username");
+			mItem = getArguments().getString("Item");
+		}
+
+		Database db = Database.getInstance(getActivity());		
 		
-		//loadedList = db.getCompressedInventory(mUsername);
-       
+		mLoadedList = db.getAllSameItems(mUsername, mItem);       
 		
-		mAdapter = new ArrayAdapter<String>(getActivity(),
+		mAdapter = new ArrayAdapter<InventoryItem>(getActivity(),
 				R.layout.array_adapter_inventory_concrete_row, 
 				R.id.text2_item_name, 
-				list);
+				mLoadedList);
 		
 		setListAdapter(mAdapter);
 	}

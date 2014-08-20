@@ -47,8 +47,8 @@ public class InventoryListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		Log.d("Item selected", Integer.toString(position));
-		mInventoryItem.onItemSelected();
+		mInventoryItem.onItemSelected(position);
 	}
 	
-	public interface OnInventoryItemSelectedListener {public void onItemSelected();}
+	public interface OnInventoryItemSelectedListener {public void onItemSelected(int position);}
 }

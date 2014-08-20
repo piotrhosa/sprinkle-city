@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.pfhosa.sprinklecity.model.AnimalCharacter;
 import com.pfhosa.sprinklecity.model.HumanCharacter;
@@ -204,6 +205,32 @@ public class Database extends SQLiteOpenHelper {
 			}
 		}
 		return inventory.compressInventory();
+	}
+	
+	public ArrayList<InventoryItem> getAllSameItems(String creator, String item) {
+		Log.d("Items requested", "" + creator + ", " + item);
+		SQLiteDatabase db = this.getReadableDatabase();
+		String[] d = {};
+		ArrayList<InventoryItem> inventory = new ArrayList<InventoryItem>();
+		
+		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_INVENTORY + " WHERE " + USABLE + " = '1'" + 
+				" AND " + USERNAME + " = '" + creator + "'" + " AND " + ITEM + " = '" + item + "'", d);
+
+		int rows = cursor.getCount();
+		if(cursor.moveToFirst()) {
+			for(int i = 0; i < rows; ++i) {
+				Log.d("New item from local", "true");
+				InventoryItem newItem = new InventoryItem(cursor.getString(1),
+						cursor.getString(2),
+						Integer.parseInt(cursor.getString(3)),
+						Long.parseLong(cursor.getString(4)),
+						"1".equals(cursor.getString(5))
+						);
+				inventory.add(newItem);
+				cursor.moveToNext();
+			}
+		}
+		return inventory;
 	}
 
 	public String getHumanCharacter() {
