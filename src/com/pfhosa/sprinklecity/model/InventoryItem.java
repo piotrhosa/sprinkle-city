@@ -1,5 +1,7 @@
 package com.pfhosa.sprinklecity.model;
 
+import java.util.Scanner;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -38,12 +40,25 @@ public class InventoryItem implements Parcelable {
 		mUsable = usable;
 	}
 	
-	public InventoryItem () {
+	public InventoryItem() {
 		mCreator = "void";
 		mItem = "void";
 		mValue = 0;
 		mTimeCollected = 0;
 		mUsable = false;
+	}
+	
+	public InventoryItem(String beamMessage, String username) {
+		Scanner cursor = new Scanner(beamMessage);
+		cursor.next();
+		
+		mCreator = username;
+		mItem = cursor.next();
+		mValue = cursor.nextInt();
+		mTimeCollected = cursor.nextLong();
+		mUsable = cursor.nextBoolean();
+		
+		cursor.close();
 	}
 
 	// Acessors
@@ -98,6 +113,10 @@ public class InventoryItem implements Parcelable {
 		}
 	};
 
+	public String toBeamString() {
+		return mCreator + " " + mItem + " " + Integer.toString(mValue) + " " + Long.toString(mTimeCollected) + 
+				" " + Boolean.toString(mUsable);
+	}
 	public String toString() {
 			return mItem.toString() + " " + Integer.toString(mValue);
 	}

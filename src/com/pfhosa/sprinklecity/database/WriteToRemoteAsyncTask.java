@@ -14,10 +14,10 @@ public class WriteToRemoteAsyncTask extends AsyncTask<Void, Void, Void> {
 	ArrayList<NameValuePair> mPostParameters = new ArrayList<NameValuePair>();
 	Activity mFeedbackActivity;
 
-	public WriteToRemoteAsyncTask(String mUrl, ArrayList<NameValuePair> mPostParameters, Activity mFeedbackActivity) {		
-		this.mUrl = mUrl;
-		this.mPostParameters = mPostParameters;
-		this.mFeedbackActivity = mFeedbackActivity;
+	public WriteToRemoteAsyncTask(String url, ArrayList<NameValuePair> postParameters, Activity feedbackActivity) {		
+		mUrl = url;
+		mPostParameters = postParameters;
+		mFeedbackActivity = feedbackActivity;
 	}
 
 	protected Void doInBackground(Void... params) {

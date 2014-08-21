@@ -3,17 +3,20 @@ package com.pfhosa.sprinklecity.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.pfhosa.sprinklecity.R;
+import com.pfhosa.sprinklecity.model.InventoryItem;
 
 public class InventoryExchangeFragment extends Fragment {
 
 	OnNfcNeededListener mNfcListener;
 	LinearLayout mLinearLayout;
+	InventoryItem mItem;
 	
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -24,13 +27,18 @@ public class InventoryExchangeFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		
 		mLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_inventory_exchange, container, false);
+		
+		if(getArguments() != null) mItem = getArguments().getParcelable("ExchangedItem");
 
-		mNfcListener.nfcNeeded("in", "out");
+		Log.d("Item to swap", "" + mItem.getItem());
+		
+		mNfcListener.nfcNeeded(mItem.toBeamString());
+		Log.e("Passed in Fagement", "true");
 		
 		return mLinearLayout ;
 	}
 	
 	public interface OnNfcNeededListener {
-		public void nfcNeeded(String in, String out);
+		public void nfcNeeded(String out);
 	}
 }

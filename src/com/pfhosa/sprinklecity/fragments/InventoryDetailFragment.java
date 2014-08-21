@@ -48,11 +48,11 @@ public class InventoryDetailFragment extends ListFragment {
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		mExchangeListener.exchangeSelected();
+		mExchangeListener.exchangeSelected(mLoadedList.get(position));
 	}
 	
 	public interface OnInventoryExchangeListener {
-		public void exchangeSelected();
+		public void exchangeSelected(InventoryItem item);
 	}
 
 }
