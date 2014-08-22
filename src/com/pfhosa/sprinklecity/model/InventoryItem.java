@@ -48,11 +48,11 @@ public class InventoryItem implements Parcelable {
 		mUsable = false;
 	}
 	
-	public InventoryItem(String beamMessage, String username) {
+	public InventoryItem(String beamMessage) {
 		Scanner cursor = new Scanner(beamMessage);
-		cursor.next();
+		//cursor.next();
 		
-		mCreator = username;
+		mCreator = cursor.next();//username;
 		mItem = cursor.next();
 		mValue = cursor.nextInt();
 		mTimeCollected = cursor.nextLong();
@@ -72,12 +72,14 @@ public class InventoryItem implements Parcelable {
 	public long getTimeCollected() {return mTimeCollected;}
 
 	public boolean getUsable() {return mUsable;}
+	
+	public void setCreator(String creator) {mCreator = creator;}
 
 	public void setItem(String item ) {mItem = item;}
 
 	public void setValue(int value) {mValue = value;}
 
-	public void setTimeCollected() {mTimeCollected = 0;}
+	public void setTimeCollected(Boolean now) {mTimeCollected = now ? System.currentTimeMillis() / 1000L : 0;}
 
 	public void setUnusable() {mUsable = false;}
 

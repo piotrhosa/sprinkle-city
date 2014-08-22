@@ -78,9 +78,8 @@ public class InventoryList extends ArrayList<ArrayList<InventoryItem>> {
 			for(InventoryItem ii: al) {
 
 				compressedItem.setItem(mNameArray[mInventory.indexOf(al)]);
-				//Log.d("Item", ii.getItem() + " " + Integer.toString(ii.getValue()));
 				compressedItem.setValue(compressedItem.getValue() + ii.getValue());
-				compressedItem.setTimeCollected();
+				compressedItem.setTimeCollected(false);
 				compressedItem.setUsable();
 			}
 			compressedInventory.add(compressedItem);

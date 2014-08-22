@@ -11,7 +11,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NdefMessage;
@@ -73,12 +75,12 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 		} catch (Exception e) {
 			Log.e("TagDispatch", e.toString());
 		}		
-  
+
 	}
-	
+
 	public void onResume() {
 		super.onResume();
-		
+
 		if (mNfcAdapter != null) {
 			mNfcAdapter.enableForegroundDispatch(this, mPendingIntent, mIntentFilters, mNFCTechLists);
 		} 
@@ -230,9 +232,26 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 			} catch(Exception e) {Log.e("TagDispatch", e.toString());}
 		}
 
-		Toast.makeText(getApplicationContext(), newItem, Toast.LENGTH_SHORT).show();
-		InventoryItemToRemote itemToRemote = new InventoryItemToRemote(new InventoryItem(newItem, mCharacterData.getString("Username")));
-		itemToRemote.execute();
+
+		openExchangeDialog(newItem);
+	}
+
+	public void openExchangeDialog(final String item) {
+		final InventoryItem itemToSwap = new InventoryItem(item);
+		new AlertDialog.Builder(this)
+		.setTitle("Exchange item")
+		.setMessage("Do you want to accept " + itemToSwap.getItem() +  " from " + itemToSwap.getCreator() + "?")
+		.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				itemToSwap.setCreator(mCharacterData.getString("Username"));
+				itemToSwap.setTimeCollected(true);
+				new InventoryItemToRemote(itemToSwap).execute();
+				openInventoryFragment();
+			}
+		})
+		.setNegativeButton("Reject", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {}
+		}).show();
 	}
 
 	@Override
