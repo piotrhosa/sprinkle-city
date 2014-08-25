@@ -1,23 +1,23 @@
 	package com.pfhosa.sprinklecity.fragments;
 
-import com.pfhosa.sprinklecity.R;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.HorizontalScrollView;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+
+import com.pfhosa.sprinklecity.R;
 
 public class CreateCharacterAnimalAvatarFragment extends Fragment {
 
 	int mAvatar;
 	String mCharacterName;
 	
-	HorizontalScrollView mHorizontalScrollView;
+	LinearLayout mLinearLayout;
 	OnAnimalAvatarSelectedListener mAdvanceListener;
 
 	public void onAttach (Activity activity) {
@@ -31,18 +31,18 @@ public class CreateCharacterAnimalAvatarFragment extends Fragment {
 		if(getArguments() != null)
 			mCharacterName = getArguments().getString("mCharacterName", mCharacterName);
 
-		mHorizontalScrollView = (HorizontalScrollView) inflater.inflate(R.layout.fragment_create_character_animal_avatar, container, false);
+		mLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_create_character_animal_avatar, container, false);
 
 		activateAnimalCharacterGallery();
 
-		return mHorizontalScrollView ;
+		return mLinearLayout ;
 	}
 
 	public void activateAnimalCharacterGallery() {
-		ImageButton character0Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_animal_0);
-		ImageButton character1Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_animal_1);
-		ImageButton character2Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_animal_2);
-		ImageButton character3Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_animal_3);
+		ImageButton character0Button = (ImageButton) mLinearLayout.findViewById(R.id.image_character_animal_0);
+		ImageButton character1Button = (ImageButton) mLinearLayout.findViewById(R.id.image_character_animal_1);
+		ImageButton character2Button = (ImageButton) mLinearLayout.findViewById(R.id.image_character_animal_2);
+		ImageButton character3Button = (ImageButton) mLinearLayout.findViewById(R.id.image_character_animal_3);
 
 		character0Button.setOnClickListener(new OnClickListener() {
 

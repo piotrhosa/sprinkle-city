@@ -134,8 +134,16 @@ public class CreateCharacterAnimalDetailsFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 
-				if(getOverallStars() < OVERALL_STARS_LIMIT)
+				if(getOverallStars() < OVERALL_STARS_LIMIT) {
 					Toast.makeText(getActivity(), "There are still stars left!", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
+				if(mName.equals("")) {
+					Toast.makeText(getActivity(), "You have to put in your pet's name.", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 
 				if(mDb.uniqueAnimalCharacter(mName) 
 						&& mName != "" 

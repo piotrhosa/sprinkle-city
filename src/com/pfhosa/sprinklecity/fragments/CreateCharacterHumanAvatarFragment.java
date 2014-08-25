@@ -7,14 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.ImageButton;
 
 import com.pfhosa.sprinklecity.R;
 
 public class CreateCharacterHumanAvatarFragment extends Fragment {
 
-	HorizontalScrollView mHorizontalScrollView;
+	LinearLayout mLinearLayout;
 	OnHumanAvatarSelectedListener mAdvanceListener;
 
 	public void onAttach(Activity activity) {
@@ -25,17 +25,17 @@ public class CreateCharacterHumanAvatarFragment extends Fragment {
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-		mHorizontalScrollView = (HorizontalScrollView) inflater.inflate(R.layout.fragment_create_character_human_avatar, container, false);
+		mLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_create_character_human_avatar, container, false);
 
 		activateHumanCharacterGallery();
 
-		return mHorizontalScrollView ;
+		return mLinearLayout ;
 	}
 
 	public void activateHumanCharacterGallery() {
-		ImageButton character0Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_human_0);
-		ImageButton character1Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_human_1);
-		ImageButton character2Button = (ImageButton) mHorizontalScrollView.findViewById(R.id.image_character_human_2);
+		ImageButton character0Button = (ImageButton) mLinearLayout.findViewById(R.id.image_character_human_0);
+		ImageButton character1Button = (ImageButton) mLinearLayout.findViewById(R.id.image_character_human_1);
+		ImageButton character2Button = (ImageButton) mLinearLayout.findViewById(R.id.image_character_human_2);
 
 		character0Button.setOnClickListener(new OnClickListener() {
 

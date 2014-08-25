@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_create_character_bottom_left"
+    android:id="@+id/fragment_create_character_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal|center_vertical"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="10dip" >
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal|center_vertical"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="10dip" >
+
+        <TextView
+            android:id="@+id/text_character_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_character_name" />
 
         <EditText
             android:id="@+id/edit_character_name"
@@ -21,8 +33,18 @@
             android:inputType="textCapWords" />
     </LinearLayout>
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:id="@+id/text_character_job"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_character_job" />
+
     <LinearLayout
-        android:id="@+id/layout_job"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal|center_vertical"
@@ -30,131 +52,186 @@
 
         <View
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <ImageButton
-            android:id="@+id/image_job_baker"
-            android:layout_width="80dip"
-            android:layout_height="80dip"
-            android:background="@drawable/job_baker"
-            android:contentDescription="@string/image_job_baker" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/image_job_baker"
+                android:layout_width="80dip"
+                android:layout_height="80dip"
+                android:background="@drawable/job_baker"
+                android:contentDescription="@string/image_job_baker" />
+
+            <TextView
+                android:id="@+id/text_character_job_baker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_character_job_baker" />
+        </LinearLayout>
 
         <View
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <ImageButton
-            android:id="@+id/image_job_postman"
-            android:layout_width="80dip"
-            android:layout_height="80dip"
-            android:background="@drawable/job_postman"
-            android:contentDescription="@string/image_job_postman" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/image_job_postman"
+                android:layout_width="80dip"
+                android:layout_height="80dip"
+                android:button="@drawable/custom_postman_button"
+                android:background="@drawable/job_postman"
+                android:contentDescription="@string/image_job_postman" />
+
+            <TextView
+                android:id="@+id/text_character_job_postman"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_character_job_postman" />
+        </LinearLayout>
 
         <View
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <ImageButton
-            android:id="@+id/image_job_farmer"
-            android:layout_width="80dip"
-            android:layout_height="80dip"
-            android:background="@drawable/job_farmer"
-            android:contentDescription="@string/image_job_farmer" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/image_job_farmer"
+                android:layout_width="80dip"
+                android:layout_height="80dip"
+                android:background="@drawable/job_farmer"
+                android:contentDescription="@string/image_job_farmer" />
+
+            <TextView
+                android:id="@+id/text_character_job_farmer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_character_job_farmer" />
+        </LinearLayout>
 
         <View
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1" />
     </LinearLayout>
 
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
     <LinearLayout
-        android:id="@+id/layout_rating_social"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal|center_vertical"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/text_rating_social"
+            android:id="@+id/text_character_traits"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_rating_social" />
+            android:text="@string/text_character_traits" />
 
-        <RatingBar
-            android:id="@+id/rating_social"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:numStars="5"
-            android:rating="0.0"
-            android:scaleX="0.7"
-            android:scaleY="0.7"
-            android:stepSize="1.0" />
-    </LinearLayout>
+            android:gravity="center_horizontal|center_vertical"
+            android:orientation="horizontal" >
 
-    <LinearLayout
-        android:id="@+id/layout_rating_animal_friendly"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal|center_vertical"
-        android:orientation="horizontal" >
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal|center_vertical"
+                android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/text_rating_animal_friendly"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_rating_animal_friendly" />
+                <TextView
+                    android:id="@+id/text_rating_social"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dip"
+                    android:text="@string/text_rating_social" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+                <TextView
+                    android:id="@+id/text_rating_animal_friendly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dip"
+                    android:text="@string/text_rating_animal_friendly" />
 
-        <RatingBar
-            android:id="@+id/rating_animal_friendly"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:rating="0.0"
-            android:scaleX="0.7"
-            android:scaleY="0.7"
-            android:stepSize="1.0" />
+                <TextView
+                    android:id="@+id/text_rating_business"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dip"
+                    android:text="@string/text_rating_business" />
+            </LinearLayout>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-    </LinearLayout>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
 
-    <LinearLayout
-        android:id="@+id/layout_rating_business"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal|center_vertical"
-        android:orientation="horizontal" >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal|center_vertical"
+                android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/text_rating_business"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_rating_business" />
+                <RatingBar
+                    android:id="@+id/rating_social"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dip"
+                    android:numStars="5"
+                    android:rating="0.0"
+                    android:scaleX="0.6"
+                    android:scaleY="0.6"
+                    android:stepSize="1.0" />
 
-        <RatingBar
-            android:id="@+id/rating_business"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:rating="0.0"
-            android:scaleX="0.7"
-            android:scaleY="0.7"
-            android:stepSize="1.0" />
+                <RatingBar
+                    android:id="@+id/rating_animal_friendly"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dip"
+                    android:numStars="5"
+                    android:rating="0.0"
+                    android:scaleX="0.6"
+                    android:scaleY="0.6"
+                    android:stepSize="1.0" />
+
+                <RatingBar
+                    android:id="@+id/rating_business"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dip"
+                    android:numStars="5"
+                    android:rating="0.0"
+                    android:scaleX="0.6"
+                    android:scaleY="0.6"
+                    android:stepSize="1.0" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -176,10 +253,15 @@
             android:layout_height="wrap_content"
             android:numStars="1"
             android:rating="1.0"
-            android:scaleX="0.7"
-            android:scaleY="0.7"
+            android:scaleX="0.5"
+            android:scaleY="0.5"
             android:stepSize="1.0" />
     </LinearLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="fill_parent"

@@ -24,12 +24,12 @@ import com.pfhosa.sprinklecity.database.WriteToRemoteAsyncTask;
 import com.pfhosa.sprinklecity.model.AnimalCharacter;
 import com.pfhosa.sprinklecity.model.HumanCharacter;
 import com.pfhosa.sprinklecity.model.User;
-import com.pfhosa.sprinklecity.ui.HomeActivity;
+import com.pfhosa.sprinklecity.ui.LoginActivity;
 
 public class CreateCharacterPasswordFragment extends Fragment {
 
 	LinearLayout mLinearLayout;
-	EditText mCharacterNameEditText, mPasswordEditText, mAnimalNameEditText;
+	EditText mCharacterNameEditText, mPasswordEditText, mAnimalNameEditText, mPasswordConfirmEditText;
 	Button mConfirmPasswordButton;	
 
 	HumanCharacter mHumanCharacter;
@@ -61,6 +61,7 @@ public class CreateCharacterPasswordFragment extends Fragment {
 		mCharacterNameEditText = (EditText)mLinearLayout.findViewById(R.id.edit_character_name_pass);
 		mAnimalNameEditText = (EditText)mLinearLayout.findViewById(R.id.edit_animal_name_pass);
 		mPasswordEditText = (EditText)mLinearLayout.findViewById(R.id.edit_character_password);
+		mPasswordConfirmEditText = (EditText)mLinearLayout.findViewById(R.id.edit_character_password_confirm);
 		mConfirmPasswordButton = (Button)mLinearLayout.findViewById(R.id.button_create_character_confirm_password);
 
 		mCharacterNameEditText.setText(mHumanCharacter.getName());
@@ -70,27 +71,45 @@ public class CreateCharacterPasswordFragment extends Fragment {
 
 			@Override
 			public void onClick(View v) {
+				
+				if(mCharacterNameEditText.getText().toString().equals("")) {
+					Toast.makeText(getActivity(), "Fill in character's name", Toast.LENGTH_SHORT).show();
+					return;
+				}
 
-				if(mPasswordEditText.getText().toString().length() > 3) {
-					User newUser = new User(
-							mCharacterNameEditText.getText().toString(),
-							mPasswordEditText.getText().toString(),
-							mAnimalNameEditText.getText().toString());
+				if(mAnimalNameEditText.getText().toString().equals("")) {
+					Toast.makeText(getActivity(), "Fill in pet's name.", Toast.LENGTH_SHORT).show();
+					return;
+				}
 
-					mUser = newUser;
+				if(mPasswordEditText.getText().toString().length() < 4) {
+					Toast.makeText(getActivity(), "Your password must be at least 4 characters long.", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
+				if(!mPasswordEditText.getText().toString().equals(mPasswordConfirmEditText.getText().toString())) {
+					Toast.makeText(getActivity(), "The passwords do not match.", Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
+				mUser = new User(
+						mCharacterNameEditText.getText().toString(),
+						mPasswordEditText.getText().toString(),
+						mAnimalNameEditText.getText().toString());
 
-					// Insert into remote 
-					if(!isNewUserAsyncTaskRunning()) startNewUserAsyncTask();	
 
-					if(!isNewAvatarAsyncTaskRunning())startNewAvatarAsyncTask();
+				// Insert into remote 
+				if(!isNewUserAsyncTaskRunning()) startNewUserAsyncTask();	
 
-					if(!isHumanCharacterAsyncTaskRunning()) startNewHumanCharacterAsyncTask();
+				if(!isNewAvatarAsyncTaskRunning())startNewAvatarAsyncTask();
 
-					if(!isAnimalCharacterAsyncTaskRunning()) startNewAnimalCharacterAsyncTask();
+				if(!isHumanCharacterAsyncTaskRunning()) startNewHumanCharacterAsyncTask();
 
-					startActivity(new Intent(getActivity(), HomeActivity.class));
+				if(!isAnimalCharacterAsyncTaskRunning()) startNewAnimalCharacterAsyncTask();
 
-				} else {Toast.makeText(getActivity(), "Your password must be loner.", Toast.LENGTH_SHORT).show();}
+				startActivity(new Intent(getActivity(), LoginActivity.class));
+
+
 			}
 		});
 	}

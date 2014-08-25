@@ -243,15 +243,19 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 		.setMessage("Do you want to accept " + itemToSwap.getItem() +  " from " + itemToSwap.getCreator() + "?")
 		.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
-				itemToSwap.setCreator(mCharacterData.getString("Username"));
-				itemToSwap.setTimeCollected(true);
-				new InventoryItemToRemote(itemToSwap).execute();
-				openInventoryFragment();
+				executeAcceptItem(itemToSwap);
 			}
 		})
 		.setNegativeButton("Reject", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {}
 		}).show();
+	}
+
+	private void executeAcceptItem(InventoryItem item) {
+		item.setCreator(mCharacterData.getString("Username"));
+		item.setTimeCollected(true);
+		new InventoryItemToRemote(item).execute();
+		openInventoryFragment();
 	}
 
 	@Override

@@ -43,7 +43,24 @@
 	<string name="text_rating_fitness">Fitness</string>
 	<string name="text_character_password">Here you can put in your password and edit names.</string>
 	<string name="edit_blank_hint"></string>
-	<string name="button_create_character_confirm_password">Confirm password</string>
+	<string name="edit_password_confirm_hint">Confirm password</string>
+	<string name="edit_animal_name_hint">Pet\'s name</string>
+	<string name="edit_username_hint">Your name</string>
+	<string name="button_create_character_confirm_password">Log me in, please</string>
+	<string name="text_animal_avatar">Choose your pet</string>
+	<string name="text_human_avatar">Choose your character</string>
+	<string name="text_character_name">Choose your name</string>
+	<string name="text_character_job">Pick your job</string>
+	<string name="text_character_traits">Select your traits</string>
+	<string name="text_character_job_baker">Baker</string>	
+	<string name="text_character_job_postman">Postman</string>	
+	<string name="text_character_job_farmer">Farmer</string>
+	<string name="text_animal_name">Select your pet\'s name</string>
+	<string name="text_animal_traits">Pick traits</string>
+	<string name="text_password_username">Your character\'s name:</string>
+	<string name="text_password_animalname">Your pet\'s name:</string>
+	<string name="text_password_passwords">Put in your password:</string>
+	<string name="button_create_animal_character_next">Create your characters!</string>
 	
 	<!-- GameMapActivity -->
 	<string name="activity_game_map">Game main</string>

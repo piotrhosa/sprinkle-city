@@ -44,6 +44,8 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 	String mJob, mName;
 	int mAvatar, mSocialTrait, mAnimalTrait, mBusinessTrait, mMaxRating;	
 	static final int OVERALL_STARS_LIMIT  = 10;
+	
+	ImageButton mBakerButton, mPostmanButton, mFarmerButton;
 
 	HumanCharacter newHuman;
 
@@ -69,7 +71,7 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		activateCharacterName();
 		activateBakerButtonListener();
 		activatePostmanButtonListener();
-		activateFarmerButtonListener();
+		activatemFarmerButtonListener();
 		activateSocialRatingListener();
 		activateAnimalRatingListener();
 		activateBusinessRatingListener();
@@ -94,35 +96,47 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		});
 	}
 	public void activateBakerButtonListener() {
-		final ImageButton bakerButton = (ImageButton) mLinearLayout.findViewById(R.id.image_job_baker);
-
-		bakerButton.setOnClickListener(new OnClickListener() {
+		mBakerButton = (ImageButton) mLinearLayout.findViewById(R.id.image_job_baker);
+		mBakerButton.setBackgroundResource(R.drawable.job_baker);
+		
+		mBakerButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {mJob = "baker";}
+			public void onClick(View v) {
+				mJob = "baker";
+				setButtonSelected(mBakerButton, R.drawable.job_baker_pressed);
+			}
 
 		});
 
 	}
 
 	public void activatePostmanButtonListener() {
-		ImageButton postmanButton = (ImageButton) mLinearLayout.findViewById(R.id.image_job_postman);		
-
-		postmanButton.setOnClickListener(new OnClickListener() {
+		mPostmanButton = (ImageButton) mLinearLayout.findViewById(R.id.image_job_postman);		
+		mPostmanButton.setBackgroundResource(R.drawable.job_postman);
+		
+		mPostmanButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {mJob = "postman";}
+			public void onClick(View v) {
+				mJob = "postman";
+				setButtonSelected(mPostmanButton, R.drawable.job_postman_pressed);
+				}
 
 		});
 	}
 
-	public void activateFarmerButtonListener() {
-		ImageButton farmerButton = (ImageButton) mLinearLayout.findViewById(R.id.image_job_farmer);
+	public void activatemFarmerButtonListener() {
+		mFarmerButton = (ImageButton) mLinearLayout.findViewById(R.id.image_job_farmer);
+		mFarmerButton.setBackgroundResource(R.drawable.job_farmer);
 
-		farmerButton.setOnClickListener(new OnClickListener() {
+		mFarmerButton.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View v) {mJob = "farmer";}
+			public void onClick(View v) {
+				mJob = "farmer";
+				setButtonSelected(mFarmerButton, R.drawable.job_farmer_pressed);
+			}
 
 		});
 	}
@@ -206,8 +220,20 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 
-				if(getOverallStars() < OVERALL_STARS_LIMIT)
+				if(mName == null) {
+					Toast.makeText(getActivity(), "You have to choose a name for your character.", Toast.LENGTH_SHORT).show();
+					return;
+				}
+
+				if(mJob == null) {
+					Toast.makeText(getActivity(), "You haven't picked a job.", Toast.LENGTH_SHORT).show();
+					return;
+				}
+
+				if(getOverallStars() < OVERALL_STARS_LIMIT) {
 					Toast.makeText(getActivity(), "There are still stars left!", Toast.LENGTH_SHORT).show();
+					return;
+				}
 
 				if(mDb.uniqueHumanCharacter(mName) 
 						&& mJob != "" 
@@ -254,7 +280,7 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		String name;
 
 		public CheckUsernameAvailabilityAsyncTask(String name) {this.name = name;}
-		
+
 		@SuppressWarnings("unused")
 		protected Void doInBackground(Void... params) {
 			ArrayList<NameValuePair> postParameters = new ArrayList<NameValuePair>();
@@ -295,7 +321,14 @@ public class CreateCharacterHumanDetailsFragment extends Fragment {
 		String overallStars = overall + "/" + OVERALL_STARS_LIMIT;
 
 		mOverallTextView.setText(overallStars);	
+	}
+	
+	public void setButtonSelected(ImageButton button, int selected) {
+		mBakerButton.setBackgroundResource(R.drawable.job_baker);
+		mPostmanButton.setBackgroundResource(R.drawable.job_postman);
+		mFarmerButton.setBackgroundResource(R.drawable.job_farmer);		
 
+		button.setBackgroundResource(selected);
 	}
 
 	// Accessors

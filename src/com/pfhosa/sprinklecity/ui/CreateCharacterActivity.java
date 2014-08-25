@@ -41,8 +41,8 @@ OnAnimalAvatarSelectedListener, OnAnimalCharacterCreatedListener {
 	}
 	
 	public void onPause() {
-		this.finish();
 		super.onPause();
+		this.finish();
 	}
 
 	public boolean onCreateOptionsMenu(Menu menu) {
