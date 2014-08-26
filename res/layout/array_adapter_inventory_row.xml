@@ -7,8 +7,9 @@
         android:id="@+id/text_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="20dip"
         android:text="@string/text_item_name"
         android:textSize="20sp" >
     </TextView>
 
-</LinearLayout> 
+</LinearLayout>

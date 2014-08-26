@@ -78,7 +78,7 @@ public class Database extends SQLiteOpenHelper {
 			ANIMAL_FITNESS + " INTEGER " + ")";
 
 	private static final String CREATE_TABLE_INVENTORY = "CREATE TABLE " + TABLE_INVENTORY + 
-			" ( " + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + 
+			" ( " + KEY_ID + " INTEGER, " + 
 			USERNAME + " STRING, " +
 			ITEM + " STRING, " + 
 			VALUE + " INTEGER, " + 
@@ -173,6 +173,7 @@ public class Database extends SQLiteOpenHelper {
 				InventoryItem ii= subList.get(j);
 
 				if(ii.getItem() != "") {	
+					values.put(KEY_ID, ii.getId());
 					values.put(USERNAME, ii.getCreator());
 					values.put(ITEM, ii.getItem());
 					values.put(VALUE, ii.getValue());
@@ -194,7 +195,9 @@ public class Database extends SQLiteOpenHelper {
 		int rows = cursor.getCount();
 		if(cursor.moveToFirst()) {
 			for(int i = 0; i < rows; ++i) {
-				InventoryItem item = new InventoryItem(cursor.getString(1),
+				InventoryItem item = new InventoryItem(
+						cursor.getInt(0),
+						cursor.getString(1),
 						cursor.getString(2),
 						Integer.parseInt(cursor.getString(3)),
 						Long.parseLong(cursor.getString(4)),
@@ -220,7 +223,9 @@ public class Database extends SQLiteOpenHelper {
 		if(cursor.moveToFirst()) {
 			for(int i = 0; i < rows; ++i) {
 				Log.d("New item from local", "true");
-				InventoryItem newItem = new InventoryItem(cursor.getString(1),
+				InventoryItem newItem = new InventoryItem(
+						cursor.getInt(0),
+						cursor.getString(1),
 						cursor.getString(2),
 						Integer.parseInt(cursor.getString(3)),
 						Long.parseLong(cursor.getString(4)),
@@ -240,8 +245,7 @@ public class Database extends SQLiteOpenHelper {
 		String retString = "";
 		Cursor cursor = db.rawQuery("SELECT " + HUMAN_NAME +  " FROM " + TABLE_HUMAN_CHARACTER, d);
 
-		if(cursor.moveToLast())
-			retString = cursor.getString(0);
+		if(cursor.moveToLast()) retString = cursor.getString(0);
 		
 		return retString;		
 	}

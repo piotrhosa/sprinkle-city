@@ -3,7 +3,6 @@ package com.pfhosa.sprinklecity.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,16 +28,11 @@ public class InventoryExchangeFragment extends Fragment {
 		mLinearLayout = (LinearLayout) inflater.inflate(R.layout.fragment_inventory_exchange, container, false);
 		
 		if(getArguments() != null) mItem = getArguments().getParcelable("ExchangedItem");
-
-		Log.d("Item to swap", "" + mItem.getItem());
 		
 		mNfcListener.nfcNeeded(mItem.toBeamString());
-		Log.e("Passed in Fagement", "true");
 		
 		return mLinearLayout ;
 	}
 	
-	public interface OnNfcNeededListener {
-		public void nfcNeeded(String out);
-	}
+	public interface OnNfcNeededListener {public void nfcNeeded(String out);}
 }

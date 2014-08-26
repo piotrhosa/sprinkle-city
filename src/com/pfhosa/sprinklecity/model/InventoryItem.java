@@ -8,7 +8,7 @@ import android.os.Parcelable;
 public class InventoryItem implements Parcelable {
 
 	private String mCreator, mItem;
-	private int mValue;
+	private int mValue, mId;
 	private long mTimeCollected;
 	private boolean mUsable;
 
@@ -18,6 +18,7 @@ public class InventoryItem implements Parcelable {
 	 * @param value
 	 */
 	public InventoryItem(String creator, String item, int value) {
+		mId = 0;
 		mCreator = creator;
 		mItem = item;
 		mValue = value;
@@ -32,7 +33,8 @@ public class InventoryItem implements Parcelable {
 	 * @param timeCollected
 	 * @param usable
 	 */
-	public InventoryItem(String creator, String item, int value, long timeCollected, boolean usable) {
+	public InventoryItem(int id, String creator, String item, int value, long timeCollected, boolean usable) {
+		mId = id;
 		mCreator = creator;
 		mItem = item;
 		mValue = value;
@@ -41,6 +43,7 @@ public class InventoryItem implements Parcelable {
 	}
 	
 	public InventoryItem() {
+		mId = 0;
 		mCreator = "void";
 		mItem = "void";
 		mValue = 0;
@@ -50,8 +53,8 @@ public class InventoryItem implements Parcelable {
 	
 	public InventoryItem(String beamMessage) {
 		Scanner cursor = new Scanner(beamMessage);
-		//cursor.next();
 		
+		mId = cursor.nextInt();
 		mCreator = cursor.next();//username;
 		mItem = cursor.next();
 		mValue = cursor.nextInt();
@@ -62,6 +65,8 @@ public class InventoryItem implements Parcelable {
 	}
 
 	// Acessors
+	
+	public int getId() {return mId;}
 
 	public String getCreator() {return mCreator;}
 
@@ -72,6 +77,8 @@ public class InventoryItem implements Parcelable {
 	public long getTimeCollected() {return mTimeCollected;}
 
 	public boolean getUsable() {return mUsable;}
+	
+	public void setId(int id) {mId = id;}
 	
 	public void setCreator(String creator) {mCreator = creator;}
 
@@ -90,6 +97,7 @@ public class InventoryItem implements Parcelable {
 	public int describeContents() {return 0;}
 
 	public void writeToParcel(Parcel out, int flags) {
+		out.writeInt(mId);
 		out.writeString(mCreator);
 		out.writeString(mItem);
 		out.writeInt(mValue);
@@ -98,6 +106,7 @@ public class InventoryItem implements Parcelable {
 	}
 
 	protected InventoryItem(Parcel in) {
+		mId = in.readInt();
 		mCreator = in.readString();
 		mItem = in.readString();
 		mValue = in.readInt();
@@ -116,7 +125,7 @@ public class InventoryItem implements Parcelable {
 	};
 
 	public String toBeamString() {
-		return mCreator + " " + mItem + " " + Integer.toString(mValue) + " " + Long.toString(mTimeCollected) + 
+		return mId + " " + mCreator + " " + mItem + " " + Integer.toString(mValue) + " " + Long.toString(mTimeCollected) + 
 				" " + Boolean.toString(mUsable);
 	}
 	public String toString() {

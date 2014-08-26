@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.CustomHttpClient;
 import com.pfhosa.sprinklecity.database.Database;
+import com.pfhosa.sprinklecity.database.DeleteInventoryItemFromRemote;
 import com.pfhosa.sprinklecity.database.InventoryItemToRemote;
 import com.pfhosa.sprinklecity.fragments.InventoryDetailFragment;
 import com.pfhosa.sprinklecity.fragments.InventoryDetailFragment.OnInventoryExchangeListener;
@@ -44,13 +45,17 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 
 	Bundle mCharacterData;
 	InventoryList mInventory;
-	InventoryListFragment mInventoryListFragment;	
+	InventoryListFragment mInventoryListFragment;
+	InventoryExchangeFragment mInventoryExchangeFragment;
+	InventoryDetailFragment mInventoryDetailFragment;
 
 	NfcAdapter mNfcAdapter;
 	NdefMessage mNdefMessage;
 	private PendingIntent mPendingIntent;
 	private IntentFilter[] mIntentFilters;
 	private String[][] mNFCTechLists;
+	
+	boolean mBlockMultipleBeam;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,11 +68,9 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 
 		mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
-		// create an intent with tag data and deliver to this activity
 		mPendingIntent = PendingIntent.getActivity(this, 0,
 				new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
 
-		// set an intent filter for all MIME data
 		IntentFilter ndefIntent = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
 		try {
 			ndefIntent.addDataType("*/*");
@@ -75,6 +78,8 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 		} catch (Exception e) {
 			Log.e("TagDispatch", e.toString());
 		}		
+		
+		mBlockMultipleBeam = true;
 
 	}
 
@@ -94,7 +99,7 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 			mInventoryListFragment.setArguments(mCharacterData);
 
 			getSupportFragmentManager().beginTransaction()
-			.add(R.id.fragment_container_inventory, mInventoryListFragment)
+			.replace(R.id.fragment_container_inventory, mInventoryListFragment)
 			.addToBackStack("mInventoryListFragment")
 			.commit();
 		}
@@ -113,7 +118,7 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 
 			postParameters.add(new BasicNameValuePair("Username", mCharacterData.getString("Username")));
 			String response = null, item = null, creator = null;
-			int value = 0;
+			int value = 0, id = 0;
 			long timeCreated = 0;
 			boolean usable;
 
@@ -127,13 +132,14 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 
 					for(int i = 0; i < jArray.length(); ++i) {
 						JSONObject json_data = jArray.getJSONObject(i);
+						id = json_data.getInt("ID");
 						creator = json_data.getString("Username");
 						item = json_data.getString("Item");
 						value = Integer.parseInt(json_data.getString("Value"));
 						timeCreated = Long.parseLong(json_data.getString("TimeCreated"));
 						usable = "1".equals(json_data.getString("Usable").toString());	
 
-						InventoryItem mInventoryItem = new InventoryItem(creator, item, value, timeCreated, usable);
+						InventoryItem mInventoryItem = new InventoryItem(id, creator, item, value, timeCreated, usable);
 						mInventory.addItem(item, mInventoryItem);
 					}
 				} 
@@ -147,22 +153,32 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 
 	@Override
 	public void onBackPressed() {
-		if (mInventoryListFragment.isVisible()) finish();
-		else openInventoryFragment();
+		if(mInventoryListFragment.isVisible()) {
+			finish();
+			return;
+		}
+		if(mInventoryDetailFragment.isVisible()) {
+			openInventoryFragment();
+			return;
+		}
+		if(mInventoryExchangeFragment.isVisible()) {
+			openInventoryFragment();
+			return;
+		}
 	}
 
 	@Override
 	public void onItemSelected(int position) {
 		if (findViewById(R.id.fragment_container_inventory) != null) {
 
-			InventoryDetailFragment inventoryDetailFragment = new InventoryDetailFragment();
+			mInventoryDetailFragment = new InventoryDetailFragment();
 
 			Bundle extendedCharacterData = mCharacterData;
 			extendedCharacterData.putString("Item", InventoryList.listFinder(position));
-			inventoryDetailFragment.setArguments(mCharacterData);
+			mInventoryDetailFragment.setArguments(mCharacterData);
 
 			getSupportFragmentManager().beginTransaction()
-			.replace(R.id.fragment_container_inventory, inventoryDetailFragment)
+			.replace(R.id.fragment_container_inventory, mInventoryDetailFragment)
 			.addToBackStack("inventoryDetailFragment")
 			.commit();
 		}
@@ -176,18 +192,15 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 			return;
 		}
 
-		Toast.makeText(getApplicationContext(), "NFC is on.", Toast.LENGTH_LONG).show();
+		//Toast.makeText(getApplicationContext(), "NFC is on.", Toast.LENGTH_LONG).show();
 
 		mNdefMessage = new NdefMessage(
 				new NdefRecord[] {
 						createNewTextRecord(out, Locale.ENGLISH, true)});
 
 
-		if (mNfcAdapter != null) {
-			mNfcAdapter.setNdefPushMessage(mNdefMessage, this);
-		}    
+		if (mNfcAdapter != null) mNfcAdapter.setNdefPushMessage(mNdefMessage, this);    
 
-		//mNfcAdapter = null;
 	}
 
 	public static NdefRecord createNewTextRecord(String text, Locale locale, boolean encodeInUtf8) {
@@ -231,12 +244,12 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 				}
 			} catch(Exception e) {Log.e("TagDispatch", e.toString());}
 		}
-
-
-		openExchangeDialog(newItem);
+		openExchangeReceiveDialog(newItem);
 	}
 
-	public void openExchangeDialog(final String item) {
+	public void openExchangeReceiveDialog(final String item) {
+		if(!mBlockMultipleBeam) return;
+		mBlockMultipleBeam = false;
 		final InventoryItem itemToSwap = new InventoryItem(item);
 		new AlertDialog.Builder(this)
 		.setTitle("Exchange item")
@@ -249,29 +262,57 @@ OnNfcNeededListener, OnInventoryExchangeListener {
 		.setNegativeButton("Reject", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {}
 		}).show();
+		
+	}
+
+	public void openExchangeGiveDialog(final InventoryItem item) {
+		new AlertDialog.Builder(this)
+		.setTitle("Exchange item")
+		.setMessage("Do you want to trade " + item.getItem() +  " of value " + Integer.toString(item.getValue()) + "?")
+		.setPositiveButton("Trade", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				executeGiveAwayItem(item);
+			}
+		})
+		.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {}
+		}).show();
 	}
 
 	private void executeAcceptItem(InventoryItem item) {
+		InventoryItem toBeDeletedItem = item;
 		item.setCreator(mCharacterData.getString("Username"));
 		item.setTimeCollected(true);
 		new InventoryItemToRemote(item).execute();
+		new DeleteInventoryItemFromRemote(toBeDeletedItem).execute();
+		openInventoryFragment();
+	}
+
+	private void executeGiveAwayItem(InventoryItem item) {
+		nfcNeeded(item.toBeamString());
 		openInventoryFragment();
 	}
 
 	@Override
 	public void exchangeSelected(InventoryItem item) {
+
+		openExchangeGiveDialog(item);
+
+		/**
 		if (findViewById(R.id.fragment_container_inventory) == null) return;
 
-		InventoryExchangeFragment inventoryExchangeFragment = new InventoryExchangeFragment();
+		mInventoryExchangeFragment = new InventoryExchangeFragment();
 
 		Bundle extendedData = mCharacterData;
 		mCharacterData.putParcelable("ExchangedItem", item);
-		inventoryExchangeFragment.setArguments(extendedData);
+		mInventoryExchangeFragment.setArguments(extendedData);
 
 		getSupportFragmentManager().beginTransaction()
-		.replace(R.id.fragment_container_inventory, inventoryExchangeFragment)
-		.addToBackStack("inventoryDetailFragment")
+		.replace(R.id.fragment_container_inventory, mInventoryExchangeFragment)
+		.addToBackStack("inventoryExchangeFragment")
 		.commit();
 
+	}
+		 */
 	}
 }

@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.Database;
@@ -19,6 +19,7 @@ public class InventoryListFragment extends ListFragment {
 	String mUsername;
 	OnInventoryItemSelectedListener mInventoryItem;
 	ArrayAdapter<InventoryItem> mAdapter;
+	ArrayList<InventoryItem> mLoadedList;
 	
 	public void onAttach(Activity activity) {
 		super.onAttach(getActivity());
@@ -30,24 +31,24 @@ public class InventoryListFragment extends ListFragment {
 		super.onActivityCreated(savedInstanceState);
 		
 		Database db = Database.getInstance(getActivity());		
-		ArrayList<InventoryItem> loadedList = new ArrayList<InventoryItem>();
+		mLoadedList = new ArrayList<InventoryItem>();
 		
 		if(getArguments() != null) mUsername = getArguments().getString("Username");
 		
-		loadedList = db.getCompressedInventory(mUsername);
+		mLoadedList = db.getCompressedInventory(mUsername);
 		
 		mAdapter = new ArrayAdapter<InventoryItem>(getActivity(),
 				R.layout.array_adapter_inventory_row, 
 				R.id.text_item_name, 
-				loadedList);
+				mLoadedList);
 		
 		setListAdapter(mAdapter);
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		Log.d("Item selected", Integer.toString(position));
-		mInventoryItem.onItemSelected(position);
+		if(mLoadedList.get(position).getValue() != 0) mInventoryItem.onItemSelected(position);
+		else Toast.makeText(getActivity(), "You have no items of this kind.", Toast.LENGTH_SHORT).show();
 	}
 	
 	public interface OnInventoryItemSelectedListener {public void onItemSelected(int position);}

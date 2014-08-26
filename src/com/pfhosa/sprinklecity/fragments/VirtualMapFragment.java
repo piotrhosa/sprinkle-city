@@ -66,6 +66,7 @@ public class VirtualMapFragment extends Fragment {
 	OnLocationSelectedListener mLocationSelected;
 
 	String mUsername;
+	boolean mLastTouchDown;
 
 	public void onAttach (Activity activity) {
 		super.onAttach(activity);
@@ -189,7 +190,7 @@ public class VirtualMapFragment extends Fragment {
 		@Override
 		public void surfaceDestroyed(SurfaceHolder holder) {surfaceHandler.terminateSurface();}
 
-		public void surfaceRestart(){if (surfaceHandler != null)	surfaceHandler.restartSurface();}
+		public void surfaceRestart(){if(surfaceHandler != null) surfaceHandler.restartSurface();}
 
 		@Override 
 		public boolean onTouchEvent(MotionEvent event){
@@ -198,19 +199,21 @@ public class VirtualMapFragment extends Fragment {
 			touchY = (float)event.getY() / mRefHeight;
 
 			if(event.getAction() == MotionEvent.ACTION_DOWN) {
-				if(mHumanAvatar.isTouchOnObject(touchX, touchY))
+				if(mHumanAvatar.isTouchOnObject(touchX, touchY)) {
 					mArrows.setVisibility(true);
+					mLastTouchDown = true;
+				} else mLastTouchDown = false;
 				if(mHome.isTouchOnObject(touchX, touchY)) {
 					Intent openHome = new Intent(getActivity(), HomeActivity.class);
 					startActivity(openHome);
 				}
 				if(mInventory.isTouchOnObject(touchX, touchY)) {
 					mLocationSelected.onLocationSelected("inventory");
-					Toast.makeText(getActivity(), "Inventory", Toast.LENGTH_SHORT).show();
+					//Toast.makeText(getActivity(), "Inventory", Toast.LENGTH_SHORT).show();
 				}
 			}
 
-			if(event.getAction() == MotionEvent.ACTION_UP) {
+			if(event.getAction() == MotionEvent.ACTION_UP && mLastTouchDown) {
 
 				if(mHumanAvatar.isTouchOnObject(touchX, touchY))
 					mArrows.setVisibility(false);
@@ -218,18 +221,18 @@ public class VirtualMapFragment extends Fragment {
 				if(mHumanAvatar.swipeArrowUp(touchX, touchY)) {
 					mArrows.setVisibility(false);
 					mHumanAvatar.setDirection(-1);
-					Toast.makeText(getActivity(), "Up", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getActivity(), "You are going up.", Toast.LENGTH_SHORT).show();
 				}
 
 				if(mHumanAvatar.swipeArrowDown(touchX, touchY)) {
 					mArrows.setVisibility(false);
 					mHumanAvatar.setDirection(1);
-					Toast.makeText(getActivity(), "Down", Toast.LENGTH_SHORT).show();
+					Toast.makeText(getActivity(), "You are going down.", Toast.LENGTH_SHORT).show();
 				}
 
 				if(mHumanAvatar.swipeArrowLeft(touchX, touchY)) {
 					mArrows.setVisibility(false);
-					Toast.makeText(getActivity(), "Left", Toast.LENGTH_SHORT).show();
+					//Toast.makeText(getActivity(), "Left", Toast.LENGTH_SHORT).show();
 					if("noLocation" != surfaceHandler.locationToLeftExists()){
 						mLocationSelected.onLocationSelected(surfaceHandler.locationToLeftExists());
 					}
@@ -237,7 +240,7 @@ public class VirtualMapFragment extends Fragment {
 
 				if(mHumanAvatar.swipeArrowRight(touchX, touchY)) {
 					mArrows.setVisibility(false);
-					Toast.makeText(getActivity(), "Right", Toast.LENGTH_SHORT).show();
+					//Toast.makeText(getActivity(), "Right", Toast.LENGTH_SHORT).show();
 					if("noLocation" != surfaceHandler.locationToRightExists()){
 						mLocationSelected.onLocationSelected(surfaceHandler.locationToRightExists());						
 					}
@@ -333,7 +336,7 @@ public class VirtualMapFragment extends Fragment {
 				scaledLocationBitmap = Bitmap.createScaledBitmap(locationBitmap, adjustedEdge, adjustedEdge, true);
 
 				if(mHumanAvatar.getPositionX() == 0 && mHumanAvatar.getPositionY() == 0)
-					mHumanAvatar.setPosition(0.5f - AVATAR_EDGE_MARGIN, 0.8f);		
+					mHumanAvatar.setPosition(0.2f - AVATAR_EDGE_MARGIN, 0.8f);		
 			}
 		}
 

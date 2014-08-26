@@ -8,6 +8,7 @@ import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.pfhosa.sprinklecity.R;
 import com.pfhosa.sprinklecity.database.Database;
@@ -48,7 +49,9 @@ public class InventoryDetailFragment extends ListFragment {
 	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		mExchangeListener.exchangeSelected(mLoadedList.get(position));
+		if(mLoadedList.get(position).getValue() != 0) mExchangeListener.exchangeSelected(mLoadedList.get(position));
+		else Toast.makeText(getActivity(), "You have no items of this kind.", Toast.LENGTH_SHORT).show();
+
 	}
 	
 	public interface OnInventoryExchangeListener {

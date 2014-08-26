@@ -72,5 +72,6 @@
 	
 	<!-- InventoryActivity -->
 	<string name="text_item_name">item</string>
+	<string name="button_inventory_exchange">Trade this item!</string>
 	
 </resources>

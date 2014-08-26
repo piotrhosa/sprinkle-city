@@ -35,7 +35,7 @@ public class InventoryLoaderAsyncTask {
 
 		postParameters.add(new BasicNameValuePair("Username", mUsername));
 		String response = null, item = null, creator = null;
-		int value = 0;
+		int value = 0, id = 0;
 		long timeCreated = 0;
 		boolean usable;
 
@@ -51,13 +51,14 @@ public class InventoryLoaderAsyncTask {
 
 				for(int i = 0; i < jArray.length(); ++i) {
 					JSONObject json_data = jArray.getJSONObject(i);
+					id = json_data.getInt("ID");
 					creator = json_data.getString("Username");
 					item = json_data.getString("Item");
 					value = Integer.parseInt(json_data.getString("Value"));
 					timeCreated = Long.parseLong(json_data.getString("TimeCreated"));
 					usable = "1".equals(json_data.getString("Usable").toString());				
 
-					InventoryItem mInventoryItem = new InventoryItem(creator, item, value, timeCreated, usable);
+					InventoryItem mInventoryItem = new InventoryItem(id, creator, item, value, timeCreated, usable);
 					mReturnList.addItem(item, mInventoryItem);
 				}
 			} 
